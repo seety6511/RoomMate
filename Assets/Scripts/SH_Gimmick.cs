@@ -11,7 +11,8 @@ public class SH_Gimmick : MonoBehaviour
 {
     public float activeCoolTime;    //한번 작동시킨후 다시 작동시키기 위해 필요한 시간
     public float activatingOffTime; //한번 작동시킨후 다시 원상태로 돌아가기 위해 필요한 시간
-    public GameObject activeEffect;
+    public SH_Effect activeEffect;
+    public SH_Sound activeSound;
 
     protected virtual void Awake()
     {
