@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class NSR_Player : MonoBehaviour
+public class NSR_Player : MonoBehaviourPun
 {
     public bool handPlayer;
     public bool bodyPlayer;
@@ -12,6 +13,11 @@ public class NSR_Player : MonoBehaviour
     void Start()
     {
         cc = GetComponent<CharacterController>();
+
+        if (photonView.IsMine)
+        {
+            NSR_GameManager.instance.myPhotonView = photonView;
+        }
     }
 
     void Update()
