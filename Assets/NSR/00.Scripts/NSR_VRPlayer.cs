@@ -63,7 +63,7 @@ public class NSR_VRPlayer : MonoBehaviourPun, IPunObservable
     float y;
     void Rotate()
     {
-        Vector2 thumb = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick, OVRInput.Controller.LTouch);
+        Vector2 thumb = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick, OVRInput.Controller.LTouch);
         float v = thumb.x;
 
         y += v * rotSpeed * Time.deltaTime;
