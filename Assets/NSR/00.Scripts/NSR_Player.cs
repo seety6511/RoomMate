@@ -5,7 +5,9 @@ using Photon.Pun;
 
 public class NSR_Player : MonoBehaviourPun, IPunObservable
 {
+    [HideInInspector]
     public bool handPlayer;
+    [HideInInspector]
     public bool bodyPlayer;
     //============================= Start =============================
     public GameObject mainCamera;
@@ -32,15 +34,9 @@ public class NSR_Player : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
-            if (handPlayer)
-            {
-                Rotate();
-            }
-            else if (bodyPlayer)
-            {
-                Move();
-                Rotate();
-            }
+            Move();
+            Rotate();
+            Left_Catch_Item();
         }
         else
         {
@@ -101,4 +97,46 @@ public class NSR_Player : MonoBehaviourPun, IPunObservable
         }
     }
     #endregion
+
+    public Transform left_Hand;
+    Transform trCatched_Left;
+    void Left_Catch_Item()
+    {
+        int layer = 1 << LayerMask.NameToLayer("item");
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 5, layer))
+            {
+                if(trCatched_Left == null)
+                {
+                    hit.transform.parent = left_Hand;
+                    hit.transform.position = left_Hand.position;
+                    trCatched_Left = hit.transform;
+                }
+            }
+        }
+    }
+
+    public Transform right_Hand;
+    Transform trCatched_Right;
+    void Right_Cahtch_Itetm()
+    {
+        int layer = 1 << LayerMask.NameToLayer("item");
+        if (Input.GetMouseButtonDown(1))
+        {
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 5, layer))
+            {
+                if (trCatched_Right == null)
+                {
+                    hit.transform.parent = right_Hand;
+                    hit.transform.position = right_Hand.position;
+                    trCatched_Right = hit.transform;
+                }
+            }
+        }
+    }
 }

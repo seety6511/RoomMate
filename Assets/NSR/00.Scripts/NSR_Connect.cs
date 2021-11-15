@@ -7,12 +7,10 @@ using Photon.Realtime;
 // 1. 서버에 접속
 // 2. 로비 진입
 // 3. 방 생성 or 방 입장
-
 public class NSR_Connect : MonoBehaviourPunCallbacks
 {
     private void Start()
     {
-        // 네트워크 접속
         if (PhotonNetwork.IsConnected == false)
         {
             //게임 버전 설정
