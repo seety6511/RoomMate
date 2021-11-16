@@ -32,11 +32,19 @@ public class NSR_Player : MonoBehaviourPun, IPunObservable
     //============================= Update =============================
     void Update()
     {
+        #region Input Manager
+        bool catch_left = Input.GetMouseButtonDown(0);
+        bool drop_left = Input.GetMouseButtonUp(0);
+        bool catch_right = Input.GetMouseButtonDown(1);
+        bool drop_right = Input.GetMouseButtonUp(1);
+        #endregion
+
         if (photonView.IsMine)
         {
             Move();
             Rotate();
-            Left_Catch_Item();
+            Catch_and_Drop(left_Hand, ref trCatched_Left, catch_left, drop_left, line_left);
+            Catch_and_Drop(right_Hand, ref trCatched_Right, catch_right, drop_right, line_right);
         }
         else
         {
@@ -97,46 +105,50 @@ public class NSR_Player : MonoBehaviourPun, IPunObservable
         }
     }
     #endregion
-
+    #region 물건 집고 놓기
     public Transform left_Hand;
-    Transform trCatched_Left;
-    void Left_Catch_Item()
-    {
-        int layer = 1 << LayerMask.NameToLayer("item");
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 5, layer))
-            {
-                if(trCatched_Left == null)
-                {
-                    hit.transform.parent = left_Hand;
-                    hit.transform.position = left_Hand.position;
-                    trCatched_Left = hit.transform;
-                }
-            }
-        }
-    }
-
     public Transform right_Hand;
-    Transform trCatched_Right;
-    void Right_Cahtch_Itetm()
+    Transform trCatched_Left = null;
+    Transform trCatched_Right = null;
+    public LineRenderer line_left;
+    public LineRenderer line_right;
+
+    void Catch_and_Drop(Transform hand, ref Transform trCatched, bool catchInput, bool dropInput, LineRenderer line)
     {
         int layer = 1 << LayerMask.NameToLayer("item");
-        if (Input.GetMouseButtonDown(1))
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 5, layer))
         {
-            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 5, layer))
+            if (trCatched == null)
             {
-                if (trCatched_Right == null)
+                line.gameObject.SetActive(true);
+                line.SetPosition(0, hand.position);
+                line.SetPosition(1, hit.point);
+
+                if (catchInput)
                 {
-                    hit.transform.parent = right_Hand;
-                    hit.transform.position = right_Hand.position;
-                    trCatched_Right = hit.transform;
+                    trCatched = hit.transform;
+                    trCatched.parent = hand;
+                    trCatched.position = hand.position;
+                    trCatched.GetComponent<Rigidbody>().isKinematic = true;
                 }
+            }
+            else if (line.gameObject.activeSelf) line.gameObject.SetActive(false);
+            
+        }
+        else if(line.gameObject.activeSelf)  line.gameObject.SetActive(false);
+        
+
+        if (dropInput)
+        {
+            if (trCatched != null)
+            {
+                trCatched.GetComponent<Rigidbody>().isKinematic = false;
+                trCatched.parent = null;
+                trCatched = null;
             }
         }
     }
+    #endregion
 }
