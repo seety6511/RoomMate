@@ -12,6 +12,7 @@ public class SH_Gimmick_SoundController : MonoBehaviour
     public AudioClip waitingSound;
     public AudioClip hoveringSound;
     public AudioClip clearSound;
+    public AudioClip reloadSound;
 
     AudioSource source;
     public void Init()
@@ -59,6 +60,10 @@ public class SH_Gimmick_SoundController : MonoBehaviour
 
             case SH_GimmickState.Clear:
                 ClipPlay(clearSound);
+                break;
+
+            case SH_GimmickState.Reload:
+                ClipPlay(reloadSound);
                 break;
 
             case SH_GimmickState.None:

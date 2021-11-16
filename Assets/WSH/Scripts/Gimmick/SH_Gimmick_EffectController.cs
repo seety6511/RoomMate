@@ -12,6 +12,7 @@ public class SH_Gimmick_EffectController : MonoBehaviour
     public SH_Effect clearEffect;
     public SH_Effect waitingEffect;
     public SH_Effect hoveringEffect;
+    public SH_Effect reloadEffect;
 
     public void Init()
     {
@@ -53,6 +54,10 @@ public class SH_Gimmick_EffectController : MonoBehaviour
 
             case SH_GimmickState.Clear:
                 CreateEffect(clearEffect);
+                break;
+
+            case SH_GimmickState.Reload:
+                CreateEffect(reloadEffect);
                 break;
 
             case SH_GimmickState.None:

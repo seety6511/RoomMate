@@ -13,6 +13,25 @@ public class SH_Gimmick_Button : SH_Gimmick
         hasActive = false;
     }
 
+    protected override void Update()
+    {
+        base.Update();
+
+        if (!hasKeep)
+            return;
+
+        if (!hasActive)
+            return;
+
+        Reloading();
+    }
+
+    protected override IEnumerator ReloadEvent()
+    {
+        hasActive = false;
+        return base.ReloadEvent();
+    }
+
     public override IEnumerator SpecialEffect()
     {
         if (hasActive)

@@ -11,15 +11,16 @@ public enum SH_GimmickState
     Hovering,   //연속성
     Clear,      //단발성
     Disable,    //단발성
+    Reload,     //연속성
 }
 
 //기믹 부모클래스
 //모든 기믹은 이 기믹을 상속 받아야 한다.
 //Active()는 단발성 효과를 위한 메소드.
 //Activating() 은 연속성 효과를 위한 메소드.
-[RequireComponent(typeof(SH_Gimmick_ModelStateMachine))]
-[RequireComponent(typeof(SH_Gimmick_EffectController))]
 [RequireComponent(typeof(SH_Gimmick_SoundController))]
+[RequireComponent(typeof(SH_Gimmick_EffectController))]
+[RequireComponent(typeof(SH_Gimmick_ModelStateMachine))]
 public class SH_Gimmick : MonoBehaviour
 {
     public SH_GimmickState gimmickState;
@@ -27,6 +28,7 @@ public class SH_Gimmick : MonoBehaviour
     public float activeCoolTime;    //한번 작동시킨후 다시 작동시키기 위해 필요한 시간
     public float activatingOffTime; //한번 작동시킨후 다시 원상태로 돌아가기 위해 필요한 시간
     public float reloadTime;        //조작이 중단되었을때, 원상태로 돌아가기까지 필요한 시간
+    protected float reloadTimer;
 
     SH_Gimmick_SoundController soundController;
     SH_Gimmick_EffectController effectController;
@@ -36,12 +38,14 @@ public class SH_Gimmick : MonoBehaviour
     protected virtual void Awake()
     {
         activeCoolTimeCheck = true;
+
         soundController = GetComponent<SH_Gimmick_SoundController>();
         effectController = GetComponent<SH_Gimmick_EffectController>();
         modelController = GetComponent<SH_Gimmick_ModelStateMachine>();
+
         soundController.Init();
-        effectController.Init();
         modelController.Init();
+        effectController.Init();
     }
 
     protected virtual void Start()
@@ -52,6 +56,29 @@ public class SH_Gimmick : MonoBehaviour
     {
     }
 
+    protected virtual void Reloading()
+    {
+        reloadTimer += Time.deltaTime;
+        if (reloadTimer >= reloadTime)
+        {
+            reloadTimer = 0f;
+            StartCoroutine(ReloadEvent());
+        }
+    }
+
+    //재장전시 발생하는 이벤트
+    protected virtual IEnumerator ReloadEvent()
+    {
+        StateChange(SH_GimmickState.Waiting, true);
+        yield return null;
+    }
+
+    /// <summary>
+    /// 현재 기믹의 상태를 변경할때 사용한다. 반드시 이것을 통해서 상태를 변경시켜야 한다.<br/>
+    /// 상태를 강제로 변환시킬경우 force == true
+    /// </summary>
+    /// <param name="state"></param>
+    /// <param name="force"></param>
     public void StateChange(SH_GimmickState state, bool force = false)
     {
         if (force)
@@ -137,7 +164,6 @@ public class SH_Gimmick : MonoBehaviour
         activeCoolTimeCheck = true;
         StateChange(SH_GimmickState.Active);
         StartCoroutine(SpecialEffect());
-        Debug.Log("Active");
         check1 = false;
     }
 
