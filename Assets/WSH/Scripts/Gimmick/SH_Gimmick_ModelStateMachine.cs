@@ -7,12 +7,19 @@ public class SH_Gimmick_ModelStateMachine : MonoBehaviour
     SH_Gimmick parent;
 
     SH_GimmickTag currentState;
+    [HideInInspector]
     public SH_GimmickTag_Active activeState;
+    [HideInInspector]
     public SH_GimmickTag_Activating activatingState;
+    [HideInInspector]
     public SH_GimmickTag_Waiting waitingState;
+    [HideInInspector]
     public SH_GimmickTag_Disable disableState;
+    [HideInInspector]
     public SH_GimmickTag_Clear clearState;
+    [HideInInspector]
     public SH_GimmickTag_Hovering hoveringState;
+    [HideInInspector]
     public SH_GimmickTag_Reload reloadState;
 
     public void Init()
@@ -26,6 +33,7 @@ public class SH_Gimmick_ModelStateMachine : MonoBehaviour
         disableState = parent.gameObject.GetComponentInChildren<SH_GimmickTag_Disable>();
         hoveringState = parent.gameObject.GetComponentInChildren<SH_GimmickTag_Hovering>();
         activatingState = parent.gameObject.GetComponentInChildren<SH_GimmickTag_Activating>();
+        reloadState = parent.gameObject.GetComponentInChildren<SH_GimmickTag_Reload>();
 
         if (clearState != null)
             clearState.gameObject.SetActive(false);
@@ -53,11 +61,11 @@ public class SH_Gimmick_ModelStateMachine : MonoBehaviour
 
     void Change(SH_GimmickTag change)
     {
-        if (currentState != null)
-            currentState.gameObject.SetActive(false);
-
         if (change == null)
             return;
+
+        if (currentState != null)
+            currentState.gameObject.SetActive(false);
 
         currentState = change;
         change.gameObject.SetActive(true);

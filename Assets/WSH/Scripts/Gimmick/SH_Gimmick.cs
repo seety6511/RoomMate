@@ -24,16 +24,19 @@ public enum SH_GimmickState
 public class SH_Gimmick : MonoBehaviour
 {
     public SH_GimmickState gimmickState;
-
+    public List<SH_Gimmick> password = new List<SH_Gimmick>();    //이 리스트의 모든 기믹이 clear 상태여야 이 기믹을 조작가능하다.
+    public bool hasActive;          //현재 활성화 상태인가?
+    public bool keepState;          //활성화 상태를 유지 할것인가?
     public float activeCoolTime;    //한번 작동시킨후 다시 작동시키기 위해 필요한 시간
     public float activatingOffTime; //한번 작동시킨후 다시 원상태로 돌아가기 위해 필요한 시간
     public float reloadTime;        //조작이 중단되었을때, 원상태로 돌아가기까지 필요한 시간
-    protected float reloadTimer;
+    public float reloadTimer;
 
     SH_Gimmick_SoundController soundController;
     SH_Gimmick_EffectController effectController;
     SH_Gimmick_ModelStateMachine modelController;
 
+    #region Protected Interfaces
     //기믹의 기본 초기화
     protected virtual void Awake()
     {
@@ -46,6 +49,7 @@ public class SH_Gimmick : MonoBehaviour
         soundController.Init();
         modelController.Init();
         effectController.Init();
+        hasActive = false;
     }
 
     protected virtual void Start()
@@ -54,6 +58,23 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void Update()
     {
+        switch (gimmickState)
+        {
+            case SH_GimmickState.Hovering:
+                Hovering();
+                break;
+            case SH_GimmickState.Waiting:
+                Waiting();
+                break;
+        }
+
+        if (keepState)
+            return;
+
+        if (!hasActive)
+            return;
+
+        Reloading();
     }
 
     protected virtual void Reloading()
@@ -72,7 +93,9 @@ public class SH_Gimmick : MonoBehaviour
         StateChange(SH_GimmickState.Waiting, true);
         yield return null;
     }
+    #endregion
 
+    #region Public Interfaces
     /// <summary>
     /// 현재 기믹의 상태를 변경할때 사용한다. 반드시 이것을 통해서 상태를 변경시켜야 한다.<br/>
     /// 상태를 강제로 변환시킬경우 force == true
@@ -84,9 +107,7 @@ public class SH_Gimmick : MonoBehaviour
         if (force)
         {
             gimmickState = state;
-            modelController.StateUpdate();
-            soundController.StateUpdate();
-            effectController.StateUpdate();
+            StateUpdate();
             return;
         }
 
@@ -123,71 +144,58 @@ public class SH_Gimmick : MonoBehaviour
             case SH_GimmickState.None:
                 break;
         }
-
         gimmickState = state;
-        modelController.StateUpdate();
-        soundController.StateUpdate();
-        effectController.StateUpdate();
+        StateUpdate();
     }
 
-    bool activeCoolTimeCheck;
     public virtual void Active()
     {
         if (!activeCoolTimeCheck)
             return;
-            
-        StartCoroutine(ActiveCoolTimeCheck());
+
+        StartCoroutine(ActiveCheck());
     }
 
-    public virtual IEnumerator SpecialEffect()
+    public virtual IEnumerator ActiveEffect()
     {
         yield return null;
     }
 
-    bool check1;
-    IEnumerator ActiveCoolTimeCheck()
-    {
-        if (check1)
-            yield break;
-
-        check1 = true;
-
-        float timer = 0f;
-        activeCoolTimeCheck = false;
-
-        while (activeCoolTime > timer)
-        {
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        activeCoolTimeCheck = true;
-        StateChange(SH_GimmickState.Active);
-        StartCoroutine(SpecialEffect());
-        check1 = false;
-    }
-
     public virtual void Activating()
     {
+        StateChange(SH_GimmickState.Activating);
+        StateUpdate();
+        StartCoroutine(ActivatingEffect());
+    }
+
+    protected virtual IEnumerator ActivatingEffect()
+    {
+        yield return null;
     }
 
     public virtual void Disable()
     {
-
+        StateUpdate();
     }
 
     public virtual void Clear()
     {
+        StateUpdate();
+
     }
 
     public virtual void Waiting()
     {
+        StateUpdate();
     }
 
     public virtual void Hovering()
     {
+        StateUpdate();
     }
+    #endregion
 
+    #region Physhics
     protected virtual void OnTriggerEnter()
     {
     }
@@ -213,4 +221,57 @@ public class SH_Gimmick : MonoBehaviour
     {
         Disable();
     }
+    #endregion
+
+    #region System
+
+    bool activeCoolTimeCheck;
+    float activeCoolTimer;
+    IEnumerator ActiveCoolTimeCheck()
+    {
+        if (!activeCoolTimeCheck)
+            yield break;
+
+        activeCoolTimeCheck = false;
+
+        while (activeCoolTime > activeCoolTimer)
+        {
+            activeCoolTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        activeCoolTimeCheck = true;
+    }
+
+    bool PasswordCheck()
+    {
+        foreach (var p in password)
+        {
+            if (p.gimmickState != SH_GimmickState.Clear)
+                return false;
+        }
+        return true;
+    }
+
+    IEnumerator ActiveCheck()
+    {
+        if (!PasswordCheck())
+            yield break;
+
+        if (!activeCoolTimeCheck)
+            yield break;
+
+        activeCoolTimer = 0f;
+        StateChange(SH_GimmickState.Active);
+        StartCoroutine(ActiveEffect());
+        StartCoroutine(ActiveCoolTimeCheck());
+    }
+
+    void StateUpdate()
+    {
+        modelController.StateUpdate();
+        soundController.StateUpdate();
+        effectController.StateUpdate();
+    }
+    #endregion
 }

@@ -14,7 +14,7 @@ public class SH_Player : MonoBehaviour
         {
             gim = hit.collider.GetComponent<SH_Gimmick>();
 
-            if (Input.GetMouseButtonDown(0))
+             if (Input.GetMouseButtonDown(0))
                 hit.collider.GetComponent<SH_Gimmick>().Active();
             else
                 gim.StateChange(SH_GimmickState.Hovering);
