@@ -42,6 +42,12 @@ MonoBehaviour:
   - CantHearYou
   - ChangeColour
   - HeresWhy
+  - Catch_and_Drop
+  - changeBodyPlayer
+  - RecievePos
+  - countPlayer
+  - ChangeBody
+  - CountPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

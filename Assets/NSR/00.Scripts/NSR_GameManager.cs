@@ -12,9 +12,10 @@ public class NSR_GameManager : MonoBehaviourPunCallbacks
 
     //³ªÀÇ Æ÷ÅæView
     public PhotonView myPhotonView;
+    public PhotonView otherPhotonView;
 
-    public bool bodyPlayer;
-
+    //public bool bodyPlayer;
+    public int countPlayer = 0;
     private void Awake()
     {
         if (instance == null)   instance = this;
@@ -31,17 +32,10 @@ public class NSR_GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public bool changeBody;
-    public void ClickBody()
+    //public bool changeBody;
+    public void ClickChangeBody()
     {
-        bodyPlayer = true;
-        changeBody = true;
+        myPhotonView.RPC("ChangeBody", RpcTarget.AllBuffered);
+        //otherPhotonView.RPC("ChangeBody", RpcTarget.AllBuffered);
     }
-
-    public void ClickHand()
-    {
-        bodyPlayer = false;
-        changeBody = true;
-    }
-
 }

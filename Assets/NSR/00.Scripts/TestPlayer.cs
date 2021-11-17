@@ -1,53 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 
-public class NSR_VRPlayer : MonoBehaviourPun, IPunObservable
+public class TestPlayer : MonoBehaviour
 {
-    public bool handPlayer;
-    public bool bodyPlayer;
-    //============================= Start =============================
-    public GameObject OVRCameraRig;
-    void Start()
-    {
-        if (photonView.IsMine)
-        {
-            // NSR_GameManager 에 나의 photonViewv저장
-            NSR_GameManager.instance.myPhotonView = photonView;
-
-            // OVRCameraRig 켜기
-            OVRCameraRig.SetActive(true);
-
-            cc = GetComponent<CharacterController>();
-        }
-    }
-    //============================= Update =============================
     void Update()
     {
         #region Input Manager
+        //물건 잡고 놓기
         bool catch_left = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
         bool drop_left = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
         bool catch_right = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
         bool drop_right = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
         #endregion
 
-        if (photonView.IsMine) 
-        {
-            Rotate();
-            Move();
-            Catch_and_Drop(left_Hand, ref trCatched_Left, catch_left, drop_left, line_left);
-            Catch_and_Drop(right_Hand, ref trCatched_Right, catch_right, drop_right, line_right);
-        } 
-        else
-        {
-            transform.position = Vector3.Lerp(transform.position, receivePos, 0.2f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, receiveRot, 0.2f);
-        }
+        Move();
+        Rotate();
+        Catch(left_Hand, ref trCatched_Left, catch_left,  line_left);
+        Catch(right_Hand, ref trCatched_Right, catch_right,  line_right);
+        Drop(true, ref trCatched_Left, drop_left);
+        Drop(false, ref trCatched_Right, drop_right);
+        Push(left_Hand, ref finger_left);
+        Push(right_Hand, ref finger_right);
     }
-    //====================================================================
+
     #region 이동 및 회전
-    CharacterController cc;
     public float speed = 5;
     void Move()
     {
@@ -58,7 +35,7 @@ public class NSR_VRPlayer : MonoBehaviourPun, IPunObservable
         dir.y = 0;
         dir.Normalize();
 
-        cc.Move(dir * speed * Time.deltaTime);
+        transform.position += dir * speed * Time.deltaTime;
     }
 
     public float rotSpeed = 40f;
@@ -73,33 +50,17 @@ public class NSR_VRPlayer : MonoBehaviourPun, IPunObservable
         transform.localEulerAngles = new Vector3(0, y, 0);
     }
 
-    Vector3 receivePos;
-    Quaternion receiveRot;
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        //만약에 쓸 수 있는 상태라면
-        if (stream.IsWriting)
-        {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        //만약에 읽을 수 있는 상태라면
-        if (stream.IsReading)
-        {
-            receivePos = (Vector3)stream.ReceiveNext();
-            receiveRot = (Quaternion)stream.ReceiveNext();
-        }
-    }
     #endregion
 
-    #region 물건 집고 놓기
+    #region 물건 집기
     public Transform left_Hand;
     public Transform right_Hand;
     Transform trCatched_Left = null;
     Transform trCatched_Right = null;
     public LineRenderer line_left;
     public LineRenderer line_right;
-    void Catch_and_Drop(Transform hand, ref Transform trCatched, bool catchInput, bool dropInput, LineRenderer line)
+    public float throwPower = 5;
+    void Catch(Transform hand, ref Transform trCatched, bool catchInput, LineRenderer line)
     {
         int layer = 1 << LayerMask.NameToLayer("item");
         Ray ray = new Ray(hand.position, hand.forward);
@@ -123,17 +84,57 @@ public class NSR_VRPlayer : MonoBehaviourPun, IPunObservable
             else if (line.gameObject.activeSelf) line.gameObject.SetActive(false);
         }
         else if (line.gameObject.activeSelf) line.gameObject.SetActive(false);
+    }
+    #endregion
 
-
+    #region 물건 놓기
+    void Drop(bool leftHand, ref Transform trCatched, bool dropInput)
+    {
         if (dropInput)
         {
             if (trCatched != null)
             {
-                trCatched.GetComponent<Rigidbody>().isKinematic = false;
+                Rigidbody rb = trCatched.GetComponent<Rigidbody>();
+                rb.isKinematic = false;
+                //던진 힘
+                Vector3 power;
+                //던진 돌림힘
+                Vector3 torque;
+                if (leftHand)
+                {
+                    power = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.LTouch);
+                    torque = OVRInput.GetLocalControllerAngularVelocity(OVRInput.Controller.LTouch);
+                }
+                else
+                {
+                    power = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch);
+                    torque = OVRInput.GetLocalControllerAngularVelocity(OVRInput.Controller.RTouch);
+                }
+
+                rb.velocity = power * throwPower;
+                rb.angularVelocity = torque;
+
                 trCatched.parent = null;
                 trCatched = null;
             }
         }
     }
     #endregion
+
+    public GameObject finger_left;
+    public GameObject finger_right;
+    void Push(Transform hand, ref GameObject finger)
+    {
+        int layer = 1 << LayerMask.NameToLayer("push");
+        Ray ray = new Ray(hand.position, hand.forward);
+        RaycastHit hit;
+        if(Physics.SphereCast(ray, 0.1f, out hit, 0.1f, layer))
+        {
+            finger.SetActive(true);
+        }
+        else
+        {
+            finger.SetActive(false);
+        }
+    }
 }
