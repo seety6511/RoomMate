@@ -33,9 +33,9 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinedLobby();
         print("로비 진입 성공");
 
+
         PhotonNetwork.JoinRoom("게임장");
     }
-
     public GameObject gameManager;
     //방 입장 성공시
     public override void OnJoinedRoom()

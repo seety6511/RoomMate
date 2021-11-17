@@ -13,6 +13,8 @@ public class NSR_GameManager : MonoBehaviourPunCallbacks
     //³ªÀÇ Æ÷ÅæView
     public PhotonView myPhotonView;
 
+    public bool bodyPlayer;
+
     private void Awake()
     {
         if (instance == null)   instance = this;
@@ -28,4 +30,18 @@ public class NSR_GameManager : MonoBehaviourPunCallbacks
                 PhotonNetwork.Instantiate("TestPlayer", Vector3.zero, Quaternion.identity);
         }
     }
+
+    public bool changeBody;
+    public void ClickBody()
+    {
+        bodyPlayer = true;
+        changeBody = true;
+    }
+
+    public void ClickHand()
+    {
+        bodyPlayer = false;
+        changeBody = true;
+    }
+
 }

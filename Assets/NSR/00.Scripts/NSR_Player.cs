@@ -5,10 +5,6 @@ using Photon.Pun;
 
 public class NSR_Player : MonoBehaviourPun, IPunObservable
 {
-    [HideInInspector]
-    public bool handPlayer;
-    [HideInInspector]
-    public bool bodyPlayer;
     //============================= Start =============================
     public GameObject mainCamera;
     void Start()
@@ -26,30 +22,73 @@ public class NSR_Player : MonoBehaviourPun, IPunObservable
             // 로테이션 초기값 설정
             rotY = transform.localEulerAngles.y;
             rotX = Camera.main.transform.localEulerAngles.x;
+
+            if (NSR_GameManager.instance.bodyPlayer)
+            {
+                transform.position = GameObject.Find("BodyPlayerPos").transform.position;
+            }
+            else
+            {
+                transform.position = GameObject.Find("HandPlayerPos").transform.position;
+            }
         }
     }
 
     //============================= Update =============================
+    bool catch_left;
+    bool drop_left;
+    bool catch_right;
+    bool drop_right;
     void Update()
     {
-        #region Input Manager
-        bool catch_left = Input.GetMouseButtonDown(0);
-        bool drop_left = Input.GetMouseButtonUp(0);
-        bool catch_right = Input.GetMouseButtonDown(1);
-        bool drop_right = Input.GetMouseButtonUp(1);
-        #endregion
+        if (NSR_GameManager.instance.changeBody)
+        {
+            if (photonView.IsMine)
+            {
+                if (NSR_GameManager.instance.bodyPlayer)
+                {
+                    transform.position = Vector3.zero;
+                }
+                else
+                {
+                    transform.position = GameObject.Find("HandPlayerPos").transform.position;
+                }
+            }
+            else
+            {
+                NSR_GameManager.instance.bodyPlayer = !NSR_GameManager.instance.bodyPlayer;
+            }
+
+            NSR_GameManager.instance.changeBody = false;
+        }
 
         if (photonView.IsMine)
         {
-            Move();
-            Rotate();
-            Catch_and_Drop(left_Hand, ref trCatched_Left, catch_left, drop_left, line_left);
-            Catch_and_Drop(right_Hand, ref trCatched_Right, catch_right, drop_right, line_right);
+            if (NSR_GameManager.instance.bodyPlayer)
+            {
+                left_Hand.position = receiveLeftHandPos;
+                left_Hand.rotation = receiveLeftHandRot;
+                right_Hand.position = receiveRightHandPos;
+                right_Hand.rotation = receiveRightHandRot;
+
+                Move();
+                Rotate();
+                Catch_and_Drop(left_Hand, ref trCatched_Left, receive_catch_left, receive_drop_left, line_left);
+                Catch_and_Drop(right_Hand, ref trCatched_Right, receive_catch_right, receive_drop_right, line_right);
+            }
+            else
+            {
+                catch_left = Input.GetMouseButtonDown(0);
+                drop_left = Input.GetMouseButtonUp(0);
+                catch_right = Input.GetMouseButtonDown(1);
+                drop_right = Input.GetMouseButtonUp(1);
+            }
         }
         else
         {
             transform.position = Vector3.Lerp(transform.position, receivePos, 0.2f);
             transform.rotation = Quaternion.Lerp(transform.rotation, receiveRot, 0.2f);
+            
         }
     }
 
@@ -86,25 +125,8 @@ public class NSR_Player : MonoBehaviourPun, IPunObservable
             Camera.main.transform.localEulerAngles = new Vector3(-rotX, 0, 0);
         
     }
-
-    Vector3 receivePos;
-    Quaternion receiveRot;
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        //만약에 쓸 수 있는 상태라면
-        if (stream.IsWriting)
-        {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        //만약에 읽을 수 있는 상태라면
-        if (stream.IsReading)
-        {
-            receivePos = (Vector3)stream.ReceiveNext();
-            receiveRot = (Quaternion)stream.ReceiveNext();
-        }
-    }
     #endregion
+
     #region 물건 집고 놓기
     public Transform left_Hand;
     public Transform right_Hand;
@@ -151,4 +173,54 @@ public class NSR_Player : MonoBehaviourPun, IPunObservable
         }
     }
     #endregion
+
+    //============================= OnPhotonSerializeView =============================
+
+    Vector3 receivePos;
+    Quaternion receiveRot;
+
+    bool receive_catch_left;
+    bool receive_drop_left;
+    bool receive_catch_right;
+    bool receive_drop_right;
+
+    Vector3 receiveLeftHandPos;
+    Quaternion receiveLeftHandRot;
+    Vector3 receiveRightHandPos;
+    Quaternion receiveRightHandRot;
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        //만약에 쓸 수 있는 상태라면
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+
+            stream.SendNext(catch_left);
+            stream.SendNext(drop_left);
+            stream.SendNext(catch_right);
+            stream.SendNext(drop_right);
+
+            stream.SendNext(left_Hand.position);
+            stream.SendNext(left_Hand.rotation);
+            stream.SendNext(right_Hand.position);
+            stream.SendNext(right_Hand.rotation);
+        }
+        //만약에 읽을 수 있는 상태라면
+        if (stream.IsReading)
+        {
+            receivePos = (Vector3)stream.ReceiveNext();
+            receiveRot = (Quaternion)stream.ReceiveNext();
+
+            receive_catch_left = (bool)stream.ReceiveNext();
+            receive_drop_left = (bool)stream.ReceiveNext();
+            receive_catch_right = (bool)stream.ReceiveNext();
+            receive_drop_right = (bool)stream.ReceiveNext();
+
+            receiveLeftHandPos = (Vector3)stream.ReceiveNext();
+            receiveLeftHandRot = (Quaternion)stream.ReceiveNext();
+            receiveRightHandPos = (Vector3)stream.ReceiveNext();
+            receiveRightHandRot = (Quaternion)stream.ReceiveNext();
+        }
+    }
 }
