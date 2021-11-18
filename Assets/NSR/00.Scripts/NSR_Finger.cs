@@ -16,6 +16,10 @@ public class NSR_Finger : MonoBehaviour
         {
             NSR_PushBtn pushBtn = other.transform.GetComponent<NSR_PushBtn>();
             pushBtn.push = !pushBtn.push;
+            if (pushBtn.push)
+            {
+                print("버튼 누름");
+            }
         }
     }
 }

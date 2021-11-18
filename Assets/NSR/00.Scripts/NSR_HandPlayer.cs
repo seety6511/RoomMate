@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NSR_TestPlayer : MonoBehaviour
+public class NSR_HandPlayer : MonoBehaviour
 {
     void Update()
     {
-        Move();
+        NSR_PlayerManager.instance.HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+        NSR_PlayerManager.instance.HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+        NSR_PlayerManager.instance.HandDown_R = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+        NSR_PlayerManager.instance.HandUp_R = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+
         Rotate();
+
         DrawLine(left_Hand, line_left);
         DrawLine(right_Hand, line_right);
         Catch(left_Hand, ref trCatched_Left, NSR_PlayerManager.instance.HandDown_L);
