@@ -4,18 +4,13 @@ using UnityEngine;
 
 public class SH_Gimmick_Button : SH_Gimmick
 {
-    protected override void Update()
-    {
-        base.Update();
-    }
-
     protected override IEnumerator ReloadEvent()
     {
         hasActive = false;
         return base.ReloadEvent();
     }
 
-    public override IEnumerator ActiveEffect()
+    protected override IEnumerator ActiveEffect()
     {
         if (hasActive)
         {

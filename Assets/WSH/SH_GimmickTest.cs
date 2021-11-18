@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SH_GimmickTest : SH_Gimmick
 {
-    public override IEnumerator ActiveEffect()
+    protected override IEnumerator ActiveEffect()
     {
         Debug.Log("Test");
         yield return null;

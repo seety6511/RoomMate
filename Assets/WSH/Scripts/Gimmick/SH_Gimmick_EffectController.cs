@@ -60,8 +60,6 @@ public class SH_Gimmick_EffectController : MonoBehaviour
                 CreateEffect(reloadEffect);
                 break;
 
-            case SH_GimmickState.None:
-                break;
         }
     }
 }

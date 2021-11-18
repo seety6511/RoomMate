@@ -8,24 +8,24 @@ public class SH_Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, LayerMask.NameToLayer("Gimmick")))
-        {
-            gim = hit.collider.GetComponent<SH_Gimmick>();
+        //if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, LayerMask.NameToLayer("Gimmick")))
+        //{
+        //    gim = hit.collider.GetComponent<SH_Gimmick>();
 
-             if (Input.GetMouseButtonDown(0))
-                hit.collider.GetComponent<SH_Gimmick>().Active();
-            else
-                gim.StateChange(SH_GimmickState.Hovering);
-        }
-        else
-        {
-            if (gim != null)
-            {
-                gim.StateChange(SH_GimmickState.Waiting);
-                gim = null;
-            }
-        }
+        //     if (Input.GetMouseButtonDown(0))
+        //        hit.collider.GetComponent<SH_Gimmick>().Active();
+        //    else
+        //        gim.StateChange(SH_GimmickState.Hovering);
+        //}
+        //else
+        //{
+        //    if (gim != null)
+        //    {
+        //        gim.StateChange(SH_GimmickState.Waiting);
+        //        gim = null;
+        //    }
+        //}
     }
 }

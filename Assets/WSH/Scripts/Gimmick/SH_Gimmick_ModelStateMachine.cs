@@ -103,9 +103,6 @@ public class SH_Gimmick_ModelStateMachine : MonoBehaviour
                 Change(reloadState);
                 break;
 
-            case SH_GimmickState.None:
-                break;
-
             default:
                 break;
         }

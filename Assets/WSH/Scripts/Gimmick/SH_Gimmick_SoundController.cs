@@ -66,8 +66,6 @@ public class SH_Gimmick_SoundController : MonoBehaviour
                 ClipPlay(reloadSound);
                 break;
 
-            case SH_GimmickState.None:
-                break;
         }
     }
 
