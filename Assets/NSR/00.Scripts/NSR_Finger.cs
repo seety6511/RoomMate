@@ -8,11 +8,14 @@ public class NSR_Finger : MonoBehaviour
     {
         print(transform.gameObject.layer);
     }
-    private void OnTriggerStay(Collider other)
-    {
-        if(other.transform.gameObject.layer == 7)
-        {
 
+    public float speed = 5;
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == 7)
+        {
+            NSR_PushBtn pushBtn = other.transform.GetComponent<NSR_PushBtn>();
+            pushBtn.push = !pushBtn.push;
         }
     }
 }

@@ -2,28 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestPlayer : MonoBehaviour
+public class NSR_TestPlayer : MonoBehaviour
 {
     void Update()
     {
         #region Input Manager
         //물건 잡고 놓기
-        bool catch_left = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
-        bool drop_left = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
-        bool catch_right = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
-        bool drop_right = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+        bool HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+        bool HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+        bool HandDown_R = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+        bool HandUp_R = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
         #endregion
 
         Move();
         Rotate();
-        Catch(left_Hand, ref trCatched_Left, catch_left,  line_left);
-        Catch(right_Hand, ref trCatched_Right, catch_right,  line_right);
-        Drop(true, ref trCatched_Left, drop_left);
-        Drop(false, ref trCatched_Right, drop_right);
-        Push(left_Hand, ref finger_left);
-        Push(right_Hand, ref finger_right);
+        DrawLine(left_Hand, line_left);
+        DrawLine(right_Hand, line_right);
+        Catch(left_Hand, ref trCatched_Left, HandDown_L);
+        Catch(right_Hand, ref trCatched_Right, HandDown_R);
+        Drop(true, ref trCatched_Left, HandUp_L);
+        Drop(false, ref trCatched_Right, HandUp_R);
+        OpenDoor(left_Hand, HandDown_L);
+        OpenDoor(right_Hand, HandDown_R);
     }
 
+    public Transform left_Hand;
+    public Transform right_Hand;
+
+    public LineRenderer line_left;
+    public LineRenderer line_right;
     #region 이동 및 회전
     public float speed = 5;
     void Move()
@@ -52,27 +59,36 @@ public class TestPlayer : MonoBehaviour
 
     #endregion
 
-    #region 물건 집기
-    public Transform left_Hand;
-    public Transform right_Hand;
-    Transform trCatched_Left = null;
-    Transform trCatched_Right = null;
-    public LineRenderer line_left;
-    public LineRenderer line_right;
-    public float throwPower = 5;
-    void Catch(Transform hand, ref Transform trCatched, bool catchInput, LineRenderer line)
+    void DrawLine(Transform hand, LineRenderer line)
     {
-        int layer = 1 << LayerMask.NameToLayer("item");
+        int layer1 = 1 << LayerMask.NameToLayer("item");
+        int layer2 = 1 << LayerMask.NameToLayer("door");
+        int layer = layer1 + layer2;
         Ray ray = new Ray(hand.position, hand.forward);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 5, layer))
+        if (Physics.Raycast(ray, out hit, 10, layer))
+        {
+            line.gameObject.SetActive(true);
+            line.SetPosition(0, hand.position);
+            line.SetPosition(1, hit.point);
+        }
+        else if (line.gameObject.activeSelf) line.gameObject.SetActive(false);
+    }
+
+    #region 물건 집기
+    Transform trCatched_Left = null;
+    Transform trCatched_Right = null;
+    public float throwPower = 5;
+    void Catch(Transform hand, ref Transform trCatched, bool catchInput)
+    {
+        int layer = 1 << LayerMask.NameToLayer("item");
+
+        Ray ray = new Ray(hand.position, hand.forward);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 10, layer))
         {
             if (trCatched == null)
             {
-                line.gameObject.SetActive(true);
-                line.SetPosition(0, hand.position);
-                line.SetPosition(1, hit.point);
-
                 if (catchInput)
                 {
                     trCatched = hit.transform;
@@ -81,9 +97,7 @@ public class TestPlayer : MonoBehaviour
                     trCatched.GetComponent<Rigidbody>().isKinematic = true;
                 }
             }
-            else if (line.gameObject.activeSelf) line.gameObject.SetActive(false);
         }
-        else if (line.gameObject.activeSelf) line.gameObject.SetActive(false);
     }
     #endregion
 
@@ -121,20 +135,30 @@ public class TestPlayer : MonoBehaviour
     }
     #endregion
 
-    public GameObject finger_left;
-    public GameObject finger_right;
-    void Push(Transform hand, ref GameObject finger)
+    //public GameObject finger_left;
+    //public GameObject finger_right;
+    //void PushAnim(Transform hand, ref GameObject finger)
+    //{
+    //    int layer = 1 << LayerMask.NameToLayer("push");
+    //    Ray ray = new Ray(hand.position, hand.forward);
+    //    RaycastHit hit;
+    //    if (Physics.SphereCast(ray, 0.1f, out hit, 0.1f, layer))
+    //    {
+    //    }
+    //}
+
+    void OpenDoor(Transform hand, bool openInput)
     {
-        int layer = 1 << LayerMask.NameToLayer("push");
+        int layer = 1 << LayerMask.NameToLayer("door");
         Ray ray = new Ray(hand.position, hand.forward);
         RaycastHit hit;
-        if(Physics.SphereCast(ray, 0.1f, out hit, 0.1f, layer))
+        if (Physics.SphereCast(ray, 0.1f, out hit, 10, layer))
         {
-            finger.SetActive(true);
-        }
-        else
-        {
-            finger.SetActive(false);
+            if (openInput)
+            {
+                NSR_Door door = hit.transform.GetComponent<NSR_Door>();
+                door.open = !door.open;
+            }
         }
     }
 }
