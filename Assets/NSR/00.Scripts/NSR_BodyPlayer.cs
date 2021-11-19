@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NSR_BodyPlayer : MonoBehaviour
 {
+    public Transform head;
     void Update()
     {
         if (NSR_PlayerManager.instance.bodyControll == false) return;
@@ -33,7 +34,7 @@ public class NSR_BodyPlayer : MonoBehaviour
 
     public float rotSpeed = 40f;
     float y;
-    public Transform head;
+    
     void Rotate()
     {
         

@@ -361,6 +361,7 @@ GameObject:
   - component: {fileID: 454813347}
   - component: {fileID: 454813346}
   - component: {fileID: 454813349}
+  - component: {fileID: 454813350}
   m_Layer: 0
   m_Name: RightHand
   m_TagString: Untagged
@@ -461,6 +462,19 @@ MonoBehaviour:
   left: 0
   leftHand: {fileID: 100028073}
   rightHand: {fileID: 2039036024}
+--- !u!114 &454813350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454813344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b0a6d82ea6dfc46818501b05fc83b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
 --- !u!1 &616275011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1584,6 +1598,7 @@ GameObject:
   - component: {fileID: 1871530977}
   - component: {fileID: 1871530976}
   - component: {fileID: 1871530979}
+  - component: {fileID: 1871530980}
   m_Layer: 0
   m_Name: LeftHand
   m_TagString: Untagged
@@ -1684,6 +1699,19 @@ MonoBehaviour:
   left: 1
   leftHand: {fileID: 100028073}
   rightHand: {fileID: 2039036024}
+--- !u!114 &1871530980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871530974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b0a6d82ea6dfc46818501b05fc83b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
 --- !u!1 &1908065763
 GameObject:
   m_ObjectHideFlags: 0
@@ -3766,6 +3794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35b196ab4c67299458a3b3103ed00f2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  head: {fileID: 3933079812703366875}
   speed: 5
   rotSpeed: 40
 --- !u!1 &2735613777027190251
@@ -4464,12 +4493,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4a486c2580c1a40b332b522ae05236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  head: {fileID: 3933079812703366875}
   left_Hand: {fileID: 1871530975}
   right_Hand: {fileID: 454813345}
   line_left: {fileID: 6448936026087162531}
   line_right: {fileID: 36930138807680105}
-  speed: 5
-  rotSpeed: 40
   throwPower: 5
 --- !u!136 &7246536914686074062
 CapsuleCollider:
