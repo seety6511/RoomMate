@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class NSR_HandPlayer : MonoBehaviour
 {
+    public Transform head;
     void Update()
     {
+        if (NSR_PlayerManager.instance.bodyControll) return;
+
+        Quaternion headRot = head.localRotation;
+        headRot.z = 0;
+        headRot.x = 0;
+        transform.localRotation = headRot;
+
         NSR_PlayerManager.instance.HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
         NSR_PlayerManager.instance.HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
         NSR_PlayerManager.instance.HandDown_R = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
         NSR_PlayerManager.instance.HandUp_R = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
-
-        Rotate();
 
         DrawLine(left_Hand, line_left);
         DrawLine(right_Hand, line_right);
@@ -28,34 +34,6 @@ public class NSR_HandPlayer : MonoBehaviour
 
     public LineRenderer line_left;
     public LineRenderer line_right;
-
-    #region 이동 및 회전
-    public float speed = 5;
-    void Move()
-    {
-        Vector2 hv = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
-        Vector3 dirH = Camera.main.transform.right * hv.x;
-        Vector3 dirV = Camera.main.transform.forward * hv.y;
-        Vector3 dir = dirH + dirV;
-        dir.y = 0;
-        dir.Normalize();
-
-        transform.position += dir * speed * Time.deltaTime;
-    }
-
-    public float rotSpeed = 40f;
-    float y;
-    void Rotate()
-    {
-        Vector2 thumb = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick, OVRInput.Controller.LTouch);
-        float v = thumb.x;
-
-        y += v * rotSpeed * Time.deltaTime;
-
-        transform.localEulerAngles = new Vector3(0, y, 0);
-    }
-
-    #endregion
 
     #region 선그리기
     void DrawLine(Transform hand, LineRenderer line)

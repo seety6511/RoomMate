@@ -30,15 +30,11 @@ public class NSR_PlayerManager : MonoBehaviour
         {
             body.parent = bodyPlayer;
             body.localPosition = new Vector3(0, 1.6f, 0);
-            bodyPlayer.GetComponent<NSR_HandPlayer>().enabled = true;
-            handPlayer.GetComponent<NSR_HandPlayer>().enabled = false;
         }
         else
         {
             body.parent = handPlayer;
             body.localPosition = new Vector3(0, 1.6f, 0);
-            bodyPlayer.GetComponent<NSR_HandPlayer>().enabled = false;
-            handPlayer.GetComponent<NSR_HandPlayer>().enabled = true;
         }
     }
 }
