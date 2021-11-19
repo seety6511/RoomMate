@@ -4,24 +4,39 @@ using UnityEngine;
 
 public class SH_Gimmick_Button : SH_Gimmick
 {
+    public bool on;
+    protected override void Reloading()
+    {
+        base.Reloading();
+    }
     protected override IEnumerator ReloadEvent()
     {
-        hasActive = false;
+        on = false;
         return base.ReloadEvent();
     }
 
     protected override IEnumerator ActiveEffect()
     {
-        if (hasActive)
+        if (on)
         {
-            hasActive = false;
-            StateChange(SH_GimmickState.Waiting, true);
+            on = false;
+            Waiting();
         }
         else
         {
-            hasActive = true;
-            StateChange(SH_GimmickState.Active);
+            on = true;
         }
         yield return null;
+    }
+
+    protected override void OnCollisionEnter()
+    {
+        if (gimmickState != SH_GimmickState.Active)
+            base.OnCollisionEnter();
+    }
+    protected override void OnCollisionExit()
+    {
+        if (gimmickState != SH_GimmickState.Active)
+            base.OnCollisionExit();
     }
 }

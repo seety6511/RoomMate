@@ -31,7 +31,7 @@ public class SH_Gimmick_Dial : SH_Gimmick
     {
         base.Awake();
         dig = 360 / maxValue;
-        hasActive = true;
+        isActive = true;
         originRot = transform.rotation;
         originValue = currentValue;
     }

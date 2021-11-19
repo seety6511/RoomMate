@@ -4,10 +4,10 @@ using UnityEngine;
 
 public enum SH_GimmickState
 {
-    Active,     //단발성
-    Activating, //연속성
     Waiting,    //연속성
     Hovering,   //연속성
+    Active,     //단발성
+    Activating, //연속성
     Clear,      //단발성
     Disable,    //단발성
     Reload,     //연속성
@@ -24,7 +24,7 @@ public class SH_Gimmick : MonoBehaviour
 {
     public SH_GimmickState gimmickState;
     public List<SH_Gimmick> password = new List<SH_Gimmick>();    //이 리스트의 모든 기믹이 clear 상태여야 이 기믹을 조작가능하다.
-    public bool hasActive;          //현재 활성화 상태인가?
+    public bool isActive;           //현재 활성화 상태인가?
     public bool keepState;          //활성화 상태를 유지 할것인가?
     public float activeCoolTime;    //한번 작동시킨후 다시 작동시키기 위해 필요한 시간
     public float reloadTime;        //조작이 중단되었을때, 원상태로 돌아가기까지 필요한 시간
@@ -48,7 +48,7 @@ public class SH_Gimmick : MonoBehaviour
         soundController.Init();
         modelController.Init();
         effectController.Init();
-        hasActive = false;
+        isActive = false;
     }
 
     protected virtual void Start()
@@ -70,7 +70,7 @@ public class SH_Gimmick : MonoBehaviour
         if (keepState)
             return;
 
-        if (!hasActive)
+        if (!isActive)
             return;
 
         Reloading();
@@ -89,7 +89,7 @@ public class SH_Gimmick : MonoBehaviour
     //재장전시 발생하는 이벤트
     protected virtual IEnumerator ReloadEvent()
     {
-        StateChange(SH_GimmickState.Waiting, true);
+        StateChange(SH_GimmickState.Waiting);
         yield return null;
     }
     #endregion
@@ -139,8 +139,8 @@ public class SH_Gimmick : MonoBehaviour
                 break;
 
             case SH_GimmickState.Hovering:
-                if (gimmickState != SH_GimmickState.Waiting)
-                    return;
+                //if (gimmickState != SH_GimmickState.Waiting)
+                //    return;
                 break;
 
             case SH_GimmickState.Clear:
@@ -166,7 +166,6 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void Activating()
     {
-        Debug.Log("Activating");
         StateChange(SH_GimmickState.Activating);
         StateUpdate();
         StartCoroutine(ActivatingEffect());
@@ -180,27 +179,21 @@ public class SH_Gimmick : MonoBehaviour
     protected virtual void Disable()
     {
         StateChange(SH_GimmickState.Disable);
-        StateUpdate();
     }
 
     protected virtual void Clear()
     {
-        Debug.Log("Clear");
         StateChange(SH_GimmickState.Clear);
-        StateUpdate();
     }
 
     protected virtual void Waiting()
     {
         StateChange(SH_GimmickState.Waiting);
-        StateUpdate();
     }
 
     protected virtual void Hovering()
     {
-        Debug.Log("Hovering : " + name);
         StateChange(SH_GimmickState.Hovering);
-        StateUpdate();
     }
 
     bool triggerStay;
@@ -314,7 +307,7 @@ public class SH_Gimmick : MonoBehaviour
 
         activeCoolTimer = 0f;
         Debug.Log("Active");
-        hasActive = true;
+        isActive = true;
         StateChange(SH_GimmickState.Active);
         StartCoroutine(ActiveEffect());
         StartCoroutine(ActiveCoolTimeCheck());

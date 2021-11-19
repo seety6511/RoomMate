@@ -12,7 +12,7 @@ public class SH_Gimmick_Roller : SH_Gimmick
     protected override void Awake()
     {
         base.Awake();
-        hasActive = true;
+        isActive = true;
         origin = transform.rotation;
     }
 
