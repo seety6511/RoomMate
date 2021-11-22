@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class NSR_HandPlayer : MonoBehaviour
 {
-    public Transform head;
     void Update()
     {
         if (NSR_PlayerManager.instance.bodyControll) return;
-
-        Quaternion headRot = head.localRotation;
-        headRot.z = 0;
-        headRot.x = 0;
-        transform.localRotation = headRot;
 
         NSR_PlayerManager.instance.HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
         NSR_PlayerManager.instance.HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
@@ -71,7 +65,7 @@ public class NSR_HandPlayer : MonoBehaviour
                 {
                     trCatched = hit.transform;
                     trCatched.parent = hand;
-                    trCatched.position = hand.position;
+                    trCatched.localPosition = new Vector3(0.04f,0, 0.04f);
                     trCatched.GetComponent<Rigidbody>().isKinematic = true;
                 }
             }

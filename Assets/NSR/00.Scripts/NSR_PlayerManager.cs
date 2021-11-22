@@ -29,12 +29,12 @@ public class NSR_PlayerManager : MonoBehaviour
         if (bodyControll)
         {
             body.parent = bodyPlayer;
-            body.localPosition = new Vector3(0, 1.6f, 0);
+            body.localPosition = new Vector3(0, 0, 0);
         }
         else
         {
             body.parent = handPlayer;
-            body.localPosition = new Vector3(0, 1.6f, 0);
+            body.localPosition = new Vector3(0, 0, 0);
         }
     }
 }

@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class NSR_BodyPlayer : MonoBehaviour
 {
-    public Transform head;
     void Update()
     {
         if (NSR_PlayerManager.instance.bodyControll == false) return;
-
-        Quaternion headRot = head.localRotation;
-        headRot.z = 0;
-        headRot.x = 0;
-        transform.localRotation = headRot;
 
         Move();
         Rotate();
@@ -23,8 +17,8 @@ public class NSR_BodyPlayer : MonoBehaviour
     void Move()
     {
         Vector2 hv = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
-        Vector3 dirH = transform.right * hv.x;
-        Vector3 dirV = transform.forward * hv.y;
+        Vector3 dirH = Camera.main.transform.right * hv.x;
+        Vector3 dirV = Camera.main.transform.forward * hv.y;
         Vector3 dir = dirH + dirV;
         dir.y = 0;
         dir.Normalize();
@@ -37,7 +31,6 @@ public class NSR_BodyPlayer : MonoBehaviour
     
     void Rotate()
     {
-        
         Vector2 thumb = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick, OVRInput.Controller.LTouch);
         float v = thumb.x;
 
@@ -45,7 +38,6 @@ public class NSR_BodyPlayer : MonoBehaviour
 
         transform.localEulerAngles = new Vector3(0, y, 0);
     }
-
     #endregion
 
 }
