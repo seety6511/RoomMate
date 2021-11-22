@@ -159,6 +159,21 @@ namespace DinoFracture
             get { return Instance._maxRunningFractures; }
         }
 
+        private static int EffectiveMaxRunningFractures
+        {
+            get
+            {
+                if (!Application.isPlaying)
+                {
+                    return 4;
+                }
+                else
+                {
+                    return MaxRunningFractures;
+                }
+            }
+        }
+
         private void OnDestroy()
         {
             if (_instance == this)
@@ -193,7 +208,7 @@ namespace DinoFracture
 
                 if (details.Asynchronous)
                 {
-                    if (MaxRunningFractures <= 0 || Instance._runningFractures.Count < MaxRunningFractures)
+                    if (EffectiveMaxRunningFractures <= 0 || Instance._runningFractures.Count < EffectiveMaxRunningFractures)
                     {
                         if (it.MoveNext())
                         {
@@ -260,7 +275,7 @@ namespace DinoFracture
 
             for (int i = 0; i < _pendingFractures.Count; i++)
             {
-                if (_runningFractures.Count < _maxRunningFractures)
+                if (_runningFractures.Count < EffectiveMaxRunningFractures)
                 {
                     _runningFractures.Add(_pendingFractures[i]);
                     _pendingFractures.RemoveAt(i);

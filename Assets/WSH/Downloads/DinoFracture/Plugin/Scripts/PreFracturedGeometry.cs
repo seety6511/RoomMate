@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading;
 using UnityEngine;
-using System.Collections;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -100,6 +98,7 @@ namespace DinoFracture
             details.Asynchronous = !Application.isPlaying;  // Async in editor to prevent hangs, sync while playing
             details.FractureCenter = localPoint;
             details.FractureRadius = FractureRadius;
+            details.RandomSeed = RandomSeed;
 
             _runningFracture = Fracture(details, false);
             _completionCallback = completedCallback;
@@ -123,12 +122,15 @@ namespace DinoFracture
 
         public void StopRunningFracture()
         {
+            if (_runningFracture != null)
+            {
 #if UNITY_EDITOR
-            EditorApplication.update -= EditorUpdate;
+                EditorApplication.update -= EditorUpdate;
 #endif
-            _runningFracture.StopFracture();
-            _runningFracture = null;
-            StopFracture();
+                _runningFracture.StopFracture();
+                _runningFracture = null;
+                StopFracture();
+            }
         }
 
         private void EditorUpdate()

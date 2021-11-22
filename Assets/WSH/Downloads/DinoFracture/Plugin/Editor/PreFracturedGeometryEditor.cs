@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace DinoFracture.Editor
 {
     [CustomEditor(typeof(PreFracturedGeometry))]
+    [CanEditMultipleObjects()]
     public class PreFracturedGeometryEditor : UnityEditor.Editor
     {
         private bool _waitForClick = false;
@@ -13,28 +17,28 @@ namespace DinoFracture.Editor
         private GUIStyle _centerStyle;
         private GUIStyle _buttonStyle;
 
+        private PreFracturedGeometryEditorFractureProgress _progress;
+        private static PreFracturedGeometryEditorFractureData _fractureData;
+
         public override void OnInspectorGUI()
         {
+            EnsureProgressData();
+
             base.OnInspectorGUI();
 
-            PreFracturedGeometry geom = (PreFracturedGeometry)target;
-
-            if (geom.RunningFracture == null)
+            if (!IsRunningFractures())
             {
                 if (GUILayout.Button("Create Fractures"))
                 {
-                    geom.GenerateFractureMeshes(SaveToDisk);
+                    CreateFractureData();
+                    GenerateFractures();
                 }
+
+                EditorUtility.ClearProgressBar();
             }
             else
             {
-                Color color = GUI.backgroundColor;
-                GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Stop Fracture"))
-                {
-                    geom.StopRunningFracture();
-                }
-                GUI.backgroundColor = color;
+                _progress.DisplayGui(_fractureData);
             }
 
             if (_waitForClick)
@@ -55,10 +59,11 @@ namespace DinoFracture.Editor
             }
             else
             {
-                if (geom.RunningFracture == null)
+                if (!IsRunningFractures())
                 {
                     if (GUILayout.Button("Create Fractures at Point"))
                     {
+                        CreateFractureData();
                         _waitForClick = true;
                     }
                 }
@@ -68,8 +73,86 @@ namespace DinoFracture.Editor
             {
                 if (GUILayout.Button("Crumble"))
                 {
+                    CreateFractureData();
+                    GenerateFractures();
+                }
+            }
+        }
+
+        private void EnsureProgressData()
+        {
+            if (_progress == null)
+            {
+                _progress = new PreFracturedGeometryEditorFractureProgress();
+                _progress.OnCanceled += StopRunningFractures;
+            }
+        }
+
+        private void CreateFractureData()
+        {
+            _fractureData = new PreFracturedGeometryEditorFractureData();
+
+            foreach (PreFracturedGeometry geom in targets)
+            {
+                _fractureData.GeomList.Add(geom);
+            }
+
+            _fractureData.FinalizeList();
+        }
+
+        private void ClearFractureData()
+        {
+            _fractureData = null;
+        }
+
+        private bool IsRunningFractures()
+        {
+            if (_fractureData == null)
+            {
+                return false;
+            }
+
+            foreach (PreFracturedGeometry geom in _fractureData.GeomList)
+            {
+                if (geom.RunningFracture != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void GenerateFractures(Vector3 localPoint = default)
+        {
+            if (Application.isPlaying)
+            {
+                foreach (PreFracturedGeometry geom in _fractureData.GeomList)
+                {
                     geom.Fracture();
                 }
+            }
+            else
+            {
+                _progress.OnFracturesStarted();
+
+                foreach (PreFracturedGeometry geom in _fractureData.GeomList)
+                {
+                    geom.GenerateFractureMeshes(localPoint, (g) => { SaveToDisk(_fractureData); });
+                }
+            }
+        }
+
+        private void StopRunningFractures()
+        {
+            if (_fractureData != null)
+            {
+                foreach (PreFracturedGeometry geom in _fractureData.GeomList)
+                {
+                    geom.StopRunningFracture();
+                }
+
+                ClearFractureData();
             }
         }
 
@@ -100,85 +183,218 @@ namespace DinoFracture.Editor
                     HandleUtility.AddDefaultControl(0);
                 }
 
-                PreFracturedGeometry geom = (PreFracturedGeometry)target;
-
-                if (Event.current.type == EventType.MouseDown)
+                foreach (PreFracturedGeometry geom in _fractureData.GeomList)
                 {
-                    Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-                    _waitForClick = false;
-                    Collider collider = geom.GetComponent<Collider>();
-                    if (collider != null)
+                    if (Event.current.type == EventType.MouseDown)
                     {
-                        RaycastHit hit;
-                        if (collider.Raycast(ray, out hit, 1000000000.0f))
+                        Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+                        _waitForClick = false;
+                        Collider collider = geom.GetComponent<Collider>();
+                        if (collider != null)
                         {
-                            Vector3 localPoint = geom.transform.worldToLocalMatrix.MultiplyPoint(hit.point);
-                            geom.GenerateFractureMeshes(localPoint, SaveToDisk);
+                            RaycastHit hit;
+                            if (collider.Raycast(ray, out hit, 1000000000.0f))
+                            {
+                                Vector3 localPoint = geom.transform.worldToLocalMatrix.MultiplyPoint(hit.point);
+
+                                GenerateFractures(localPoint);
+
+                                break;
+                            }
                         }
                     }
-                }
-                else if (Event.current.type == EventType.MouseMove)
-                {
-                    SceneView.RepaintAll();
+                    else if (Event.current.type == EventType.MouseMove)
+                    {
+                        SceneView.RepaintAll();
+                    }
                 }
             }
         }
 
-        private void SaveToDisk(PreFracturedGeometry geom)
+        private void SaveToDisk(PreFracturedGeometryEditorFractureData data)
         {
-            int choice = EditorUtility.DisplayDialogComplex("Save meshes to disk?",
-                "Would you like to save the meshes to disk?  This is necessary to be part of a prefab.",
+            bool complete = data.OnComplete();
+
+            _progress.OnFractureComplete(data);
+
+            if (!complete)
+            {
+                return;
+            }
+            else
+            {
+                _progress.Hide();
+            }
+
+            int choice = EditorUtility.DisplayDialogComplex("Save fractured meshes to disk?",
+                "Would you like to save the fractured meshes to disk?  This is necessary to be part of a prefab.",
                 "Clear Folder and Save", "Save, no Clear", "Don't Save");
 
             if (choice < 2)
             {
-                string folder = EditorUtility.SaveFolderPanel("Asset Folder", "Assets", geom.gameObject.name);
+                string folder = EditorUtility.SaveFolderPanel("Asset Folder", "Assets", "FracturedMeshes");
                 if (!String.IsNullOrEmpty(folder) && folder.StartsWith(Application.dataPath))
                 {
+                    // Delete all the assets first in case multiple objects have the same name
                     if (choice == 0)
                     {
-                        // Delete the contents of the folder
-                        DirectoryInfo dir = new DirectoryInfo(folder);
-                        foreach (FileInfo file in dir.GetFiles())
+                        foreach (PreFracturedGeometry geom in data.GeomList)
                         {
-                            string baseName = "";
-                            if (file.Name.EndsWith(".asset"))
-                            {
-                                baseName = file.Name.Substring(0, file.Name.Length - ".asset".Length);
-                            }
-                            if (!String.IsNullOrEmpty(baseName))
-                            {
-                                try
-                                {
-                                    new Guid(baseName);
+                            string saveFolder = Path.Combine(folder, geom.gameObject.name);
 
-                                    // Guid resolves, delete the file since it is probably one we created.
-                                    AssetDatabase.DeleteAsset("Assets" +
-                                                              file.FullName.Substring(Application.dataPath.Length));
-                                }
-                                catch (Exception)
+                            // Delete the contents of the folder
+                            DirectoryInfo dir = new DirectoryInfo(saveFolder);
+                            if (dir.Exists)
+                            {
+                                foreach (FileInfo file in dir.GetFiles())
                                 {
+                                    string baseName = "";
+                                    if (file.Name.EndsWith(".asset"))
+                                    {
+                                        baseName = file.Name.Substring(0, file.Name.Length - ".asset".Length);
+                                    }
+                                    if (!String.IsNullOrEmpty(baseName))
+                                    {
+                                        try
+                                        {
+                                            new Guid(baseName);
+
+                                            // Guid resolves, delete the file since it is probably one we created.
+                                            AssetDatabase.DeleteAsset("Assets" +
+                                                                      file.FullName.Substring(Application.dataPath.Length));
+                                        }
+                                        catch (Exception)
+                                        {
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
 
-                    // Create a new asset for each mesh
-                    folder = folder.Substring(Application.dataPath.Length);
-                    for (int i = 0; i < geom.GeneratedPieces.transform.childCount; i++)
+                    foreach (PreFracturedGeometry geom in data.GeomList)
                     {
-                        MeshFilter mf = geom.GeneratedPieces.transform.GetChild(i).GetComponent<MeshFilter>();
-                        if (mf != null && mf.sharedMesh != null)
-                        {
-                            AssetDatabase.CreateAsset(mf.sharedMesh,
-                                String.Format("Assets{0}/{1}.asset", folder, Guid.NewGuid().ToString("B")));
-                        }
-                    }
+                        string saveFolder = Path.Combine(folder, geom.gameObject.name);
 
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
+                        // Make sure the directory exists
+                        {
+                            DirectoryInfo dir = new DirectoryInfo(saveFolder);
+                            if (!dir.Exists)
+                            {
+                                dir.Create();
+                            }
+                        }
+
+                        // Create a new asset for each mesh
+                        saveFolder = saveFolder.Substring(Application.dataPath.Length + 1);
+                        for (int i = 0; i < geom.GeneratedPieces.transform.childCount; i++)
+                        {
+                            MeshFilter mf = geom.GeneratedPieces.transform.GetChild(i).GetComponent<MeshFilter>();
+                            if (mf != null && mf.sharedMesh != null)
+                            {
+                                string assetPath = Path.Combine("Assets", saveFolder, String.Format("{0}.asset", Guid.NewGuid().ToString("B")));
+                                assetPath = assetPath.Replace('\\', '/');
+
+                                AssetDatabase.CreateAsset(mf.sharedMesh, assetPath);
+                            }
+                        }
+
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
+                    }
                 }
             }
+
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+            ClearFractureData();
+        }
+    }
+
+    class PreFracturedGeometryEditorFractureData
+    {
+        public readonly List<PreFracturedGeometry> GeomList = new List<PreFracturedGeometry>();
+
+        private int _countLeft;
+
+        public int ActiveCount
+        {
+            get { return _countLeft; }
+        }
+
+        public void FinalizeList()
+        {
+            _countLeft = GeomList.Count;
+        }
+
+        public bool OnComplete()
+        {
+            return System.Threading.Interlocked.Decrement(ref _countLeft) == 0;
+        }
+    }
+
+    class PreFracturedGeometryEditorFractureProgress
+    {
+        public event Action OnCanceled;
+
+#if UNITY_2020_1_OR_NEWER
+        public int _progressId;
+#endif
+
+        private void Cancel()
+        {
+            if (OnCanceled != null)
+            {
+                OnCanceled();
+            }
+
+            Hide();
+        }
+
+        public void DisplayGui(PreFracturedGeometryEditorFractureData data)
+        {
+#if UNITY_2020_1_OR_NEWER
+            Color color = GUI.backgroundColor;
+            GUI.backgroundColor = Color.red;
+
+            if (GUILayout.Button("Stop Fracturing"))
+            {
+                Cancel();
+            }
+            GUI.backgroundColor = color;
+#else
+            int totalCount = data.GeomList.Count;
+            int completedCount = totalCount - data.ActiveCount;
+            if (EditorUtility.DisplayCancelableProgressBar("Fracturing Objects", String.Format("Completed ({0} / {1})", completedCount, totalCount), (float)completedCount / (float)totalCount))
+            {
+                Cancel();
+            }
+#endif
+        }
+
+        public void OnFracturesStarted()
+        {
+#if UNITY_2020_1_OR_NEWER
+            _progressId = Progress.Start("Fracturing Objects", null, Progress.Options.Synchronous);
+#endif
+        }
+
+        public void OnFractureComplete(PreFracturedGeometryEditorFractureData data)
+        {
+#if UNITY_2020_1_OR_NEWER
+            if (data != null)
+            {
+                int totalCount = data.GeomList.Count;
+                int completedCount = totalCount - data.ActiveCount;
+                Progress.Report(_progressId, completedCount, totalCount, String.Format("Completed ({0} / {1})", completedCount, totalCount));
+            }
+#endif
+        }
+
+        public void Hide()
+        {
+#if UNITY_2020_1_OR_NEWER
+            Progress.Remove(_progressId);
+#endif
         }
     }
 }

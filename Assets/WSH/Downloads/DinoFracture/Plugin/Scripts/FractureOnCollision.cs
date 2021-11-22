@@ -40,12 +40,8 @@ namespace DinoFracture
 
         private void OnCollisionEnter(Collision col)
         {
-            if (col.gameObject.layer != LayerMask.NameToLayer("Broker"))
-                return;
-
             if (col.contacts.Length > 0)
             {
-
                 _impactBody = col.rigidbody;
                 _impactMass = (col.rigidbody != null) ? col.rigidbody.mass : 1.0f;
                 _impactVelocity = col.relativeVelocity;

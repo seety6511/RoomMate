@@ -34,6 +34,7 @@ namespace DinoFracture
             details.FractureCenter = localPos;
             details.FractureRadius = FractureRadius;
             details.Asynchronous = Asynchronous;
+            details.RandomSeed = RandomSeed;
 
             return Fracture(details, true);
         }

@@ -86,6 +86,12 @@ namespace DinoFracture
         /// </summary>
         public bool DistributeMass = true;
 
+        /// <summary>
+        /// The random seed to use when initiating the fracture. If set to zero, then
+        /// the system clock will be used to create a random seed.
+        /// </summary>
+        public int RandomSeed = 0;
+
         private bool _processingFracture = false;
 
         /// <summary>
