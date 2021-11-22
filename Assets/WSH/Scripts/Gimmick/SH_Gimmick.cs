@@ -30,6 +30,9 @@ public class SH_Gimmick : MonoBehaviour
     public float reloadTime;        //조작이 중단되었을때, 원상태로 돌아가기까지 필요한 시간
     protected float reloadTimer;
 
+    public OVRInput.Button vrKey; //이 버튼에만 작동한다.(vr)
+    public KeyCode pcKey;    //이 버튼에만 작동한다(pc)
+
     SH_Gimmick_SoundController soundController;
     SH_Gimmick_EffectController effectController;
     SH_Gimmick_ModelStateMachine modelController;
@@ -38,9 +41,7 @@ public class SH_Gimmick : MonoBehaviour
     //기믹의 기본 초기화
     protected virtual void Awake()
     {
-        gimmickState = SH_GimmickState.Waiting;
         activeCoolTimeCheck = true;
-
         soundController = GetComponent<SH_Gimmick_SoundController>();
         effectController = GetComponent<SH_Gimmick_EffectController>();
         modelController = GetComponent<SH_Gimmick_ModelStateMachine>();
@@ -49,6 +50,7 @@ public class SH_Gimmick : MonoBehaviour
         modelController.Init();
         effectController.Init();
         isActive = false;
+        StateUpdate();
     }
 
     protected virtual void Start()
@@ -62,6 +64,10 @@ public class SH_Gimmick : MonoBehaviour
             case SH_GimmickState.Waiting:
                 Waiting();
                 break;
+
+            case SH_GimmickState.Disable:
+                Disable();
+                return;
         }
 
         if (gimmickState == SH_GimmickState.Waiting || gimmickState == SH_GimmickState.Hovering)
@@ -72,7 +78,6 @@ public class SH_Gimmick : MonoBehaviour
 
         if (!isActive)
             return;
-
         Reloading();
     }
 
@@ -103,6 +108,9 @@ public class SH_Gimmick : MonoBehaviour
     /// <param name="force"></param>
     protected void StateChange(SH_GimmickState state, bool force = false)
     {
+        if (gimmickState == SH_GimmickState.Disable)
+            return;
+
         if (force)
         {
             gimmickState = state;
@@ -201,6 +209,9 @@ public class SH_Gimmick : MonoBehaviour
     bool alreadyInputWaiting;
     IEnumerator InputWaiting()
     {
+        if (gimmickState == SH_GimmickState.Disable)
+            yield break;
+
         if (!triggerStay)
             yield break;
 
@@ -212,18 +223,24 @@ public class SH_Gimmick : MonoBehaviour
         float inputTimer = 0f;
         while (triggerStay)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
+            if(Input.GetKeyDown(pcKey))
                 Active();
-            }
-            else if (Input.GetMouseButton(0))
+            else if(Input.GetKey(pcKey))
+                inputTimer += Time.deltaTime;
+
+            if (OVRInput.GetDown(vrKey))
+                Active();
+            else if (OVRInput.Get(vrKey))
                 inputTimer += Time.deltaTime;
 
             if (inputTime <= inputTimer)
             {
                 Activating();
 
-                if (Input.GetMouseButtonUp(0))
+                if (Input.GetKeyUp(pcKey))
+                    break;
+
+                if (OVRInput.GetUp(vrKey))
                     break;
             }
             yield return null;
@@ -234,37 +251,42 @@ public class SH_Gimmick : MonoBehaviour
     #endregion
 
     #region Physhics
-    protected virtual void OnTriggerEnter()
+
+    protected virtual void OnTriggerEnter(Collider col)
     {
         triggerStay = true;
-        Hovering();
+        if (gimmickState != SH_GimmickState.Active)
+            Hovering();
     }
 
-    protected virtual void OnTriggerStay()
+    protected virtual void OnTriggerStay(Collider col)
     {
         triggerStay = true;
         StartCoroutine(InputWaiting());
     }
 
-    protected virtual void OnTriggerExit()
+    protected virtual void OnTriggerExit(Collider col)
     {
         triggerStay = false;
-        Waiting();
+        if (gimmickState != SH_GimmickState.Active)
+            Waiting();
     }
 
-    protected virtual void OnCollisionEnter()
+    protected virtual void OnCollisionEnter(Collision col)
     {
-        Hovering();
+        if (gimmickState != SH_GimmickState.Active)
+            Hovering();
     }
 
-    protected virtual void OnCollisionStay()
+    protected virtual void OnCollisionStay(Collision col)
     {
     }
 
-    protected virtual void OnCollisionExit()
+    protected virtual void OnCollisionExit(Collision col)
     {
         triggerStay = false;
-        Waiting();
+        if (gimmickState != SH_GimmickState.Active)
+            Waiting();
     }
     #endregion
 
@@ -306,7 +328,7 @@ public class SH_Gimmick : MonoBehaviour
             yield break;
 
         activeCoolTimer = 0f;
-        Debug.Log("Active");
+        //Debug.Log("Active");
         isActive = true;
         StateChange(SH_GimmickState.Active);
         StartCoroutine(ActiveEffect());

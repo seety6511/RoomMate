@@ -73,6 +73,45 @@ namespace DinoFracture
                 }
             }
         }
+        
+        public void Fracture(Collision col, LayerMask layer)
+        {
+            if (col.gameObject.layer != layer)
+                return;
+
+            if (col.contacts.Length > 0)
+            {
+                _impactBody = col.rigidbody;
+                _impactMass = (col.rigidbody != null) ? col.rigidbody.mass : 1.0f;
+                _impactVelocity = col.relativeVelocity;
+
+                Rigidbody rb = GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    // Always have the impact velocity point in our moving direction
+                    _impactVelocity *= Mathf.Sign(Vector3.Dot(rb.velocity, _impactVelocity));
+                }
+
+                float mag = _impactVelocity.magnitude;
+                Vector3 force = 0.5f * _impactMass * _impactVelocity * mag;
+
+                if ((ForceThreshold * ForceThreshold) <=
+                    force.sqrMagnitude)
+                {
+                    _impactPoint = Vector3.zero;
+
+                    for (int i = 0; i < col.contacts.Length; i++)
+                    {
+                        _impactPoint += col.contacts[i].point;
+                    }
+                    _impactPoint *= 1.0f / col.contacts.Length;
+
+                    Vector3 localPoint = transform.worldToLocalMatrix.MultiplyPoint(_impactPoint);
+
+                    GetComponent<FractureGeometry>().Fracture(localPoint);
+                }
+            }
+        }
 
         private void OnFracture(OnFractureEventArgs args)
         {
