@@ -18,7 +18,7 @@ public class Draw : MonoBehaviour
     //¸®½ºÆ®
     public List<Line> Lines;
     public Color PenColor;
-    bool isDraw = true;
+    public bool isDraw = true;
     GameObject now;
     Vector3 pos;
 
