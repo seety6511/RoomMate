@@ -2,25 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct Line
 {
     public GameObject lineObj;
-    public List<Vector3> vectors;
+    public List<Transform> BoxVectors;
 }
-
 
 public class Draw : MonoBehaviour
 {
     //프리팹
-    public GameObject Pencil_Trail;
     public GameObject Pencil_Line;
+    public GameObject Bcollider;
 
-    //라인들을 담아 둘 구조체 리스트
+    //리스트
     public List<Line> Lines;
-
-    //
-    public List<GameObject> Pencils;
-    public List<Vector3> Pencilvectors;
     public Color PenColor;
     bool isDraw = true;
     GameObject now;
@@ -49,7 +45,12 @@ public class Draw : MonoBehaviour
                     dot.GetComponent<LineRenderer>().startColor = PenColor;
                     dot.GetComponent<LineRenderer>().endColor = PenColor;
                     dot.GetComponent<LineRenderer>().SetPosition(0, hitInfo.point + hitInfo.normal * 0.01f);
-                    Pencils.Add(dot);
+
+                    Line line = new Line();
+                    line.lineObj = dot;
+                    line.BoxVectors = new List<Transform>();
+                    Lines.Add(line);
+
                     now = dot;
                 }
                 //지우는 중
@@ -82,20 +83,28 @@ public class Draw : MonoBehaviour
                         dot.GetComponent<LineRenderer>().startColor = PenColor;
                         dot.GetComponent<LineRenderer>().endColor = PenColor;
                         dot.GetComponent<LineRenderer>().SetPosition(0, hitInfo.point + hitInfo.normal * 0.01f);
-                        Pencils.Add(dot);
+
+                        Line line = new Line();
+                        line.lineObj = dot;
+                        line.BoxVectors = new List<Transform>();
+                        Lines.Add(line);
+
                         now = dot;
                     }
                     if (Vector3.Distance(pos, hitInfo.point) > 0.001f)
                     {
+                        //라인 그리기
                         LineRenderer tmp = now.GetComponent<LineRenderer>();
                         tmp.positionCount++;
                         tmp.SetPosition(tmp.positionCount-1, hitInfo.point + hitInfo.normal * 0.01f);
-                        Vector3 pos = tmp.GetPosition(tmp.positionCount - 1) - tmp.GetPosition(0);
-                        BoxCollider box = now.AddComponent<BoxCollider>();
-                        box.center = pos;
-                        box.size = new Vector3(0.01f, 0.01f, 0.001f);
-                        Pencilvectors.Add(box.center);
 
+                        //박스 콜라이더 추가하기
+                        GameObject box_collider = Instantiate(Bcollider);
+                        box_collider.transform.position = tmp.GetPosition(tmp.positionCount - 1);
+                        box_collider.transform.forward = gameObject.transform.forward;
+                        box_collider.transform.parent = now.transform;
+
+                        Lines[Lines.Count-1].BoxVectors.Add(box_collider.transform);
                     }                    
                     pos = hitInfo.point;
                 }
@@ -112,7 +121,7 @@ public class Draw : MonoBehaviour
                 if (hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Pencil"))
                 {
                     if (!isDraw)
-                        Destroy(hitInfo.transform.gameObject);
+                        Destroy(hitInfo.transform.parent.gameObject);
                 }
             }
         }
@@ -121,22 +130,18 @@ public class Draw : MonoBehaviour
     public void resetPos()
     {
         //이동하고 나서 다시 그려주는 함수
-        foreach(GameObject a in Pencils)
+        foreach(Line a in Lines)
         {
-            LineRenderer line = a.GetComponent<LineRenderer>();
-
-            //line.SetPosition(0, tmp);
-            for (int i = 1; i < line.positionCount; i++)
+            if(a.lineObj != null)
             {
-                Vector3 tmp = transform.position;
-                tmp.x += Pencilvectors[i].x + a.transform.position.x;
-                tmp.y += Pencilvectors[i].y + a.transform.position.y;
-                tmp.z += Pencilvectors[i].z + a.transform.position.z;
+                LineRenderer line = a.lineObj.GetComponent<LineRenderer>();
 
-
-                line.SetPosition(i, tmp);
+                line.SetPosition(0, a.lineObj.transform.position);
+                for (int i = 1; i < line.positionCount; i++)
+                {
+                    line.SetPosition(i, a.BoxVectors[i-1].position);
+                }
             }
-
         }
     }
 
@@ -167,11 +172,11 @@ public class Draw : MonoBehaviour
 
     public void EaraseAll()
     {
-        foreach (GameObject lines in Pencils)
+        foreach (Line lines in Lines)
         {
-            Destroy(lines);
+            Destroy(lines.lineObj);
         }
-        Pencils.Clear();
+        Lines.Clear();
     }
 
     public void isDrawing()
