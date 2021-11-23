@@ -19,6 +19,12 @@ public class NSR_PlayerManager : MonoBehaviourPun
     public Transform bodyPlayer;
     public Transform handPlayer;
 
+    private void Start()
+    {
+        PhotonNetwork.SendRate = 50;
+        PhotonNetwork.SerializationRate = 50;
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
