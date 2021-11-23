@@ -13,14 +13,12 @@ public class NSR_Head : MonoBehaviourPun, IPunObservable
         //만약에 쓸 수 있는 상태라면
         if (stream.IsWriting)
         {
-            print(transform.localPosition);
             stream.SendNext(transform.localPosition);
             stream.SendNext(transform.localRotation);
         }
         //만약에 읽을 수 있는 상태라면
         if (stream.IsReading)
         {
-            print(receivePos);
             receivePos = (Vector3)stream.ReceiveNext();
             receiveRot = (Quaternion)stream.ReceiveNext();
         }
