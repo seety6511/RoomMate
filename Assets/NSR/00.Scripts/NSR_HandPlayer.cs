@@ -1,26 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class NSR_HandPlayer : MonoBehaviour
+public class NSR_HandPlayer : MonoBehaviourPun
 {
+    bool HandDown_L;
+    bool HandUp_L;
+    bool HandDown_R;
+    bool HandUp_R;
     void Update()
     {
-        if (NSR_PlayerManager.instance.bodyControll) return;
+        if (NSR_PlayerManager.instance.bodyControl) return;
 
-        NSR_PlayerManager.instance.HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
-        NSR_PlayerManager.instance.HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
-        NSR_PlayerManager.instance.HandDown_R = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
-        NSR_PlayerManager.instance.HandUp_R = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+        HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+        HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+        HandDown_R = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+        HandUp_R = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
 
         DrawLine(left_Hand, line_left);
         DrawLine(right_Hand, line_right);
-        Catch(left_Hand, ref trCatched_Left, NSR_PlayerManager.instance.HandDown_L);
-        Catch(right_Hand, ref trCatched_Right, NSR_PlayerManager.instance.HandDown_R);
-        Drop(true, ref trCatched_Left, NSR_PlayerManager.instance.HandUp_L);
-        Drop(false, ref trCatched_Right, NSR_PlayerManager.instance.HandUp_R);
-        OpenDoor(left_Hand, NSR_PlayerManager.instance.HandDown_L);
-        OpenDoor(right_Hand, NSR_PlayerManager.instance.HandDown_R);
+        Catch(left_Hand, ref trCatched_Left, HandDown_L);
+        Catch(right_Hand, ref trCatched_Right, HandDown_R);
+        Drop(true, ref trCatched_Left, HandUp_L);
+        Drop(false, ref trCatched_Right, HandUp_R);
+        OpenDoor(left_Hand, HandDown_L);
+        OpenDoor(right_Hand, HandDown_R);
     }
 
     public Transform left_Hand;

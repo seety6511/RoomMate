@@ -36,15 +36,11 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
 
         PhotonNetwork.JoinRoom("게임장");
     }
-    public GameObject gameManager;
     //방 입장 성공시
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
         print("방입장 완료");
-
-        //게임메니저 켜기
-        gameManager.SetActive(true);
     }
 
     //방 입장 실패시
@@ -52,6 +48,11 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
     {
         base.OnJoinRoomFailed(returnCode, message);
         print("방입장 실패 : " + returnCode + ", " + message);
+
+        //===============================================================================
+        NSR_PlayerManager.instance.bodyControl = !NSR_PlayerManager.instance.bodyControl;
+
+
 
         RoomOptions roomOptions = new RoomOptions();
         //인원수 제한

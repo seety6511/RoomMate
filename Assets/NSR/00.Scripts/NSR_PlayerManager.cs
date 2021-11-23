@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class NSR_PlayerManager : MonoBehaviour
+public class NSR_PlayerManager : MonoBehaviourPun
 {
     public static NSR_PlayerManager instance;
     private void Awake()
@@ -10,31 +11,39 @@ public class NSR_PlayerManager : MonoBehaviour
         if (instance == null) instance = this;
     }
 
-    public bool bodyControll;
+    // BodyPlayer 인지 HandPlayer 인지 결정하는 변수
+    public bool bodyControl;
+    //public PhotonView myPhotonView;
 
-    public Transform body;
-    public Transform head;
-    public Transform leftHand;
-    public Transform rightHand;
+    public Transform OVRCameraRig;
     public Transform bodyPlayer;
     public Transform handPlayer;
 
-    public bool HandDown_L;
-    public bool HandUp_L;
-    public bool HandDown_R;
-    public bool HandUp_R;
-
     void Update()
     {
-        if (bodyControll)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            body.parent = bodyPlayer;
-            body.localPosition = new Vector3(0, 0, 0);
+            photonView.RPC("ChangeControl", RpcTarget.All);
+        }
+
+        // 어떤 컨트롤 인지에 따른 OVRCameraRig의 부모 결정
+        if (bodyControl)
+        {
+            //myPhotonView = bodyPlayer.GetComponent<PhotonView>();
+            OVRCameraRig.parent = bodyPlayer;
+            OVRCameraRig.localPosition = new Vector3(0, 0, 0);
         }
         else
         {
-            body.parent = handPlayer;
-            body.localPosition = new Vector3(0, 0, 0);
+            //myPhotonView = handPlayer.GetComponent<PhotonView>();
+            OVRCameraRig.parent = handPlayer;
+            OVRCameraRig.localPosition = new Vector3(0, 0, 0);
         }
+    }
+
+    [PunRPC]
+    void ChangeControl()
+    {
+        bodyControl = !bodyControl;
     }
 }
