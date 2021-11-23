@@ -8,7 +8,7 @@ public class SH_Gimmick_Handle : SH_Gimmick
 {
     GameObject door;
     FixedJoint fj;
-    HingeJoint hj;
+    HingeJoint hinge;
     public SH_Direction axis;
     public float min;
     public float max;
@@ -16,21 +16,32 @@ public class SH_Gimmick_Handle : SH_Gimmick
     {
         base.Awake();
         door = transform.parent.gameObject;
+        door.isStatic = false;
         fj = GetComponent<FixedJoint>();
-        fj.connectedBody = door.GetComponent<Rigidbody>();
+        var a = door.GetComponent<Rigidbody>();
+        if (a == null)
+            a = door.AddComponent<Rigidbody>();
+        fj.connectedBody = a;
 
-        if (door.GetComponent<HingeJoint>() == null)
-            hj = door.AddComponent<HingeJoint>();
+        if (door.GetComponent<Collider>() != null)
+        {
+            door.GetComponent<Collider>().isTrigger = true;
+        }
+
+        hinge = door.GetComponent<HingeJoint>();
+        if (hinge == null)
+            hinge = door.AddComponent<HingeJoint>();
         else
         {
-            min = hj.limits.min;
-            max = hj.limits.max;
+            min = hinge.limits.min;
+            max = hinge.limits.max;
         }
-        
+        hinge.anchor = Vector3.zero;
+        hinge.useLimits = true;
         var limit = new JointLimits();
         limit.min = min;
         limit.max = max;
-        hj.limits = limit;
+        hinge.limits = limit;
 
         var x = 0;
         var y = 0;
@@ -59,6 +70,6 @@ public class SH_Gimmick_Handle : SH_Gimmick
                 break;
         }
 
-        hj.axis = new Vector3(x, y, 0);
+        hinge.axis = new Vector3(x, y, 0);
     }
 }

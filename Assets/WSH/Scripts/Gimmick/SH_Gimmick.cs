@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SH_Layer
+{
+    Gimmick,
+    Destroyer,
+    Interacter,
+}
+
 public enum SH_GimmickState
 {
     Waiting,    //연속성
@@ -9,7 +16,7 @@ public enum SH_GimmickState
     Active,     //단발성
     Activating, //연속성
     Clear,      //단발성
-    Disable,    //단발성
+    Disable,    //단발성. 이 상태면 아무 상호작용을 하지 않는다.
     Reload,     //연속성
 }
 
@@ -22,6 +29,7 @@ public enum SH_GimmickState
 [RequireComponent(typeof(SH_Gimmick_ModelStateMachine))]
 public class SH_Gimmick : MonoBehaviour
 {
+    public LayerMask interactiveLayer;  //이 레이어의 콜라이더로만 조작 가능하다. 기본값 : LayerMask.NameToLayer("Interacter")
     public SH_GimmickState gimmickState;
     public List<SH_Gimmick> password = new List<SH_Gimmick>();    //이 리스트의 모든 기믹이 clear 상태여야 이 기믹을 조작가능하다.
     public bool isActive;           //현재 활성화 상태인가?
@@ -30,8 +38,8 @@ public class SH_Gimmick : MonoBehaviour
     public float reloadTime;        //조작이 중단되었을때, 원상태로 돌아가기까지 필요한 시간
     protected float reloadTimer;
 
-    public OVRInput.Button vrKey; //이 버튼에만 작동한다.(vr)
-    public KeyCode pcKey;    //이 버튼에만 작동한다(pc)
+    public OVRInput.Button vrKey;   //이 버튼에만 작동한다.(vr)
+    public KeyCode pcKey;           //이 버튼에만 작동한다(pc)
 
     SH_Gimmick_SoundController soundController;
     SH_Gimmick_EffectController effectController;
@@ -50,6 +58,7 @@ public class SH_Gimmick : MonoBehaviour
         modelController.Init();
         effectController.Init();
         isActive = false;
+        interactiveLayer = LayerMask.NameToLayer(SH_Layer.Interacter.ToString());
         StateUpdate();
     }
 
@@ -254,6 +263,9 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider col)
     {
+        if (col.gameObject.layer != interactiveLayer)
+            return;
+
         triggerStay = true;
         if (gimmickState != SH_GimmickState.Active)
             Hovering();
@@ -261,12 +273,18 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void OnTriggerStay(Collider col)
     {
+        if (col.gameObject.layer != interactiveLayer)
+            return;
+
         triggerStay = true;
         StartCoroutine(InputWaiting());
     }
 
     protected virtual void OnTriggerExit(Collider col)
     {
+        if (col.gameObject.layer != interactiveLayer)
+            return;
+
         triggerStay = false;
         if (gimmickState != SH_GimmickState.Active)
             Waiting();
@@ -274,16 +292,24 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void OnCollisionEnter(Collision col)
     {
+        if (col.gameObject.layer != interactiveLayer)
+            return;
+
         if (gimmickState != SH_GimmickState.Active)
             Hovering();
     }
 
     protected virtual void OnCollisionStay(Collision col)
     {
+        if (col.gameObject.layer != interactiveLayer)
+            return;
     }
 
     protected virtual void OnCollisionExit(Collision col)
     {
+        if (col.gameObject.layer != interactiveLayer)
+            return;
+
         triggerStay = false;
         if (gimmickState != SH_GimmickState.Active)
             Waiting();
