@@ -39,10 +39,16 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        NSR_GameManager.instance.countPlayer += 1;
         print("방입장 완료");
 
+        photonView.RPC("CountPlayer", RpcTarget.AllBuffered);
         PhotonNetwork.LoadLevel("NSR_Scene");
+    }
+
+    [PunRPC]
+    void CountPlayer()
+    {
+        NSR_GameManager.instance.countPlayer += 1;
     }
 
     //방 입장 실패시
