@@ -41,14 +41,29 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         print("방입장 완료");
 
-        photonView.RPC("CountPlayer", RpcTarget.AllBuffered);
+        //if (NSR_GameManager.instance.bodyPlayer == false)
+        //{
+        //    photonView.RPC("BodyPlayerHere", RpcTarget.AllBuffered, true);
+        //}
+        //else if (NSR_GameManager.instance.handPlayer == false)
+        //{
+        //    photonView.RPC("HandPlayerHere", RpcTarget.AllBuffered, true);
+        //}
+
         PhotonNetwork.LoadLevel("NSR_Scene");
     }
 
+
     [PunRPC]
-    void CountPlayer()
+    void BodyPlayerHere(bool here)
     {
-        NSR_GameManager.instance.countPlayer += 1;
+        NSR_GameManager.instance.bodyPlayer = here;
+    }
+
+    [PunRPC]
+    void HandPlayerHere(bool here)
+    {
+        NSR_GameManager.instance.handPlayer = here;
     }
 
     //방 입장 실패시
