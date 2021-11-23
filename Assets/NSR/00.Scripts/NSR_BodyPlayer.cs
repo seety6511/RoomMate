@@ -14,8 +14,8 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, receivePos, 0.2f);
-            transform.localRotation = Quaternion.Lerp(transform.localRotation, receiveRot, 0.2f);
+            //transform.localPosition = Vector3.Lerp(transform.localPosition, receivePos, 0.2f);
+            //transform.localRotation = Quaternion.Lerp(transform.localRotation, receiveRot, 0.2f);
         }
     }
     

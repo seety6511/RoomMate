@@ -29,13 +29,11 @@ public class NSR_PlayerManager : MonoBehaviourPun
         // 어떤 컨트롤 인지에 따른 OVRCameraRig의 부모 결정
         if (bodyControl)
         {
-            //myPhotonView = bodyPlayer.GetComponent<PhotonView>();
             OVRCameraRig.parent = bodyPlayer;
             OVRCameraRig.localPosition = new Vector3(0, 0, 0);
         }
         else
         {
-            //myPhotonView = handPlayer.GetComponent<PhotonView>();
             OVRCameraRig.parent = handPlayer;
             OVRCameraRig.localPosition = new Vector3(0, 0, 0);
         }
@@ -44,6 +42,6 @@ public class NSR_PlayerManager : MonoBehaviourPun
     [PunRPC]
     void ChangeControl()
     {
-        bodyControl = !bodyControl;
+        bodyControl = !bodyControl; 
     }
 }
