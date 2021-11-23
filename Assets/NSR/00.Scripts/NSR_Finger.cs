@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class NSR_Finger : MonoBehaviour
 {
-    private void Start()
-    {
-        print(transform.gameObject.layer);
-    }
-
     public float speed = 5;
     private void OnTriggerEnter(Collider other)
     {

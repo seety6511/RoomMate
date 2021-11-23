@@ -13,7 +13,7 @@ public class NSR_VRPlayer : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             // NSR_GameManager 에 나의 photonViewv저장
-            NSR_GameManager.instance.myPhotonView = photonView;
+            //NSR_GameManager.instance.myPhotonView = photonView;
 
             // OVRCameraRig 켜기
             OVRCameraRig.SetActive(true);
@@ -28,7 +28,7 @@ public class NSR_VRPlayer : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            NSR_GameManager.instance.otherPhotonView = photonView;
+            //NSR_GameManager.instance.otherPhotonView = photonView;
         }
     }
     [PunRPC]

@@ -9,6 +9,9 @@ public class NSR_PlayerManager : MonoBehaviourPun
     private void Awake()
     {
         if (instance == null) instance = this;
+        else Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
     }
 
     // BodyPlayer 인지 HandPlayer 인지 결정하는 변수
@@ -21,10 +24,14 @@ public class NSR_PlayerManager : MonoBehaviourPun
 
     private void Start()
     {
-        PhotonNetwork.SendRate = 50;
-        PhotonNetwork.SerializationRate = 50;
-    }
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.SendRate = 50;
+            PhotonNetwork.SerializationRate = 50;
+        }
 
+        if (NSR_GameManager.instance.countPlayer > 1) bodyControl = !bodyControl;
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))

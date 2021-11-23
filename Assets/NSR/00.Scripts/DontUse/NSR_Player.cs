@@ -12,7 +12,7 @@ public class NSR_Player : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             // NSR_GameManager 에 나의 photonViewv저장
-            NSR_GameManager.instance.myPhotonView = photonView;
+            //NSR_GameManager.instance.myPhotonView = photonView;
 
             // 카메라 켜기
             mainCamera.SetActive(true);
