@@ -45,7 +45,7 @@ public class NSR_PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     void Update()
     {
         // 스페이스바 누르면 컨트롤 바꾸기
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch))
         {
             photonView.RPC("ChangeControl", RpcTarget.All);
         }

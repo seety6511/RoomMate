@@ -14,8 +14,8 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            //transform.localPosition = Vector3.Lerp(transform.localPosition, receivePos, 0.2f);
-            //transform.localRotation = Quaternion.Lerp(transform.localRotation, receiveRot, 0.2f);
+            transform.position = Vector3.Lerp(transform.position, receivePos, 0.2f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, receiveRot, 0.2f);
         }
     }
     
@@ -54,8 +54,8 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
         //만약에 쓸 수 있는 상태라면
         if (stream.IsWriting)
         {
-            stream.SendNext(transform.localPosition);
-            stream.SendNext(transform.localRotation);
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
         }
         //만약에 읽을 수 있는 상태라면
         if (stream.IsReading)

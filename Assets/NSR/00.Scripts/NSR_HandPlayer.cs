@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class NSR_HandPlayer : MonoBehaviourPun
+public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
 {
     bool HandDown_L;
     bool HandUp_L;
@@ -9,12 +9,21 @@ public class NSR_HandPlayer : MonoBehaviourPun
     bool HandUp_R;
     void Update()
     {
-        if (NSR_PlayerManager.instance.bodyControl) return;
+        if (NSR_PlayerManager.instance.bodyControl == false)
+        {
+            HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+            HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
+            HandDown_R = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+            HandUp_R = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
 
-        HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
-        HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
-        HandDown_R = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
-        HandUp_R = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
+        }
+        else
+        {
+            HandDown_L = receiveHandDown_L;
+            HandUp_L = receiveHandUp_L;
+            HandDown_R = receiveHandDown_R;
+            HandUp_R = receiveHandUp_R;
+        }
 
         DrawLine(left_Hand, line_left);
         DrawLine(right_Hand, line_right);
@@ -130,6 +139,31 @@ public class NSR_HandPlayer : MonoBehaviourPun
                     print("문닫힘");
                 }
             }
+        }
+    }
+
+    // ================== OnPhotonSerializeView =============================
+    bool receiveHandDown_L;
+    bool receiveHandUp_L;
+    bool receiveHandDown_R;
+    bool receiveHandUp_R;
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        //만약에 쓸 수 있는 상태라면
+        if (stream.IsWriting)
+        {
+            stream.SendNext(HandDown_L);
+            stream.SendNext(HandUp_L);
+            stream.SendNext(HandDown_R);
+            stream.SendNext(HandUp_R);
+        }
+        //만약에 읽을 수 있는 상태라면
+        if (stream.IsReading)
+        {
+            receiveHandDown_L = (bool)stream.ReceiveNext();
+            receiveHandUp_L = (bool)stream.ReceiveNext();
+            receiveHandDown_R = (bool)stream.ReceiveNext();
+            receiveHandUp_R = (bool)stream.ReceiveNext();
         }
     }
 }
