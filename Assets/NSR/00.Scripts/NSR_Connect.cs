@@ -9,6 +9,12 @@ using Photon.Realtime;
 // 3. 规 积己 or 规 涝厘
 public class NSR_Connect : MonoBehaviourPunCallbacks
 {
+
+    void Awake()
+    {
+        Screen.SetResolution(960, 640, false);
+    }
+
     private void Start()
     {
         if (PhotonNetwork.IsConnected == false)

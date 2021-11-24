@@ -3,13 +3,26 @@ using Photon.Pun;
 
 public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
 {
+    public static NSR_HandPlayer instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+
     bool HandDown_L;
     bool HandUp_L;
     bool HandDown_R;
     bool HandUp_R;
+
+    void Start()
+    {
+        Transform OVRCameraRig = GameObject.FindObjectOfType<OVRCameraRig>().transform;
+        OVRCameraRig.parent = transform;
+        OVRCameraRig.localPosition = new Vector3(0, 0, 0);
+    }
     void Update()
     {
-        if (NSR_PlayerManager.instance.bodyControl == false)
+        if (PhotonNetwork.IsMasterClient == false)
         {
             HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
             HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
@@ -24,22 +37,19 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
             HandDown_R = receiveHandDown_R;
             HandUp_R = receiveHandUp_R;
         }
-
-        DrawLine(left_Hand, line_left);
-        DrawLine(right_Hand, line_right);
-        Catch(left_Hand, ref trCatched_Left, HandDown_L);
-        Catch(right_Hand, ref trCatched_Right, HandDown_R);
-        Drop(true, ref trCatched_Left, HandUp_L);
-        Drop(false, ref trCatched_Right, HandUp_R);
-        OpenDoor(left_Hand, HandDown_L);
-        OpenDoor(right_Hand, HandDown_R);
+        if (NSR_BodyPlayer.instance != null)
+        {
+            NSR_BodyPlayer bodyPlayer = NSR_BodyPlayer.instance;
+            DrawLine(bodyPlayer.left_Hand, bodyPlayer.line_left);
+            DrawLine(bodyPlayer.right_Hand, bodyPlayer.line_right);
+            Catch(bodyPlayer.left_Hand, ref trCatched_Left, HandDown_L);
+            Catch(bodyPlayer.right_Hand, ref trCatched_Right, HandDown_R);
+            Drop(true, ref trCatched_Left, HandUp_L);
+            Drop(false, ref trCatched_Right, HandUp_R);
+            OpenDoor(bodyPlayer.left_Hand, HandDown_L);
+            OpenDoor(bodyPlayer.right_Hand, HandDown_R);
+        }
     }
-
-    public Transform left_Hand;
-    public Transform right_Hand;
-
-    public LineRenderer line_left;
-    public LineRenderer line_right;
 
     #region 선그리기
     void DrawLine(Transform hand, LineRenderer line)

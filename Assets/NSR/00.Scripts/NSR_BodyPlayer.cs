@@ -5,9 +5,27 @@ using Photon.Pun;
 
 public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
 {
+    public static NSR_BodyPlayer instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    public Transform left_Hand;
+    public Transform right_Hand;
+
+    public LineRenderer line_left;
+    public LineRenderer line_right;
+
+    void Start()
+    {
+        Transform OVRCameraRig = GameObject.FindObjectOfType<OVRCameraRig>().transform;
+        OVRCameraRig.parent = transform;
+        OVRCameraRig.localPosition = new Vector3(0, 0, 0);
+    }
     void Update()
     {
-        if (NSR_PlayerManager.instance.bodyControl)
+        if (PhotonNetwork.IsMasterClient)
         {
             Move();
             Rotate();
@@ -17,8 +35,21 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
             transform.position = Vector3.Lerp(transform.position, receivePos, 0.2f);
             transform.rotation = Quaternion.Lerp(transform.rotation, receiveRot, 0.2f);
         }
+
+        // 스페이스바 누르면 컨트롤 바꾸기
+        if (Input.GetKeyDown(KeyCode.Space) || OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch))
+        {
+            photonView.RPC("ChangeControl", RpcTarget.All);
+        }
+
     }
-    
+
+    [PunRPC]
+    void ChangeControl(PhotonMessageInfo info)
+    {
+        PhotonNetwork.SetMasterClient(PhotonNetwork.MasterClient.GetNext());
+    }
+
 
     #region 이동 및 회전
     public float speed = 5;
@@ -36,7 +67,7 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
 
     public float rotSpeed = 40f;
     float y;
-    
+
     void Rotate()
     {
         Vector2 thumb = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick, OVRInput.Controller.LTouch);

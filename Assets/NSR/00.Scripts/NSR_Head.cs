@@ -10,6 +10,7 @@ public class NSR_Head : MonoBehaviourPun, IPunObservable
     Quaternion receiveRot;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        
         //만약에 쓸 수 있는 상태라면
         if (stream.IsWriting)
         {
@@ -27,7 +28,7 @@ public class NSR_Head : MonoBehaviourPun, IPunObservable
 
     void Update()
     {
-        if (!NSR_PlayerManager.instance.bodyControl)
+        if (!PhotonNetwork.IsMasterClient)
         {
 
             transform.localPosition = Vector3.Lerp(transform.localPosition, receivePos, 0.2f);
