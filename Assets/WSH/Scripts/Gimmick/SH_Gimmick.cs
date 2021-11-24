@@ -7,6 +7,7 @@ public enum SH_Layer
     Gimmick,
     Destroyer,
     Interacter,
+    Finger
 }
 
 public enum SH_GimmickState
@@ -29,7 +30,7 @@ public enum SH_GimmickState
 [RequireComponent(typeof(SH_Gimmick_ModelStateMachine))]
 public class SH_Gimmick : MonoBehaviour
 {
-    public LayerMask interactiveLayer;  //이 레이어의 콜라이더로만 조작 가능하다. 기본값 : LayerMask.NameToLayer("Interacter")
+    public SH_Layer interactiveLayer;  //이 레이어의 콜라이더로만 조작 가능하다. 기본값 : LayerMask.NameToLayer("Interacter")
     public SH_GimmickState gimmickState;
     public List<SH_Gimmick> password = new List<SH_Gimmick>();    //이 리스트의 모든 기믹이 clear 상태여야 이 기믹을 조작가능하다.
     public bool isActive;           //현재 활성화 상태인가?
@@ -58,7 +59,6 @@ public class SH_Gimmick : MonoBehaviour
         modelController.Init();
         effectController.Init();
         isActive = false;
-        interactiveLayer = LayerMask.NameToLayer(SH_Layer.Interacter.ToString());
         StateUpdate();
     }
 
@@ -263,17 +263,18 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.layer != interactiveLayer)
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
             return;
 
         triggerStay = true;
+
         if (gimmickState != SH_GimmickState.Active)
             Hovering();
     }
 
     protected virtual void OnTriggerStay(Collider col)
     {
-        if (col.gameObject.layer != interactiveLayer)
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
             return;
 
         triggerStay = true;
@@ -282,7 +283,7 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void OnTriggerExit(Collider col)
     {
-        if (col.gameObject.layer != interactiveLayer)
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
             return;
 
         triggerStay = false;
@@ -292,7 +293,7 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.layer != interactiveLayer)
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
             return;
 
         if (gimmickState != SH_GimmickState.Active)
@@ -301,13 +302,13 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void OnCollisionStay(Collision col)
     {
-        if (col.gameObject.layer != interactiveLayer)
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
             return;
     }
 
     protected virtual void OnCollisionExit(Collision col)
     {
-        if (col.gameObject.layer != interactiveLayer)
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
             return;
 
         triggerStay = false;
