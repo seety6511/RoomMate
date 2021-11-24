@@ -60,7 +60,7 @@ public class NSR_PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         if (bodyControl)
         {
             OVRCameraRig.parent = bodyPlayer;
-            OVRCameraRig.localPosition = new Vector3(0, 0, 0);
+            OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
         }
         else
         {
