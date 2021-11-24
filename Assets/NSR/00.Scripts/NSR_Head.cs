@@ -13,6 +13,7 @@ public class NSR_Head : MonoBehaviourPun, IPunObservable
         //만약에 쓸 수 있는 상태라면
         if (stream.IsWriting)
         {
+            print("머리");
             stream.SendNext(transform.localPosition);
             stream.SendNext(transform.localRotation);
         }

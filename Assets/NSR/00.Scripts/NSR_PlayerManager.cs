@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 
-public class NSR_PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
+public class NSR_PlayerManager : MonoBehaviourPun, IPunObservable
 {
     public static NSR_PlayerManager instance;
     private void Awake()
@@ -65,7 +64,7 @@ public class NSR_PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             OVRCameraRig.parent = handPlayer;
-            OVRCameraRig.localPosition = new Vector3(0, 0, 0);
+            OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
         }
     }
 
@@ -83,6 +82,7 @@ public class NSR_PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         //만약에 쓸 수 있는 상태라면
         if (stream.IsWriting)
         {
+            print("");
             stream.SendNext(photonViewControl);
         }
         //만약에 읽을 수 있는 상태라면
