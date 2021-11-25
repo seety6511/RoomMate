@@ -39,7 +39,11 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinedLobby();
         print("로비 진입 성공");
 
-        PhotonNetwork.JoinRoom("게임장");
+        RoomOptions roomOptions = new RoomOptions();
+        //인원수 제한
+        roomOptions.MaxPlayers = 2;
+
+        PhotonNetwork.JoinOrCreateRoom("게임장", roomOptions, TypedLobby.Default);
     }
     //방 입장 성공시
     public override void OnJoinedRoom()
@@ -48,35 +52,5 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         print("방입장 완료");
 
         PhotonNetwork.LoadLevel("NSR_Scene");
-    }
-
-    //방 입장 실패시
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        base.OnJoinRoomFailed(returnCode, message);
-        print("방입장 실패 : " + returnCode + ", " + message);
-
-        RoomOptions roomOptions = new RoomOptions();
-        //인원수 제한
-        roomOptions.MaxPlayers = 2;
-
-        //방의 이름으로 방을 만들기
-        PhotonNetwork.CreateRoom("게임장", roomOptions, TypedLobby.Default);
-    }
-
-    //방 생성 성공시
-    public override void OnCreatedRoom()
-    {
-        base.OnCreatedRoom();
-        print("방생성 성공");
-
-        PhotonNetwork.JoinRoom("게임장");
-    }
-
-    //방 생성 실패시
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        base.OnCreateRoomFailed(returnCode, message);
-        print("방생성 실패 : " + returnCode + ", " + message);
     }
 }

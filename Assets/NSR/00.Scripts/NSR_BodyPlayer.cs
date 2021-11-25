@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
 {
@@ -40,10 +41,11 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
     Vector2 thumb;
     void Update()
     {
+
         if (NSR_PlayerManager.instance.HandIn == false) return;
 
         // 미스터는 BodyPlayer => 이 photon 주인
-        if (PhotonNetwork.IsMasterClient)
+        if (photonView.IsMine)
         {
             // 머리 위치
             head.localPosition = NSR_PlayerManager.instance.CenterEyeAnchor.localPosition;
@@ -85,14 +87,39 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
     {
         PhotonNetwork.SetMasterClient(PhotonNetwork.MasterClient.GetNext());
 
-        if (PhotonNetwork.IsMasterClient)
+        Player you = null;
+        Player me = null;
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            NSR_PlayerManager.instance.OVRCameraRig.parent = transform;
+            if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+            {
+                me = PhotonNetwork.PlayerList[i];
+            }
+            else
+            {
+                you = PhotonNetwork.PlayerList[i];
+            }
+        }
+
+        if (me == null || you == null)
+            return;
+
+        if (me == NSR_BodyPlayer.instance.photonView.Owner)
+        {
+            // 내가 바디 -> 핸드
+            NSR_BodyPlayer.instance.photonView.TransferOwnership(you);
+            NSR_HandPlayer.instance.photonView.TransferOwnership(me);
+
+            NSR_PlayerManager.instance.OVRCameraRig.parent = NSR_HandPlayer.instance.transform;
             NSR_PlayerManager.instance.OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
         }
         else
         {
-            NSR_PlayerManager.instance.OVRCameraRig.parent = NSR_HandPlayer.instance.transform;
+            // 내가 핸드 -> 바디
+            NSR_BodyPlayer.instance.photonView.TransferOwnership(me);
+            NSR_HandPlayer.instance.photonView.TransferOwnership(you);
+
+            NSR_PlayerManager.instance.OVRCameraRig.parent = transform;
             NSR_PlayerManager.instance.OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
         }
     }
@@ -100,10 +127,10 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
 
     #region 이동 및 회전
     public float speed = 5;
-    
+
     void Move(Vector2 hv)
     {
-        
+
         Vector3 dirH = Camera.main.transform.right * hv.x;
         Vector3 dirV = Camera.main.transform.forward * hv.y;
         Vector3 dir = dirH + dirV;
