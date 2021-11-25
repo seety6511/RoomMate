@@ -12,10 +12,14 @@ public class SH_Gimmick_Handle : SH_Gimmick
     public SH_Direction axis;
     public float min;
     public float max;
+    Vector3 originPos;
+    Quaternion originRot;
     protected override void Awake()
     {
         base.Awake();
+        originPos = gameObject.transform.position;
         door = transform.parent.gameObject;
+        originRot = door.transform.rotation;
         door.isStatic = false;
         fj = GetComponent<FixedJoint>();
         var a = door.GetComponent<Rigidbody>();
@@ -36,6 +40,7 @@ public class SH_Gimmick_Handle : SH_Gimmick
             min = hinge.limits.min;
             max = hinge.limits.max;
         }
+        hinge.connectedAnchor = Vector3.zero;
         hinge.anchor = Vector3.zero;
         hinge.useLimits = true;
         var limit = new JointLimits();
@@ -71,5 +76,16 @@ public class SH_Gimmick_Handle : SH_Gimmick
         }
 
         hinge.axis = new Vector3(x, y, 0);
+    }
+
+    protected override void Update()
+    {
+        if (gimmickState == SH_GimmickState.Disable)
+        {
+            door.transform.rotation = originRot;
+            gameObject.transform.position = originPos;
+        }
+
+        base.Update();
     }
 }

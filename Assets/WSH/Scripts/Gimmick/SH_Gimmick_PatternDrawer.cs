@@ -15,7 +15,7 @@ public class SH_Gimmick_PatternDrawer : SH_Gimmick
     protected override void Awake()
     {
         base.Awake();
-        nodes = GetComponentsInChildren<SH_Gimmick_PatternNode>();
+        //nodes = GetComponentsInChildren<SH_Gimmick_PatternNode>();
         drawer = GetComponent<LineRenderer>();
         hand = FindObjectOfType<SH_TestHand>();
         drawer.positionCount = 2;
@@ -34,17 +34,28 @@ public class SH_Gimmick_PatternDrawer : SH_Gimmick
 
         if (activeNodes.Count == nodes.Length)
         {
-            PasswordCheck();
+            if (PasswordCheck())
+            {
+                Clear();
+            }
         }
     }
 
-    void PasswordCheck()
+    protected override void Clear()
+    {
+        gameObject.SetActive(false);
+        base.Clear();
+    }
+    bool PasswordCheck()
     {
         for(int i = 0; i < activeNodes.Count; ++i)
         {
             var n1 = activeNodes[i];
             var n2 = nodes[i];
+            if (n1 != n2)
+                return false;
         }
+        return true;
     }
 
     public void NodeActive(SH_Gimmick_PatternNode node)

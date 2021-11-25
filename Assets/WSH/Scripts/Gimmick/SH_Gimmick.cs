@@ -59,6 +59,7 @@ public class SH_Gimmick : MonoBehaviour
         modelController.Init();
         effectController.Init();
         isActive = false;
+        pcKey = KeyCode.Mouse0;
         StateUpdate();
     }
 
@@ -68,6 +69,8 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void Update()
     {
+        PasswordCheck();
+
         switch (gimmickState)
         {
             case SH_GimmickState.Waiting:
@@ -79,6 +82,11 @@ public class SH_Gimmick : MonoBehaviour
                 return;
         }
 
+        Reload();
+    }
+
+    void Reload()
+    {
         if (gimmickState == SH_GimmickState.Waiting || gimmickState == SH_GimmickState.Hovering)
             return;
 
@@ -87,11 +95,7 @@ public class SH_Gimmick : MonoBehaviour
 
         if (!isActive)
             return;
-        Reloading();
-    }
 
-    protected virtual void Reloading()
-    {
         reloadTimer += Time.deltaTime;
         if (reloadTimer >= reloadTime)
         {
@@ -183,6 +187,7 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void Activating()
     {
+        Debug.Log("A");
         StateChange(SH_GimmickState.Activating);
         StateUpdate();
         StartCoroutine(ActivatingEffect());
@@ -260,21 +265,46 @@ public class SH_Gimmick : MonoBehaviour
     #endregion
 
     #region Physhics
-
-    protected virtual void OnTriggerEnter(Collider col)
+    /// <summary>
+    /// 상호작용 가능한 상태면 true, 아니면 false
+    /// </summary>
+    /// <param name="col"></param>
+    /// <returns></returns>
+    bool InteractibleCheck(Collider col)
     {
         if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+            return false;
+
+        if (gimmickState == SH_GimmickState.Disable)
+            return false;
+
+        return true;
+    }
+
+    bool InteractibleCheck(Collision col)
+    {
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+            return false;
+
+        if (gimmickState == SH_GimmickState.Disable)
+            return false;
+
+        return true;
+    }
+    protected virtual void OnTriggerEnter(Collider col)
+    {
+        if (!InteractibleCheck(col))
             return;
+        else
+            triggerStay = true;
 
-        triggerStay = true;
-
-        if (gimmickState != SH_GimmickState.Active)
+        if (gimmickState == SH_GimmickState.Waiting)
             Hovering();
     }
 
     protected virtual void OnTriggerStay(Collider col)
     {
-        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+        if (!InteractibleCheck(col))
             return;
 
         triggerStay = true;
@@ -283,36 +313,42 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void OnTriggerExit(Collider col)
     {
-        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+        if (!InteractibleCheck(col))
             return;
+        else
+            triggerStay = false;
 
-        triggerStay = false;
-        if (gimmickState != SH_GimmickState.Active)
-            Waiting();
+        if (InteractibleCheck(col))
+        {
+            if (!keepState || gimmickState == SH_GimmickState.Hovering)
+                Waiting();
+        }
     }
 
     protected virtual void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+        if (!InteractibleCheck(col))
             return;
+        else
+            triggerStay = true;
 
-        if (gimmickState != SH_GimmickState.Active)
+        if (gimmickState == SH_GimmickState.Waiting)
             Hovering();
     }
 
     protected virtual void OnCollisionStay(Collision col)
     {
-        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+        if (!InteractibleCheck(col))
             return;
     }
 
     protected virtual void OnCollisionExit(Collision col)
     {
-        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+        if (!InteractibleCheck(col))
             return;
 
         triggerStay = false;
-        if (gimmickState != SH_GimmickState.Active)
+        if (!keepState || gimmickState == SH_GimmickState.Hovering)
             Waiting();
     }
     #endregion
@@ -341,16 +377,20 @@ public class SH_Gimmick : MonoBehaviour
         foreach (var p in password)
         {
             if (p.gimmickState != SH_GimmickState.Clear)
+            {
+                StateChange(SH_GimmickState.Disable);
                 return false;
+            }
         }
+
+        if (gimmickState == SH_GimmickState.Disable)
+            StateChange(SH_GimmickState.Waiting);
+
         return true;
     }
 
     IEnumerator ActiveCheck()
     {
-        if (!PasswordCheck())
-            yield break;
-
         if (!activeCoolTimeCheck)
             yield break;
 
