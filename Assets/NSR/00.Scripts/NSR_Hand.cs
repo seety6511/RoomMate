@@ -5,8 +5,6 @@ using Photon.Pun;
 
 public class NSR_Hand : MonoBehaviourPun, IPunObservable
 {
-    public Transform handAnchor;
-
     Vector3 receivePos;
     Quaternion receiveRot;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -34,8 +32,8 @@ public class NSR_Hand : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            transform.localPosition = handAnchor.localPosition;
-            transform.localRotation = handAnchor.localRotation;
+            transform.localPosition = NSR_PlayerManager.instance.LeftHandAnchor.localPosition;
+            transform.localRotation = NSR_PlayerManager.instance.LeftHandAnchor.localRotation;
         }
     }
 }

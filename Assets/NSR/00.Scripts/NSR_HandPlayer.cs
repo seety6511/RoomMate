@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-
 public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
 {
     public static NSR_HandPlayer instance;
@@ -14,29 +13,68 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
     bool HandDown_R;
     bool HandUp_R;
 
+    public Transform left_Hand;
+    public Transform right_Hand;
     void Start()
     {
-        Transform OVRCameraRig = GameObject.FindObjectOfType<OVRCameraRig>().transform;
-        OVRCameraRig.parent = transform;
-        OVRCameraRig.localPosition = new Vector3(0, 0, 0);
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            Transform OVRCameraRig = GameObject.FindObjectOfType<OVRCameraRig>().transform;
+            OVRCameraRig.parent = transform;
+            OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
+        }
+
+        photonView.RPC("CheckIn", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    void CheckIn()
+    {
+        NSR_PlayerManager.instance.HandIn = true;
     }
     void Update()
     {
+        if (NSR_PlayerManager.instance.BodyIn == false) return;
+
+        // 마스터가 아니면 HandPlayer => 이 photon 주인
         if (PhotonNetwork.IsMasterClient == false)
         {
+            // 역할 바뀔때 초기화
+            if (Input.GetKeyDown(KeyCode.Space) || OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch))
+            {
+                NSR_PlayerManager.instance.OVRCameraRig.parent = transform;
+                NSR_PlayerManager.instance.OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
+            }
+
+            // 손 위치
+            left_Hand.localPosition = NSR_PlayerManager.instance.LeftHandAnchor.localPosition;
+            left_Hand.localRotation = NSR_PlayerManager.instance.LeftHandAnchor.localRotation;
+            right_Hand.localPosition = NSR_PlayerManager.instance.RightHandAnchor.localPosition;
+            right_Hand.localRotation = NSR_PlayerManager.instance.RightHandAnchor.localRotation;
+
+            // 인풋
             HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
             HandUp_L = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
             HandDown_R = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
             HandUp_R = OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
-
         }
+        // 그렇지 않고 마스터면 BodyPlayer
         else
         {
+            // 손위치 받기
+            left_Hand.localPosition = Vector3.Lerp(left_Hand.localPosition, receiveLeftHandPos, 0.2f);
+            left_Hand.localRotation = Quaternion.Lerp(left_Hand.localRotation, receiveLeftHandRot, 0.2f);
+            right_Hand.localPosition = Vector3.Lerp(right_Hand.localPosition, receiveRightHandPos, 0.2f);
+            right_Hand.localRotation = Quaternion.Lerp(right_Hand.localRotation, receiveRightHandRot, 0.2f);
+
+            // 인풋 받기
             HandDown_L = receiveHandDown_L;
             HandUp_L = receiveHandUp_L;
             HandDown_R = receiveHandDown_R;
             HandUp_R = receiveHandUp_R;
         }
+
+        // HandPlayer 가 하는 일
         if (NSR_BodyPlayer.instance != null)
         {
             NSR_BodyPlayer bodyPlayer = NSR_BodyPlayer.instance;
@@ -157,11 +195,21 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
     bool receiveHandUp_L;
     bool receiveHandDown_R;
     bool receiveHandUp_R;
+
+    public Vector3 receiveLeftHandPos;
+    public Quaternion receiveLeftHandRot;
+    public Vector3 receiveRightHandPos;
+    public Quaternion receiveRightHandRot;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //만약에 쓸 수 있는 상태라면
         if (stream.IsWriting)
         {
+            stream.SendNext(left_Hand.localPosition);
+            stream.SendNext(left_Hand.localRotation);
+            stream.SendNext(right_Hand.localPosition);
+            stream.SendNext(right_Hand.localRotation);
+
             stream.SendNext(HandDown_L);
             stream.SendNext(HandUp_L);
             stream.SendNext(HandDown_R);
@@ -170,6 +218,11 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
         //만약에 읽을 수 있는 상태라면
         if (stream.IsReading)
         {
+            receiveLeftHandPos = (Vector3)stream.ReceiveNext();
+            receiveLeftHandRot = (Quaternion)stream.ReceiveNext();
+            receiveRightHandPos = (Vector3)stream.ReceiveNext();
+            receiveRightHandRot = (Quaternion)stream.ReceiveNext();
+
             receiveHandDown_L = (bool)stream.ReceiveNext();
             receiveHandUp_L = (bool)stream.ReceiveNext();
             receiveHandDown_R = (bool)stream.ReceiveNext();

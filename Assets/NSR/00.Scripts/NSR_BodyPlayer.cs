@@ -10,6 +10,7 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
     {
         instance = this;
     }
+    public Transform head;
 
     public Transform left_Hand;
     public Transform right_Hand;
@@ -19,21 +20,56 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
 
     void Start()
     {
-        Transform OVRCameraRig = GameObject.FindObjectOfType<OVRCameraRig>().transform;
-        OVRCameraRig.parent = transform;
-        OVRCameraRig.localPosition = new Vector3(0, 0, 0);
-    }
-    void Update()
-    {
         if (PhotonNetwork.IsMasterClient)
         {
-            Move();
-            Rotate();
+            Transform OVRCameraRig = GameObject.FindObjectOfType<OVRCameraRig>().transform;
+            OVRCameraRig.parent = transform;
+            OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
         }
+
+        photonView.RPC("CheckIn", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    void CheckIn()
+    {
+        NSR_PlayerManager.instance.BodyIn = true;
+    }
+
+    Vector2 hv;
+    Vector2 thumb;
+    void Update()
+    {
+        if (NSR_PlayerManager.instance.HandIn == false) return;
+
+        // 미스터는 BodyPlayer => 이 photon 주인
+        if (PhotonNetwork.IsMasterClient)
+        {
+            // 머리 위치
+            head.localPosition = NSR_PlayerManager.instance.CenterEyeAnchor.localPosition;
+            head.localRotation = NSR_PlayerManager.instance.CenterEyeAnchor.localRotation;
+
+            // 인풋
+            hv = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
+            thumb = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick, OVRInput.Controller.LTouch);
+        }
+        // 아니면 HandPlayer면
         else
         {
-            transform.position = Vector3.Lerp(transform.position, receivePos, 0.2f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, receiveRot, 0.2f);
+            //머리 위치 받기
+            head.localPosition = Vector3.Lerp(transform.position, receiveHeadPos, 0.2f);
+            head.localRotation = Quaternion.Lerp(transform.rotation, receiveHeadRot, 0.2f);
+
+            //인풋 받기
+            hv = receiveHv;
+            thumb = receiveThumb;
+        }
+
+        // BodyPlayer 가 하는 일
+        if (NSR_HandPlayer.instance != null)
+        {
+            Move(hv);
+            Rotate(thumb);
         }
 
         // 스페이스바 누르면 컨트롤 바꾸기
@@ -48,14 +84,26 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
     void ChangeControl(PhotonMessageInfo info)
     {
         PhotonNetwork.SetMasterClient(PhotonNetwork.MasterClient.GetNext());
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            NSR_PlayerManager.instance.OVRCameraRig.parent = transform;
+            NSR_PlayerManager.instance.OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
+        }
+        else
+        {
+            NSR_PlayerManager.instance.OVRCameraRig.parent = NSR_HandPlayer.instance.transform;
+            NSR_PlayerManager.instance.OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
+        }
     }
 
 
     #region 이동 및 회전
     public float speed = 5;
-    void Move()
+    
+    void Move(Vector2 hv)
     {
-        Vector2 hv = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
+        
         Vector3 dirH = Camera.main.transform.right * hv.x;
         Vector3 dirV = Camera.main.transform.forward * hv.y;
         Vector3 dir = dirH + dirV;
@@ -68,9 +116,8 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
     public float rotSpeed = 40f;
     float y;
 
-    void Rotate()
+    void Rotate(Vector2 thumb)
     {
-        Vector2 thumb = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick, OVRInput.Controller.LTouch);
         float v = thumb.x;
 
         y += v * rotSpeed * Time.deltaTime;
@@ -78,21 +125,31 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
         transform.localEulerAngles = new Vector3(0, y, 0);
     }
 
-    Vector3 receivePos;
-    Quaternion receiveRot;
+    // =========================== OnPhotonSerializeView ==================================
+    Vector3 receiveHeadPos;
+    Quaternion receiveHeadRot;
+
+    Vector2 receiveHv;
+    Vector2 receiveThumb;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //만약에 쓸 수 있는 상태라면
         if (stream.IsWriting)
         {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
+            stream.SendNext(head.localPosition);
+            stream.SendNext(head.localRotation);
+
+            stream.SendNext(hv);
+            stream.SendNext(thumb);
         }
         //만약에 읽을 수 있는 상태라면
         if (stream.IsReading)
         {
-            receivePos = (Vector3)stream.ReceiveNext();
-            receiveRot = (Quaternion)stream.ReceiveNext();
+            receiveHeadPos = (Vector3)stream.ReceiveNext();
+            receiveHeadRot = (Quaternion)stream.ReceiveNext();
+
+            receiveHv = (Vector2)stream.ReceiveNext();
+            receiveThumb = (Vector2)stream.ReceiveNext();
         }
     }
     #endregion

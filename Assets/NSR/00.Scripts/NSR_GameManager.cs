@@ -4,6 +4,8 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
+/*Dont Use*/
+
 public class NSR_GameManager : MonoBehaviourPunCallbacks
 {
     static public NSR_GameManager instance;

@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+
+/*Dont Use*/
+
 public class NSR_SceneManager : MonoBehaviour
 {
     private void Awake()
     {
+        //해상도 조정
         Screen.SetResolution(960, 640, false);
     }
-    // Start is called before the first frame update
     void Start()
     {
         if (PhotonNetwork.IsMasterClient)

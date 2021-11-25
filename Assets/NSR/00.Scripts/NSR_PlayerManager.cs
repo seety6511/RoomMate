@@ -3,71 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class NSR_PlayerManager : MonoBehaviourPun, IPunObservable
+public class NSR_PlayerManager : MonoBehaviourPun
 {
     public static NSR_PlayerManager instance;
     private void Awake()
     {
         if (instance == null) instance = this;
+
+        //해상도 조정
+        Screen.SetResolution(960, 640, false);
     }
 
-    // BodyPlayer 인지 아닌지 인지 결정하는 변수
-    //public bool bodyControl;
-
-    //OVRCameraRig 부모
+    //OVRCameraRig
     public Transform OVRCameraRig;
 
+    public Transform CenterEyeAnchor;
 
-    // 포톤뷰가 자기거인 플레이어의 바디컨트롤 담아두는 변수
-    bool photonViewControl;
+    public Transform LeftHandAnchor;
+    public Transform RightHandAnchor;
+
+    // 플레이어 들어왔는지 확인하는 변수
+    public bool BodyIn;
+    public bool HandIn;
+
     private void Start()
     {
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.SendRate = 50;
             PhotonNetwork.SerializationRate = 50;
-        }
 
-    }
-    void Update()
-    {
-
-
-        //// 1번 플레이어와 2번 플레이어 bodyControl 반대로 해주기
-        //if (photonView.IsMine)
-        //    photonViewControl = PhotonNetwork.IsMasterClient;
-        //else
-        //    bodyControl = !recivePhotonViewControl;
-
-        // 어떤 컨트롤 인지에 따른 OVRCameraRig의 부모 결정
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    OVRCameraRig.parent = NSR_BodyPlayer.instance.transform;
-        //    OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
-        //}
-        //else
-        //{
-        //    OVRCameraRig.parent = NSR_HandPlayer.instance.transform;
-        //    OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
-        //}
-    }
-
-
-    // 1번 플레이어와 2번 플레이어 bodyControl 반대로 해주기 위한
-    //1번 플레이어(PhotonView 가 자기거인 플레이어)의 bodyControl을 담은 변수(photonViewControl)를 주고 받기
-    bool recivePhotonViewControl;
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        //만약에 쓸 수 있는 상태라면
-        if (stream.IsWriting)
-        {
-            print("");
-            stream.SendNext(photonViewControl);
-        }
-        //만약에 읽을 수 있는 상태라면
-        if (stream.IsReading)
-        {
-            recivePhotonViewControl = (bool)stream.ReceiveNext();
+            // 마스터는 BodyPlayer 마스터가 아니면 HandPlayer 생성
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Instantiate("NSR_BodyPlayer", Vector3.zero, Quaternion.identity);
+            }
+            else
+            {
+                PhotonNetwork.Instantiate("NSR_HandPlayer", new Vector3(15f, 1.6f, -2.56f), Quaternion.identity);
+            }
         }
     }
 }
