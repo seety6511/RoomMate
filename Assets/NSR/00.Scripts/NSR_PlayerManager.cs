@@ -36,7 +36,7 @@ public class NSR_PlayerManager : MonoBehaviourPun
             // 마스터는 BodyPlayer 마스터가 아니면 HandPlayer 생성
             if (PhotonNetwork.IsMasterClient)
             {
-                PhotonNetwork.Instantiate("NSR_BodyPlayer", Vector3.zero, Quaternion.identity);
+                PhotonNetwork.Instantiate("NSR_BodyPlayer", new Vector3(0, 1.6f, 0), Quaternion.identity);
             }
             else
             {

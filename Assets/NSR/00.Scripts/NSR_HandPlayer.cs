@@ -21,7 +21,7 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
         {
             Transform OVRCameraRig = GameObject.FindObjectOfType<OVRCameraRig>().transform;
             OVRCameraRig.parent = transform;
-            OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
+            OVRCameraRig.localPosition = Vector3.zero;
         }
 
         photonView.RPC("CheckIn", RpcTarget.AllBuffered);
@@ -39,13 +39,6 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
         // 마스터가 아니면 HandPlayer => 이 photon 주인
         if (PhotonNetwork.IsMasterClient == false)
         {
-            // 역할 바뀔때 초기화
-            if (Input.GetKeyDown(KeyCode.Space) || OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch))
-            {
-                NSR_PlayerManager.instance.OVRCameraRig.parent = transform;
-                NSR_PlayerManager.instance.OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
-            }
-
             // 손 위치
             left_Hand.localPosition = NSR_PlayerManager.instance.LeftHandAnchor.localPosition;
             left_Hand.localRotation = NSR_PlayerManager.instance.LeftHandAnchor.localRotation;

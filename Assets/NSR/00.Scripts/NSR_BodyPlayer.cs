@@ -25,7 +25,7 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
         {
             Transform OVRCameraRig = GameObject.FindObjectOfType<OVRCameraRig>().transform;
             OVRCameraRig.parent = transform;
-            OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
+            OVRCameraRig.localPosition = Vector3.zero;
         }
 
         photonView.RPC("CheckIn", RpcTarget.AllBuffered);
@@ -54,17 +54,29 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
             // 인풋
             hv = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
             thumb = OVRInput.Get(OVRInput.RawAxis2D.LThumbstick, OVRInput.Controller.LTouch);
+
+            // HandPlayer한테 손 위치 받기
+            left_Hand.localPosition = Vector3.Lerp(left_Hand.localPosition, NSR_HandPlayer.instance.receiveLeftHandPos, 0.2f);
+            left_Hand.localRotation = Quaternion.Lerp(left_Hand.localRotation, NSR_HandPlayer.instance.receiveLeftHandRot, 0.2f);
+            right_Hand.localPosition = Vector3.Lerp(right_Hand.localPosition, NSR_HandPlayer.instance.receiveRightHandPos, 0.2f);
+            right_Hand.localRotation = Quaternion.Lerp(right_Hand.localRotation, NSR_HandPlayer.instance.receiveRightHandRot, 0.2f);
         }
         // 아니면 HandPlayer면
         else
         {
             //머리 위치 받기
-            head.localPosition = Vector3.Lerp(transform.position, receiveHeadPos, 0.2f);
-            head.localRotation = Quaternion.Lerp(transform.rotation, receiveHeadRot, 0.2f);
+            head.localPosition = Vector3.Lerp(head.localPosition, receiveHeadPos, 0.2f);
+            head.localRotation = Quaternion.Lerp(head.localRotation, receiveHeadRot, 0.2f);
 
             //인풋 받기
             hv = receiveHv;
             thumb = receiveThumb;
+
+            // 손 위치
+            left_Hand.localPosition = NSR_PlayerManager.instance.LeftHandAnchor.localPosition;
+            left_Hand.localRotation = NSR_PlayerManager.instance.LeftHandAnchor.localRotation;
+            right_Hand.localPosition = NSR_PlayerManager.instance.RightHandAnchor.localPosition;
+            right_Hand.localRotation = NSR_PlayerManager.instance.RightHandAnchor.localRotation;
         }
 
         // BodyPlayer 가 하는 일
@@ -111,7 +123,7 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
             NSR_HandPlayer.instance.photonView.TransferOwnership(me);
 
             NSR_PlayerManager.instance.OVRCameraRig.parent = NSR_HandPlayer.instance.transform;
-            NSR_PlayerManager.instance.OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
+            NSR_PlayerManager.instance.OVRCameraRig.localPosition = Vector3.zero;
         }
         else
         {
@@ -120,7 +132,7 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
             NSR_HandPlayer.instance.photonView.TransferOwnership(you);
 
             NSR_PlayerManager.instance.OVRCameraRig.parent = transform;
-            NSR_PlayerManager.instance.OVRCameraRig.localPosition = new Vector3(0, 1.6f, 0);
+            NSR_PlayerManager.instance.OVRCameraRig.localPosition = Vector3.zero;
         }
     }
 
@@ -163,8 +175,8 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
         //만약에 쓸 수 있는 상태라면
         if (stream.IsWriting)
         {
-            stream.SendNext(head.localPosition);
-            stream.SendNext(head.localRotation);
+            stream.SendNext(NSR_PlayerManager.instance.CenterEyeAnchor.localPosition);
+            stream.SendNext(NSR_PlayerManager.instance.CenterEyeAnchor.localRotation);
 
             stream.SendNext(hv);
             stream.SendNext(thumb);
