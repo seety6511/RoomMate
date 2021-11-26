@@ -9,6 +9,14 @@ public class SH_Gimmick_Handle : SH_Gimmick
     GameObject door;
     FixedJoint fj;
     HingeJoint hinge;
+    public enum HandleType
+    {
+        Door,
+        Cabinet,
+    }
+
+    public HandleType handleType;
+
     public SH_Direction axis;
     public float min;
     public float max;
@@ -17,20 +25,53 @@ public class SH_Gimmick_Handle : SH_Gimmick
     protected override void Awake()
     {
         base.Awake();
-        originPos = gameObject.transform.position;
+        switch (handleType)
+        {
+            case HandleType.Door:
+                DoorSetting();
+                break;
+            case HandleType.Cabinet:
+                CabinetSetting();
+                break;
+        }
+    }
+
+    void SetOrigin()
+    {
         door = transform.parent.gameObject;
-        originRot = door.transform.rotation;
         door.isStatic = false;
-        fj = GetComponent<FixedJoint>();
+
+        originRot = transform.rotation;
+        originPos = transform.position;
+
         var a = door.GetComponent<Rigidbody>();
+
         if (a == null)
             a = door.AddComponent<Rigidbody>();
+
+        a.useGravity = false;
+
+        fj = GetComponent<FixedJoint>();
         fj.connectedBody = a;
 
         if (door.GetComponent<Collider>() != null)
         {
-            door.GetComponent<Collider>().isTrigger = true;
+            var d = door.GetComponent<Collider>();
+            d.isTrigger = true;
         }
+
+        GetComponent<Collider>().isTrigger = true;
+    }
+
+    void CabinetSetting()
+    {
+        SetOrigin();
+        originPos = door.transform.localPosition;
+    }
+
+    void DoorSetting()
+    {
+        SetOrigin();
 
         hinge = door.GetComponent<HingeJoint>();
         if (hinge == null)
@@ -40,9 +81,11 @@ public class SH_Gimmick_Handle : SH_Gimmick
             min = hinge.limits.min;
             max = hinge.limits.max;
         }
-        hinge.connectedAnchor = Vector3.zero;
-        hinge.anchor = Vector3.zero;
+
         hinge.useLimits = true;
+        hinge.anchor = Vector3.zero;
+        hinge.connectedAnchor = Vector3.zero;
+
         var limit = new JointLimits();
         limit.min = min;
         limit.max = max;
@@ -84,6 +127,15 @@ public class SH_Gimmick_Handle : SH_Gimmick
         {
             door.transform.rotation = originRot;
             gameObject.transform.position = originPos;
+        }
+
+        if (handleType == HandleType.Cabinet)
+        {
+            var pos = transform.position;
+            pos.x = originPos.x;
+            pos.y = originPos.y;
+            pos.z = Mathf.Clamp(pos.z, min, max);
+            transform.localPosition = pos;
         }
 
         base.Update();

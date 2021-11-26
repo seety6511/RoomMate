@@ -270,7 +270,7 @@ public class SH_Gimmick : MonoBehaviour
     /// </summary>
     /// <param name="col"></param>
     /// <returns></returns>
-    bool InteractibleCheck(Collider col)
+    protected bool InteractibleCheck(Collider col)
     {
         if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
             return false;
@@ -281,7 +281,7 @@ public class SH_Gimmick : MonoBehaviour
         return true;
     }
 
-    bool InteractibleCheck(Collision col)
+    protected bool InteractibleCheck(Collision col)
     {
         if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
             return false;
