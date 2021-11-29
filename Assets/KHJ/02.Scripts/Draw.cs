@@ -28,8 +28,10 @@ public class Draw : MonoBehaviour
     }
     void Update()
     {
+        //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         if (Input.GetButtonDown("Fire1"))
         {
+            //Ray ray = new Ray(trRight.position, trRight.forward);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             int layer = 1 << LayerMask.NameToLayer("Board");
@@ -64,8 +66,10 @@ public class Draw : MonoBehaviour
                 }
             }
         }
+        //if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         if (Input.GetButton("Fire1"))
         {
+            //Ray ray = new Ray(trRight.position, trRight.forward);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             int layer = 1 << LayerMask.NameToLayer("Board");
