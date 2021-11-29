@@ -22,6 +22,7 @@ public class SH_Gimmick_Handle : SH_Gimmick
     public float max;
     Vector3 originPos;
     Quaternion originRot;
+    Vector3 handlePos;
     protected override void Awake()
     {
         base.Awake();
@@ -50,10 +51,8 @@ public class SH_Gimmick_Handle : SH_Gimmick
             a = door.AddComponent<Rigidbody>();
 
         a.useGravity = false;
-
         fj = GetComponent<FixedJoint>();
         fj.connectedBody = a;
-
         if (door.GetComponent<Collider>() != null)
         {
             var d = door.GetComponent<Collider>();
@@ -67,12 +66,15 @@ public class SH_Gimmick_Handle : SH_Gimmick
     {
         SetOrigin();
         originPos = door.transform.localPosition;
+        min = originPos.z;
+        handlePos = transform.localPosition;
     }
 
     void DoorSetting()
+
     {
         SetOrigin();
-
+        
         hinge = door.GetComponent<HingeJoint>();
         if (hinge == null)
             hinge = door.AddComponent<HingeJoint>();
@@ -131,11 +133,13 @@ public class SH_Gimmick_Handle : SH_Gimmick
 
         if (handleType == HandleType.Cabinet)
         {
-            var pos = transform.position;
+            var pos = door.transform.localPosition;
             pos.x = originPos.x;
             pos.y = originPos.y;
             pos.z = Mathf.Clamp(pos.z, min, max);
-            transform.localPosition = pos;
+            door.transform.localPosition = pos;
+
+            transform.localPosition = handlePos;
         }
 
         base.Update();
