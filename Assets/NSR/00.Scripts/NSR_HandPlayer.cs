@@ -15,6 +15,7 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
 
     public Transform left_Hand;
     public Transform right_Hand;
+
     void Start()
     {
         if (!PhotonNetwork.IsMasterClient)

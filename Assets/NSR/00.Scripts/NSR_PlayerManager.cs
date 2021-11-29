@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Voice.PUN;
 
 public class NSR_PlayerManager : MonoBehaviourPun
 {
@@ -26,6 +28,9 @@ public class NSR_PlayerManager : MonoBehaviourPun
     public bool BodyIn;
     public bool HandIn;
 
+    // 보이스 관련 이미지
+    public Image recoderImageInTV;
+    public Image speakerImageInTV;
     private void Start()
     {
         if (PhotonNetwork.IsConnected)
@@ -42,6 +47,9 @@ public class NSR_PlayerManager : MonoBehaviourPun
             {
                 PhotonNetwork.Instantiate("NSR_HandPlayer", new Vector3(15f, 1.6f, -2.56f), Quaternion.identity);
             }
+
+            PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
         }
+
     }
 }
