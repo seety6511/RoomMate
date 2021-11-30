@@ -92,7 +92,6 @@ public class SH_Gimmick_Dial : SH_Gimmick
                 break;
         }
     }
-
     protected override IEnumerator ActiveEffect()
     {
         reloadTimer = 0f;

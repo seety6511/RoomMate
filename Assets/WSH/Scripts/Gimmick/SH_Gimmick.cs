@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SH_Layer
+{
+    Gimmick,
+    Destroyer,
+    Interacter,
+    Finger
+}
+
 public enum SH_GimmickState
 {
     Waiting,    //연속성
@@ -9,7 +17,7 @@ public enum SH_GimmickState
     Active,     //단발성
     Activating, //연속성
     Clear,      //단발성
-    Disable,    //단발성
+    Disable,    //단발성. 이 상태면 아무 상호작용을 하지 않는다.
     Reload,     //연속성
 }
 
@@ -22,6 +30,7 @@ public enum SH_GimmickState
 [RequireComponent(typeof(SH_Gimmick_ModelStateMachine))]
 public class SH_Gimmick : MonoBehaviour
 {
+    public SH_Layer interactiveLayer;  //이 레이어의 콜라이더로만 조작 가능하다. 기본값 : LayerMask.NameToLayer("Interacter")
     public SH_GimmickState gimmickState;
     public List<SH_Gimmick> password = new List<SH_Gimmick>();    //이 리스트의 모든 기믹이 clear 상태여야 이 기믹을 조작가능하다.
     public bool isActive;           //현재 활성화 상태인가?
@@ -29,6 +38,9 @@ public class SH_Gimmick : MonoBehaviour
     public float activeCoolTime;    //한번 작동시킨후 다시 작동시키기 위해 필요한 시간
     public float reloadTime;        //조작이 중단되었을때, 원상태로 돌아가기까지 필요한 시간
     protected float reloadTimer;
+
+    public OVRInput.Button vrKey;   //이 버튼에만 작동한다.(vr)
+    public KeyCode pcKey;           //이 버튼에만 작동한다(pc)
 
     SH_Gimmick_SoundController soundController;
     SH_Gimmick_EffectController effectController;
@@ -38,9 +50,7 @@ public class SH_Gimmick : MonoBehaviour
     //기믹의 기본 초기화
     protected virtual void Awake()
     {
-        gimmickState = SH_GimmickState.Waiting;
         activeCoolTimeCheck = true;
-
         soundController = GetComponent<SH_Gimmick_SoundController>();
         effectController = GetComponent<SH_Gimmick_EffectController>();
         modelController = GetComponent<SH_Gimmick_ModelStateMachine>();
@@ -49,6 +59,8 @@ public class SH_Gimmick : MonoBehaviour
         modelController.Init();
         effectController.Init();
         isActive = false;
+        pcKey = KeyCode.Mouse0;
+        StateUpdate();
     }
 
     protected virtual void Start()
@@ -57,13 +69,24 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void Update()
     {
+        PasswordCheck();
+
         switch (gimmickState)
         {
             case SH_GimmickState.Waiting:
                 Waiting();
                 break;
+
+            case SH_GimmickState.Disable:
+                Disable();
+                return;
         }
 
+        Reload();
+    }
+
+    void Reload()
+    {
         if (gimmickState == SH_GimmickState.Waiting || gimmickState == SH_GimmickState.Hovering)
             return;
 
@@ -73,11 +96,6 @@ public class SH_Gimmick : MonoBehaviour
         if (!isActive)
             return;
 
-        Reloading();
-    }
-
-    protected virtual void Reloading()
-    {
         reloadTimer += Time.deltaTime;
         if (reloadTimer >= reloadTime)
         {
@@ -103,6 +121,9 @@ public class SH_Gimmick : MonoBehaviour
     /// <param name="force"></param>
     protected void StateChange(SH_GimmickState state, bool force = false)
     {
+        if (gimmickState == SH_GimmickState.Disable)
+            return;
+
         if (force)
         {
             gimmickState = state;
@@ -166,6 +187,7 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void Activating()
     {
+        Debug.Log("A");
         StateChange(SH_GimmickState.Activating);
         StateUpdate();
         StartCoroutine(ActivatingEffect());
@@ -201,6 +223,9 @@ public class SH_Gimmick : MonoBehaviour
     bool alreadyInputWaiting;
     IEnumerator InputWaiting()
     {
+        if (gimmickState == SH_GimmickState.Disable)
+            yield break;
+
         if (!triggerStay)
             yield break;
 
@@ -212,18 +237,24 @@ public class SH_Gimmick : MonoBehaviour
         float inputTimer = 0f;
         while (triggerStay)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
+            if(Input.GetKeyDown(pcKey))
                 Active();
-            }
-            else if (Input.GetMouseButton(0))
+            else if(Input.GetKey(pcKey))
+                inputTimer += Time.deltaTime;
+
+            if (OVRInput.GetDown(vrKey))
+                Active();
+            else if (OVRInput.Get(vrKey))
                 inputTimer += Time.deltaTime;
 
             if (inputTime <= inputTimer)
             {
                 Activating();
 
-                if (Input.GetMouseButtonUp(0))
+                if (Input.GetKeyUp(pcKey))
+                    break;
+
+                if (OVRInput.GetUp(vrKey))
                     break;
             }
             yield return null;
@@ -234,37 +265,91 @@ public class SH_Gimmick : MonoBehaviour
     #endregion
 
     #region Physhics
-    protected virtual void OnTriggerEnter()
+    /// <summary>
+    /// 상호작용 가능한 상태면 true, 아니면 false
+    /// </summary>
+    /// <param name="col"></param>
+    /// <returns></returns>
+    protected bool InteractibleCheck(Collider col)
     {
-        triggerStay = true;
-        Hovering();
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+            return false;
+
+        if (gimmickState == SH_GimmickState.Disable)
+            return false;
+
+        return true;
     }
 
-    protected virtual void OnTriggerStay()
+    protected bool InteractibleCheck(Collision col)
     {
+        if (col.gameObject.layer != LayerMask.NameToLayer(interactiveLayer.ToString()))
+            return false;
+
+        if (gimmickState == SH_GimmickState.Disable)
+            return false;
+
+        return true;
+    }
+    protected virtual void OnTriggerEnter(Collider col)
+    {
+        if (!InteractibleCheck(col))
+            return;
+        else
+            triggerStay = true;
+
+        if (gimmickState == SH_GimmickState.Waiting)
+            Hovering();
+    }
+
+    protected virtual void OnTriggerStay(Collider col)
+    {
+        if (!InteractibleCheck(col))
+            return;
+
         triggerStay = true;
         StartCoroutine(InputWaiting());
     }
 
-    protected virtual void OnTriggerExit()
+    protected virtual void OnTriggerExit(Collider col)
     {
+        if (!InteractibleCheck(col))
+            return;
+        else
+            triggerStay = false;
+
+        if (InteractibleCheck(col))
+        {
+            if (!keepState || gimmickState == SH_GimmickState.Hovering)
+                Waiting();
+        }
+    }
+
+    protected virtual void OnCollisionEnter(Collision col)
+    {
+        if (!InteractibleCheck(col))
+            return;
+        else
+            triggerStay = true;
+
+        if (gimmickState == SH_GimmickState.Waiting)
+            Hovering();
+    }
+
+    protected virtual void OnCollisionStay(Collision col)
+    {
+        if (!InteractibleCheck(col))
+            return;
+    }
+
+    protected virtual void OnCollisionExit(Collision col)
+    {
+        if (!InteractibleCheck(col))
+            return;
+
         triggerStay = false;
-        Waiting();
-    }
-
-    protected virtual void OnCollisionEnter()
-    {
-        Hovering();
-    }
-
-    protected virtual void OnCollisionStay()
-    {
-    }
-
-    protected virtual void OnCollisionExit()
-    {
-        triggerStay = false;
-        Waiting();
+        if (!keepState || gimmickState == SH_GimmickState.Hovering)
+            Waiting();
     }
     #endregion
 
@@ -292,21 +377,25 @@ public class SH_Gimmick : MonoBehaviour
         foreach (var p in password)
         {
             if (p.gimmickState != SH_GimmickState.Clear)
+            {
+                StateChange(SH_GimmickState.Disable);
                 return false;
+            }
         }
+
+        if (gimmickState == SH_GimmickState.Disable)
+            StateChange(SH_GimmickState.Waiting);
+
         return true;
     }
 
     IEnumerator ActiveCheck()
     {
-        if (!PasswordCheck())
-            yield break;
-
         if (!activeCoolTimeCheck)
             yield break;
 
         activeCoolTimer = 0f;
-        Debug.Log("Active");
+        //Debug.Log("Active");
         isActive = true;
         StateChange(SH_GimmickState.Active);
         StartCoroutine(ActiveEffect());

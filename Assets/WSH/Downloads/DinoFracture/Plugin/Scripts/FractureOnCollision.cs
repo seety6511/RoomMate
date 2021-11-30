@@ -40,6 +40,11 @@ namespace DinoFracture
 
         private void OnCollisionEnter(Collision col)
         {
+            //Fracture(col);
+        }
+        
+        public void Fracture(Collision col)
+        {
             if (col.contacts.Length > 0)
             {
                 _impactBody = col.rigidbody;
