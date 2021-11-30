@@ -7,19 +7,19 @@ public class SH_Gimmick_ModelStateMachine : MonoBehaviour
     SH_Gimmick parent;
 
     SH_GimmickTag currentState;
-    //[HideInInspector]
+    [HideInInspector]
     public SH_GimmickTag_Active activeState;
-    //[HideInInspector]
+    [HideInInspector]
     public SH_GimmickTag_Activating activatingState;
-    //[HideInInspector]
+    [HideInInspector]
     public SH_GimmickTag_Waiting waitingState;
-    //[HideInInspector]
+    [HideInInspector]
     public SH_GimmickTag_Disable disableState;
-    //[HideInInspector]
+    [HideInInspector]
     public SH_GimmickTag_Clear clearState;
-    //[HideInInspector]
+    [HideInInspector]
     public SH_GimmickTag_Hovering hoveringState;
-    //[HideInInspector]
+    [HideInInspector]
     public SH_GimmickTag_Reload reloadState;
 
     public void Init()
