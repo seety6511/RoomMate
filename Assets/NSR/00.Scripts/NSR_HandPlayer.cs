@@ -33,6 +33,8 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
     {
         NSR_PlayerManager.instance.HandIn = true;
     }
+    public bool leftHandOut;
+    public bool rightHandOut;
     void Update()
     {
         if (NSR_PlayerManager.instance.BodyIn == false) return;
@@ -41,10 +43,16 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
         if (PhotonNetwork.IsMasterClient == false)
         {
             // ¼Õ À§Ä¡
-            left_Hand.localPosition = NSR_PlayerManager.instance.LeftHandAnchor.localPosition;
-            left_Hand.localRotation = NSR_PlayerManager.instance.LeftHandAnchor.localRotation;
-            right_Hand.localPosition = NSR_PlayerManager.instance.RightHandAnchor.localPosition;
-            right_Hand.localRotation = NSR_PlayerManager.instance.RightHandAnchor.localRotation;
+            if (leftHandOut == false)
+            {
+                left_Hand.localPosition = NSR_PlayerManager.instance.LeftHandAnchor.localPosition;
+                left_Hand.localRotation = NSR_PlayerManager.instance.LeftHandAnchor.localRotation;
+            }
+            if(rightHandOut == false)
+            {
+                right_Hand.localPosition = NSR_PlayerManager.instance.RightHandAnchor.localPosition;
+                right_Hand.localRotation = NSR_PlayerManager.instance.RightHandAnchor.localRotation;
+            }
 
             // ÀÎÇ²
             HandDown_L = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);

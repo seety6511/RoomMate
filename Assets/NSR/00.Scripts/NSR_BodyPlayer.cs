@@ -19,6 +19,9 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
     public LineRenderer line_left;
     public LineRenderer line_right;
 
+    public bool leftHandOut;
+    public bool rightHandOut;
+
     void Start()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -73,10 +76,16 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
             thumb = receiveThumb;
 
             // 손 위치
-            left_Hand.localPosition = NSR_PlayerManager.instance.LeftHandAnchor.localPosition;
-            left_Hand.localRotation = NSR_PlayerManager.instance.LeftHandAnchor.localRotation;
-            right_Hand.localPosition = NSR_PlayerManager.instance.RightHandAnchor.localPosition;
-            right_Hand.localRotation = NSR_PlayerManager.instance.RightHandAnchor.localRotation;
+            if (leftHandOut == false)
+            {
+                left_Hand.localPosition = NSR_PlayerManager.instance.LeftHandAnchor.localPosition;
+                left_Hand.localRotation = NSR_PlayerManager.instance.LeftHandAnchor.localRotation;
+            }
+            else if(rightHandOut == false)
+            {
+                right_Hand.localPosition = NSR_PlayerManager.instance.RightHandAnchor.localPosition;
+                right_Hand.localRotation = NSR_PlayerManager.instance.RightHandAnchor.localRotation;
+            }
         }
 
         // BodyPlayer 가 하는 일
