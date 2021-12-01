@@ -33,10 +33,12 @@ public class SH_Gimmick_EffectController : MonoBehaviour
         switch (parent.gimmickState)
         {
             case SH_GimmickState.Active:
+            case SH_GimmickState.ActiveKeep:
                 CreateEffect(activeEffect);
                 break;
 
             case SH_GimmickState.Activating:
+            case SH_GimmickState.ActivatingKeep:
                 CreateEffect(activatingEffect);
                 break;
 

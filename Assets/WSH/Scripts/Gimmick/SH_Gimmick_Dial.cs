@@ -22,7 +22,6 @@ public class SH_Gimmick_Dial : SH_Gimmick
     public SH_Direction dir;    //도는 방향
     public bool infinity;       //true = 무한회전, false= 최댓값에서 역행
 
-    Quaternion originRot;
     int originValue;
     int offset;
     float dig;
@@ -32,7 +31,6 @@ public class SH_Gimmick_Dial : SH_Gimmick
         base.Awake();
         dig = 360 / maxValue;
         isActive = true;
-        originRot = transform.rotation;
         originValue = currentValue;
     }
 
@@ -46,7 +44,6 @@ public class SH_Gimmick_Dial : SH_Gimmick
             Rotate();
             yield return null;
         }
-        yield return base.ReloadEvent();
     }
 
     void Rotate()
@@ -92,7 +89,7 @@ public class SH_Gimmick_Dial : SH_Gimmick
                 break;
         }
     }
-    protected override IEnumerator ActiveEffect()
+    protected override IEnumerator ActiveEvent()
     {
         reloadTimer = 0f;
         Rotate();

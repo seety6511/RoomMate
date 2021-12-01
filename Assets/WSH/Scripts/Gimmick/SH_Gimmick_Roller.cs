@@ -57,7 +57,7 @@ public class SH_Gimmick_Roller : SH_Gimmick
     }
 
     bool activating;
-    protected override IEnumerator ActivatingEffect()
+    protected override IEnumerator ActivatingEvent()
     {
         if (activating)
             yield break;

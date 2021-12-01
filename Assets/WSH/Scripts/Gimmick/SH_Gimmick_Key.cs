@@ -19,7 +19,7 @@ public class SH_Gimmick_Key : SH_Gimmick
         text = GetComponentInChildren<Modular3DText>();
         text.Text = value;
     }
-    protected override IEnumerator ActiveEffect()
+    protected override IEnumerator ActiveEvent()
     {
         if (passwordField == null)
             yield break;

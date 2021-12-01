@@ -39,10 +39,12 @@ public class SH_Gimmick_SoundController : MonoBehaviour
         switch (parent.gimmickState)
         {
             case SH_GimmickState.Active:
+            case SH_GimmickState.ActiveKeep:
                 ClipPlay(activeSound);
                 break;
 
             case SH_GimmickState.Activating:
+            case SH_GimmickState.ActivatingKeep:
                 ClipPlay(activaingSound, true);
                 break;
 
