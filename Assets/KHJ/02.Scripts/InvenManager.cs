@@ -74,23 +74,27 @@ public class InvenManager : MonoBehaviour
         {
             if (NowItem != null)
             {
-                /*    VR
+                //    VR
                 //부딪힌 물체를 오른손의 자식으로 한다
                 NowItem.transform.parent = trRight;
                 NowItem.transform.position = trRight.position;
                 NowItem.transform.rotation = trRight.rotation;
                 //잡은 물체를 trcatched에 넣어둔다
                 trCatchedR = NowItem.transform;
-                */
 
-                Vector3 mousePos = Input.mousePosition;
-                mousePos.z = Camera.main.nearClipPlane * offset;
-                NowItem.transform.localPosition = Camera.main.ScreenToWorldPoint(mousePos);
+                //Vector3 mousePos = Input.mousePosition;
+                //mousePos.z = Camera.main.nearClipPlane * offset;
+                //NowItem.transform.localPosition = Camera.main.ScreenToWorldPoint(mousePos);
             }
         }
         else
         {
-            NowItem = null;
+            if (NowItem != null)
+            {
+                NowItem.transform.parent = null;
+                NowItem.GetComponent<Rigidbody>().isKinematic = false;
+                NowItem = null;
+            }
         }
     }
     void GetItem()
@@ -117,6 +121,7 @@ public class InvenManager : MonoBehaviour
                 hitInfo.transform.parent = Pivot.transform;
                 hitInfo.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
                 hitInfo.transform.localScale = Vector3.one * hitInfo.transform.GetComponent<InvenItem>().size_value;
+
                 Items.Add(hitInfo.transform.gameObject);
             }
         }
@@ -128,11 +133,13 @@ public class InvenManager : MonoBehaviour
         if (Items.Count == 0) return;       
         
         Items[0].transform.localPosition = new Vector3(-r, 0, 0);
+        Items[0].GetComponent<Rigidbody>().isKinematic = true;
         if (Items.Count == 1) return;
-      
+
         //2개 이상일 때
         for (int i = 1; i < Items.Count; i++)
         {
+            Items[i].GetComponent<Rigidbody>().isKinematic = true;
             Items[i].transform.localPosition = new Vector3(r * Mathf.Cos((180 - (360.0f / Items.Count) * i) * (Mathf.PI / 180)), 
                 0, r * Mathf.Sin((180 - (360.0f / Items.Count) * i) * (Mathf.PI / 180)));
         }
