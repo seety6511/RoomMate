@@ -15,12 +15,14 @@ C:/Users/user/Documents/GitHub/RoomMate
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-58025
+64833
 Successfully changed project path to: C:/Users/user/Documents/GitHub/RoomMate
 C:/Users/user/Documents/GitHub/RoomMate
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 147.85 ms, found 12 plugins.
-Preloading 1 native plugins for Editor in 0.89 ms.
+Unknown error occurred while loading 'ProjectSettings/DynamicsManager.asset'.
+
+Refreshing native plugins compatible for Editor in 176.49 ms, found 12 plugins.
+Preloading 1 native plugins for Editor in 1.19 ms.
 Initialize engine version: 2020.3.16f1 (049d6eca3c44)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/Resources/UnitySubsystems
 [Subsystems] Discovering subsystems at path C:/Users/user/Documents/GitHub/RoomMate/Assets
@@ -36,95 +38,95 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56028
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56112
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.002197 seconds.
+Registered in 0.003070 seconds.
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 108.60 ms, found 12 plugins.
+Refreshing native plugins compatible for Editor in 149.18 ms, found 12 plugins.
 Preloading 1 native plugins for Editor in 0.13 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.923 seconds
+- Completed reload, in  1.262 seconds
 Domain Reload Profiling:
-	ReloadAssembly (923ms)
-		BeginReloadAssembly (56ms)
+	ReloadAssembly (1262ms)
+		BeginReloadAssembly (70ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (0ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (1ms)
-		EndReloadAssembly (383ms)
-			LoadAssemblies (54ms)
+		EndReloadAssembly (518ms)
+			LoadAssemblies (68ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (100ms)
+			SetupTypeCache (130ms)
 			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (22ms)
-			SetupLoadedEditorAssemblies (198ms)
+			RebuildScriptCaches (29ms)
+			SetupLoadedEditorAssemblies (275ms)
 				LogAssemblyErrors (0ms)
 				InitializePlatformSupportModulesInManaged (4ms)
 				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (109ms)
-				BeforeProcessingInitializeOnLoad (12ms)
-				ProcessInitializeOnLoadAttributes (54ms)
-				ProcessInitializeOnLoadMethodAttributes (19ms)
+				RefreshPlugins (149ms)
+				BeforeProcessingInitializeOnLoad (19ms)
+				ProcessInitializeOnLoadAttributes (77ms)
+				ProcessInitializeOnLoadMethodAttributes (26ms)
 				AfterProcessingInitializeOnLoad (0ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (0ms)
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.014602 seconds.
+Registered in 0.024794 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.51 ms, found 12 plugins.
-Preloading 1 native plugins for Editor in 0.09 ms.
+Refreshing native plugins compatible for Editor in 2.59 ms, found 12 plugins.
+Preloading 1 native plugins for Editor in 0.20 ms.
 [XR] OculusXRPlugin: registering subsystems
 [XR] Unable to register display lifecyle provider: [1]
 [XR] Oculus Input lifecycle provider registered.
 [XR] Unable to register input lifecyle provider: [1]
 [XR] OVRP version 1.65.0
 Mono: successfully reloaded assembly
-- Completed reload, in  0.969 seconds
+- Completed reload, in  1.036 seconds
 Domain Reload Profiling:
-	ReloadAssembly (970ms)
-		BeginReloadAssembly (119ms)
+	ReloadAssembly (1037ms)
+		BeginReloadAssembly (127ms)
 			ExecutionOrderSort (0ms)
-			DisableScriptedObjects (4ms)
+			DisableScriptedObjects (3ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (15ms)
-		EndReloadAssembly (804ms)
-			LoadAssemblies (97ms)
+		EndReloadAssembly (855ms)
+			LoadAssemblies (114ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (241ms)
+			SetupTypeCache (259ms)
 			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (64ms)
-			SetupLoadedEditorAssemblies (333ms)
+			RebuildScriptCaches (66ms)
+			SetupLoadedEditorAssemblies (352ms)
 				LogAssemblyErrors (0ms)
 				InitializePlatformSupportModulesInManaged (4ms)
 				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (2ms)
-				BeforeProcessingInitializeOnLoad (82ms)
-				ProcessInitializeOnLoadAttributes (225ms)
-				ProcessInitializeOnLoadMethodAttributes (14ms)
-				AfterProcessingInitializeOnLoad (6ms)
+				RefreshPlugins (3ms)
+				BeforeProcessingInitializeOnLoad (83ms)
+				ProcessInitializeOnLoadAttributes (243ms)
+				ProcessInitializeOnLoadMethodAttributes (12ms)
+				AfterProcessingInitializeOnLoad (7ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
-			AwakeInstancesAfterBackupRestoration (5ms)
+			AwakeInstancesAfterBackupRestoration (4ms)
 Platform modules already initialized, skipping
 ========================================================================
 Worker process is ready to serve import requests
 Shader 'Oculus/OVRMRCameraFrameLit': fallback shader 'Alpha-Diffuse' not found
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.05 seconds
-Refreshing native plugins compatible for Editor in 1.68 ms, found 12 plugins.
-Preloading 1 native plugins for Editor in 0.09 ms.
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
+Refreshing native plugins compatible for Editor in 1.78 ms, found 12 plugins.
+Preloading 1 native plugins for Editor in 0.10 ms.
 Unloading 3132 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 214.3 MB.
-System memory in use after: 214.5 MB.
+System memory in use before: 214.6 MB.
+System memory in use after: 214.8 MB.
 
 Unloading 96 unused Assets to reduce memory usage. Loaded Objects now: 3796.
-Total: 2.806200 ms (FindLiveObjects: 0.223600 ms CreateObjectMapping: 0.084600 ms MarkObjects: 2.350600 ms  DeleteObjects: 0.146400 ms)
+Total: 2.570800 ms (FindLiveObjects: 0.232900 ms CreateObjectMapping: 0.086000 ms MarkObjects: 2.149300 ms  DeleteObjects: 0.101600 ms)
 
 AssetImportParameters requested are different than current active one (requested -> active):
   custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
@@ -138,17 +140,73 @@ AssetImportParameters requested are different than current active one (requested
   custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
 ========================================================================
 Received Import Request.
-  path: Assets/KHJ/01.Resources/무제.png
-  artifactKey: Guid(4f693d29a58e8094586dab9216028cc5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/KHJ/01.Resources/무제.png using Guid(4f693d29a58e8094586dab9216028cc5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4651698ff7ffc851170eb15e9a4e2961') in 0.058914 seconds 
-  Import took 0.063817 seconds .
+  path: Assets/KHJ/01.Resources/무제2.png
+  artifactKey: Guid(ff9c5048fc09ffb40863d30167c2e07d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/무제2.png using Guid(ff9c5048fc09ffb40863d30167c2e07d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f7963084578990a471db4cc09911ecd5') in 0.082827 seconds 
+  Import took 0.088932 seconds .
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.648043 seconds.
-  path: Assets/KHJ/01.Resources/무제.png
-  artifactKey: Guid(4f693d29a58e8094586dab9216028cc5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/KHJ/01.Resources/무제.png using Guid(4f693d29a58e8094586dab9216028cc5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cb1bc24195df690eb0ee2e589373a234') in 0.050551 seconds 
-  Import took 0.057346 seconds .
+  Time since last request: 16079.139137 seconds.
+  path: Assets/KHJ/01.Resources/awdaaddaw.png
+  artifactKey: Guid(7089ea79609cfba408345080dd4f6cd8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/awdaaddaw.png using Guid(7089ea79609cfba408345080dd4f6cd8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8a98f8f016c4f47edd6a119a7c4a1219') in 0.022850 seconds 
+  Import took 0.030692 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.239806 seconds.
+  path: Assets/KHJ/01.Resources/awdaaddaw.png
+  artifactKey: Guid(7089ea79609cfba408345080dd4f6cd8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/awdaaddaw.png using Guid(7089ea79609cfba408345080dd4f6cd8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fe8e136211cdf07ffbe47a328005dd03') in 0.053083 seconds 
+  Import took 0.058853 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1885.324299 seconds.
+  path: Assets/KHJ/01.Resources/무제3.png
+  artifactKey: Guid(9f654334e25643c43a85455a79160fd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/무제3.png using Guid(9f654334e25643c43a85455a79160fd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '28919d57e12ba38830b5cb49f34825bb') in 0.028036 seconds 
+  Import took 0.035364 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.080060 seconds.
+  path: Assets/KHJ/01.Resources/무제3.png
+  artifactKey: Guid(9f654334e25643c43a85455a79160fd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/무제3.png using Guid(9f654334e25643c43a85455a79160fd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '79d2b5937dbdcc999aa80c81992f4ac7') in 0.029562 seconds 
+  Import took 0.036549 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.001246 seconds.
+  path: Assets/KHJ/01.Resources/무제3.png
+  artifactKey: Guid(9f654334e25643c43a85455a79160fd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/무제3.png using Guid(9f654334e25643c43a85455a79160fd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '79d2b5937dbdcc999aa80c81992f4ac7') in 0.013933 seconds 
+  Import took 0.019502 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 7325.688406 seconds.
+  path: Assets/KHJ/01.Resources/무제4.png
+  artifactKey: Guid(506d8803540cc7445884485f5c6bd4b1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/무제4.png using Guid(506d8803540cc7445884485f5c6bd4b1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '57c3c8a40f5d0e80284cf774d6a0aa8b') in 0.030394 seconds 
+  Import took 0.039153 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.762232 seconds.
+  path: Assets/KHJ/01.Resources/무제5.png
+  artifactKey: Guid(ffe65947e7a5c4c49a1a9a59c4ca32dd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/무제5.png using Guid(ffe65947e7a5c4c49a1a9a59c4ca32dd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '661f7de4458cba29dd7f054bd2e1991b') in 0.015260 seconds 
+  Import took 0.021812 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.236208 seconds.
+  path: Assets/KHJ/01.Resources/무제5.png
+  artifactKey: Guid(ffe65947e7a5c4c49a1a9a59c4ca32dd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/KHJ/01.Resources/무제5.png using Guid(ffe65947e7a5c4c49a1a9a59c4ca32dd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd33597b32c6c18fb6321fcf3070d6702') in 0.020367 seconds 
+  Import took 0.027389 seconds .
 
 AssetImportWorkerClient::OnTransportError - code=2 error=End of file
