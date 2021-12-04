@@ -11,7 +11,7 @@ public class NSR_PhotonVoiceView : MonoBehaviourPun
     PhotonVoiceView photonVoice;
     void Start()
     {
-        transform.parent = NSR_PlayerManager.instance.CenterEyeAnchor;
+        transform.parent = NSR_AutoHandManager.instance.headCamera.transform;
 
         photonVoice = GetComponent<PhotonVoiceView>();
         audioSource = GetComponent<AudioSource>();
@@ -20,8 +20,8 @@ public class NSR_PhotonVoiceView : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            NSR_PlayerManager.instance.recoderImageInTV.enabled = photonVoice.IsRecording;
-            NSR_PlayerManager.instance.speakerImageInTV.enabled = photonVoice.IsSpeaking;
+            NSR_AutoHandManager.instance.recoderImageInTV.enabled = photonVoice.IsRecording;
+            NSR_AutoHandManager.instance.speakerImageInTV.enabled = photonVoice.IsSpeaking;
         }
         else
         {

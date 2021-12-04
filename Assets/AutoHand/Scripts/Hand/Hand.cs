@@ -161,6 +161,12 @@ namespace Autohand {
             base.Start();
             SetLayer();
             highlightRoutine = StartCoroutine(HighlightUpdate(Time.fixedUnscaledDeltaTime * 4f));
+
+            if(left)
+                follow = NSR_AutoHandManager.instance.followHandL;
+            else
+                follow = NSR_AutoHandManager.instance.followHandR;
+
         }
 
         protected override void OnEnable() {

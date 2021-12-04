@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Photon.Pun;
-using Photon.Voice.PUN;
+using UnityEngine.UI;
 
-public class NSR_PlayerManager : MonoBehaviourPun
+public class NSR_AutoHandManager : MonoBehaviourPun
 {
-    public static NSR_PlayerManager instance;
+    public static NSR_AutoHandManager instance;
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -16,22 +15,24 @@ public class NSR_PlayerManager : MonoBehaviourPun
         Screen.SetResolution(960, 640, false);
     }
 
-    //OVRCameraRig
+    public Camera headCamera;
+    public Transform forwardFollow;
+    public Transform trackingContainer;
+
     public Transform OVRCameraRig;
-
-    public Transform CenterEyeAnchor;
-
-    public Transform LeftHandAnchor;
-    public Transform RightHandAnchor;
-
-    // 플레이어 들어왔는지 확인하는 변수
-    public bool BodyIn;
-    public bool HandIn;
 
     // 보이스 관련 이미지
     public Image recoderImageInTV;
     public Image speakerImageInTV;
-    private void Start()
+
+    public GameObject hand_L;
+    public GameObject hand_R;
+    public GameObject body;
+
+    public Transform followHandL;
+    public Transform followHandR;
+
+    void Start()
     {
         if (PhotonNetwork.IsConnected)
         {
@@ -41,14 +42,15 @@ public class NSR_PlayerManager : MonoBehaviourPun
             // 마스터는 HandPlayer 마스터가 아니면 BodyPlayer 생성
             if (PhotonNetwork.IsMasterClient)
             {
+                PhotonNetwork.Instantiate("NSR_Auto_Hand_Player", Vector3.zero, Quaternion.identity);
             }
             else
             {
-                PhotonNetwork.Instantiate("NSR_Auto Body Player", new Vector3(15f, 1.6f, -2.56f), Quaternion.identity);
+                PhotonNetwork.Instantiate("NSR_Auto_Body_Player", Vector3.zero, Quaternion.identity);
             }
 
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
         }
-
     }
+
 }
