@@ -19,7 +19,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform forwardFollow;
     public Transform trackingContainer;
 
-    public Transform OVRCameraRig;
+    public Transform trackingSpace;
 
     // 보이스 관련 이미지
     public Image recoderImageInTV;
@@ -32,6 +32,13 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform followHandL;
     public Transform followHandR;
 
+    public Transform[] leftFingers;
+    public Transform[] rightFingers;
+
+    public Transform[] objects;
+
+    public GameObject hand_zone;
+    public GameObject body_zone;
     void Start()
     {
         if (PhotonNetwork.IsConnected)

@@ -30,7 +30,7 @@ namespace Autohand.Demo{
             //만약에 읽을 수 있는 상태라면
             if (stream.IsReading)
             {
-                recieveMoveInput = (Vector2)stream.ReceiveNext();
+                recieveMoveInput = (Vector3)stream.ReceiveNext();
                 recieveTurnInput = (float)stream.ReceiveNext();
             }
         }
@@ -41,7 +41,6 @@ namespace Autohand.Demo{
             {
                 moveInput = OVRInput.Get(moveAxis, moveController);
                 turnInput = OVRInput.Get(turnAxis, turnController).x;
-                
             }
             else
             {

@@ -18,29 +18,42 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         // 마스터라면 = handPlayer
         if (PhotonNetwork.IsMasterClient)
         {
-            if(NSR_AutoHandManager.instance.hand_L.activeSelf == false)
+            // 손이 꺼져있으면 켜기
+            if (NSR_AutoHandManager.instance.hand_L.activeSelf == false)
             {
                 NSR_AutoHandManager.instance.hand_L.SetActive(true);
                 NSR_AutoHandManager.instance.hand_R.SetActive(true);
-                body.SetActive(true);
+            }
+            if (NSR_AutoHandManager.instance.body_zone.activeSelf)
+            {
+                NSR_AutoHandManager.instance.body_zone.SetActive(false);
+            }
+            if (NSR_AutoHandManager.instance.hand_zone.activeSelf == false)
+            {
+                NSR_AutoHandManager.instance.hand_zone.SetActive(true);
             }
 
             if (NSR_AutoBodyPlayer.instance != null)
             {
-                body.transform.position = NSR_AutoBodyPlayer.instance.recieve_bodyPos;
-                body.transform.rotation = NSR_AutoBodyPlayer.instance.recieve_bodyRot;
-
-                NSR_AutoHandManager.instance.OVRCameraRig.position = body.transform.position;
-                NSR_AutoHandManager.instance.OVRCameraRig.rotation = body.transform.rotation;
+                NSR_AutoHandManager.instance.trackingSpace.position = NSR_AutoBodyPlayer.instance.recieve_bodyPos;
+                NSR_AutoHandManager.instance.trackingSpace.rotation = NSR_AutoBodyPlayer.instance.recieve_bodyRot;
             }
         }
+        // bodyPlayer
         else
         {
             if (NSR_AutoHandManager.instance.hand_L.activeSelf)
             {
                 NSR_AutoHandManager.instance.hand_L.SetActive(false);
                 NSR_AutoHandManager.instance.hand_R.SetActive(false);
-                body.SetActive(false);
+            }
+            if (NSR_AutoHandManager.instance.body_zone.activeSelf == false)
+            {
+                NSR_AutoHandManager.instance.body_zone.SetActive(true);
+            }
+            if (NSR_AutoHandManager.instance.hand_zone.activeSelf)
+            {
+                NSR_AutoHandManager.instance.hand_zone.SetActive(false);
             }
         }
 
@@ -88,25 +101,74 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         }
     }
 
+    [HideInInspector]
     public Vector3 recieve_hand_L_Pos;
+    [HideInInspector]
     public Quaternion recieve_hand_L_Rot;
+    [HideInInspector]
     public Vector3 recieve_hand_R_Pos;
+    [HideInInspector]
     public Quaternion recieve_hand_R_Rot;
+
+    [HideInInspector]
+    public Vector3[] recieve_left_finger_Pos;
+    [HideInInspector]
+    public Quaternion[] recieve_left_finger_Rot;
+    [HideInInspector]
+    public Vector3[] recieve_right_finger_Pos;
+    [HideInInspector]
+    public Quaternion[] recieve_right_finger_Rot;
+
+    [HideInInspector]
+    public Vector3[] recieve_objects_Pos;
+    public Quaternion[] recieve_objects_Rot;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
+            // 손 위치 보내기
             stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.position);
             stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.rotation); 
-            stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.position);
-            stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.rotation);
+            stream.SendNext(NSR_AutoHandManager.instance.hand_R.transform.position);
+            stream.SendNext(NSR_AutoHandManager.instance.hand_R.transform.rotation);
+            // 손가락 위치 보내기
+            for(int i = 0; i < NSR_AutoHandManager.instance.leftFingers.Length; i++)
+            {
+                stream.SendNext(NSR_AutoHandManager.instance.leftFingers[i].transform.position);
+                stream.SendNext(NSR_AutoHandManager.instance.leftFingers[i].transform.rotation);
+                stream.SendNext(NSR_AutoHandManager.instance.rightFingers[i].transform.position);
+                stream.SendNext(NSR_AutoHandManager.instance.rightFingers[i].transform.rotation);
+            }
+
+            // 오브젝트 위치 보내기
+            for (int i = 0; i < NSR_AutoHandManager.instance.objects.Length; i++)
+            {
+                stream.SendNext(NSR_AutoHandManager.instance.objects[i].transform.position);
+                stream.SendNext(NSR_AutoHandManager.instance.objects[i].transform.rotation);
+            }
         }
         if (stream.IsReading)
         {
+            //받은 손 위치
             recieve_hand_L_Pos = (Vector3)stream.ReceiveNext();
             recieve_hand_L_Rot = (Quaternion)stream.ReceiveNext();
             recieve_hand_R_Pos = (Vector3)stream.ReceiveNext();
             recieve_hand_R_Rot = (Quaternion)stream.ReceiveNext();
+
+            //받은 손가락 위치
+            for(int i = 0; i < NSR_AutoHandManager.instance.leftFingers.Length; i++)
+            {
+                recieve_left_finger_Pos[i] = (Vector3)stream.ReceiveNext();
+                recieve_left_finger_Rot[i] = (Quaternion)stream.ReceiveNext();
+                recieve_right_finger_Pos[i] = (Vector3)stream.ReceiveNext();
+                recieve_right_finger_Rot[i] = (Quaternion)stream.ReceiveNext();
+            }
+            //받은 오브젝트 위치
+            for (int i = 0; i < NSR_AutoHandManager.instance.objects.Length; i++)
+            {
+                recieve_objects_Pos[i] = (Vector3)stream.ReceiveNext();
+                recieve_objects_Rot[i] = (Quaternion)stream.ReceiveNext();
+            }
         }
     }
 }

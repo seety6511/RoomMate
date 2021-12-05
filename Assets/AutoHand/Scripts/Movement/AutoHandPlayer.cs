@@ -153,9 +153,9 @@ namespace Autohand {
 
         public virtual void Start() {
 
-            headCamera = NSR_AutoHandManager.instance.headCamera;
-            forwardFollow = NSR_AutoHandManager.instance.forwardFollow;
-            trackingContainer = NSR_AutoHandManager.instance.trackingContainer;
+            //headCamera = NSR_AutoHandManager.instance.headCamera;
+            //forwardFollow = NSR_AutoHandManager.instance.forwardFollow;
+            //trackingContainer = NSR_AutoHandManager.instance.trackingContainer;
 
             startRot = headCamera.transform.rotation;
 
