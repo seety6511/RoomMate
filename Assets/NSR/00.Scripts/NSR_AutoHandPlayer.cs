@@ -141,10 +141,10 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             }
 
             // 오브젝트 위치 보내기
-            for (int i = 0; i < NSR_AutoHandManager.instance.objects.Length; i++)
+            for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
             {
-                stream.SendNext(NSR_AutoHandManager.instance.objects[i].transform.position);
-                stream.SendNext(NSR_AutoHandManager.instance.objects[i].transform.rotation);
+                stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.position);
+                stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.rotation);
             }
         }
         if (stream.IsReading)
@@ -164,7 +164,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
                 recieve_right_finger_Rot[i] = (Quaternion)stream.ReceiveNext();
             }
             //받은 오브젝트 위치
-            for (int i = 0; i < NSR_AutoHandManager.instance.objects.Length; i++)
+            for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
             {
                 recieve_objects_Pos[i] = (Vector3)stream.ReceiveNext();
                 recieve_objects_Rot[i] = (Quaternion)stream.ReceiveNext();

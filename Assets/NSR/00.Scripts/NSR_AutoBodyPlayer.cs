@@ -20,8 +20,6 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
 
     public Transform[] leftFingers;
     public Transform[] rightFingers;
-
-    public Transform[] objects;
     void Update()
     {
         // 마스터가 아니라면 = bodyPlayer
@@ -49,10 +47,10 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
                     rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
                 }
                 //오브젝트 위치 받기
-                for (int i = 0; i < objects.Length; i++)
+                for (int i = 0; i < NSR_AutoHandManager.instance.body_zone_objects.Length; i++)
                 {
-                    leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
-                    leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
+                    NSR_AutoHandManager.instance.body_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
+                    NSR_AutoHandManager.instance.body_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
                 }
             }
         }

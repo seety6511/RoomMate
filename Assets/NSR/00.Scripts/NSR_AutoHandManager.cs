@@ -35,10 +35,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform[] leftFingers;
     public Transform[] rightFingers;
 
-    public Transform[] objects;
-
     public GameObject hand_zone;
     public GameObject body_zone;
+
+    public Transform[] hand_zone_objects;
+    public Transform[] body_zone_objects;
+
     void Start()
     {
         if (PhotonNetwork.IsConnected)
