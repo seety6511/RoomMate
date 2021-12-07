@@ -23,6 +23,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             {
                 NSR_AutoHandManager.instance.hand_L.SetActive(true);
                 NSR_AutoHandManager.instance.hand_R.SetActive(true);
+                NSR_AutoHandManager.instance.auto_hand_player.SetActive(true);
             }
             if (NSR_AutoHandManager.instance.body_zone.activeSelf)
             {
@@ -32,12 +33,6 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             {
                 NSR_AutoHandManager.instance.hand_zone.SetActive(true);
             }
-
-            if (NSR_AutoBodyPlayer.instance != null)
-            {
-                NSR_AutoHandManager.instance.trackingSpace.position = NSR_AutoBodyPlayer.instance.recieve_bodyPos;
-                NSR_AutoHandManager.instance.trackingSpace.rotation = NSR_AutoBodyPlayer.instance.recieve_bodyRot;
-            }
         }
         // bodyPlayer
         else
@@ -46,6 +41,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             {
                 NSR_AutoHandManager.instance.hand_L.SetActive(false);
                 NSR_AutoHandManager.instance.hand_R.SetActive(false);
+                NSR_AutoHandManager.instance.auto_hand_player.SetActive(false);
             }
             if (NSR_AutoHandManager.instance.body_zone.activeSelf == false)
             {
@@ -102,6 +98,11 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     }
 
     [HideInInspector]
+    public Vector3 recieve_trackingContainer_Pos;
+    [HideInInspector]
+    public Quaternion recieve_trackingContainer_Rot;
+
+    [HideInInspector]
     public Vector3 recieve_hand_L_Pos;
     [HideInInspector]
     public Quaternion recieve_hand_L_Rot;
@@ -126,6 +127,10 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     {
         if (stream.IsWriting)
         {
+            // Tracking 위치 보내기
+            stream.SendNext(NSR_AutoHandManager.instance.trackingContainer.transform.position);
+            stream.SendNext(NSR_AutoHandManager.instance.trackingContainer.transform.rotation);
+
             // 손 위치 보내기
             stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.position);
             stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.rotation); 
@@ -149,6 +154,10 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         }
         if (stream.IsReading)
         {
+            // 받은 Tracking 위치
+            recieve_trackingContainer_Pos = (Vector3)stream.ReceiveNext();
+            recieve_trackingContainer_Rot = (Quaternion)stream.ReceiveNext();
+
             //받은 손 위치
             recieve_hand_L_Pos = (Vector3)stream.ReceiveNext();
             recieve_hand_L_Rot = (Quaternion)stream.ReceiveNext();

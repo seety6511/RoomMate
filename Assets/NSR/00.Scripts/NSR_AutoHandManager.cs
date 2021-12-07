@@ -21,13 +21,15 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     public Transform trackingSpace;
 
+    public Transform autoHandPlayer;
+
     // 보이스 관련 이미지
     public Image recoderImageInTV;
     public Image speakerImageInTV;
 
     public GameObject hand_L;
     public GameObject hand_R;
-    public GameObject body;
+    public GameObject auto_hand_player;
 
     public Transform followHandL;
     public Transform followHandR;

@@ -50,9 +50,9 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
         // 미스터는 BodyPlayer => 이 photon 주인
         if (photonView.IsMine)
         {
-            // 머리 위치
-            head.localPosition = NSR_PlayerManager.instance.CenterEyeAnchor.localPosition;
-            head.localRotation = NSR_PlayerManager.instance.CenterEyeAnchor.localRotation;
+            //// 머리 위치
+            //head.localPosition = NSR_PlayerManager.instance.CenterEyeAnchor.localPosition;
+            //head.localRotation = NSR_PlayerManager.instance.CenterEyeAnchor.localRotation;
 
             // 인풋
             hv = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
@@ -67,9 +67,9 @@ public class NSR_BodyPlayer : MonoBehaviourPun, IPunObservable
         // 아니면 HandPlayer면
         else
         {
-            //머리 위치 받기
-            head.localPosition = Vector3.Lerp(head.localPosition, receiveHeadPos, 0.2f);
-            head.localRotation = Quaternion.Lerp(head.localRotation, receiveHeadRot, 0.2f);
+            ////머리 위치 받기
+            //head.localPosition = Vector3.Lerp(head.localPosition, receiveHeadPos, 0.2f);
+            //head.localRotation = Quaternion.Lerp(head.localRotation, receiveHeadRot, 0.2f);
 
             //인풋 받기
             hv = receiveHv;

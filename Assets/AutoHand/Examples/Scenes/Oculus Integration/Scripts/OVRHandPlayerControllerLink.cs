@@ -6,7 +6,7 @@ using NaughtyAttributes;
 using Photon.Pun;
 
 namespace Autohand.Demo{
-    public class OVRHandPlayerControllerLink : MonoBehaviourPun, IPunObservable
+    public class OVRHandPlayerControllerLink : MonoBehaviourPun
     {
         public AutoHandPlayer player;
         public OVRInput.Controller moveController;
@@ -17,24 +17,6 @@ namespace Autohand.Demo{
 
         Vector2 moveInput;
         float turnInput;
-
-        Vector2 recieveMoveInput;
-        float recieveTurnInput;
-        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-        {
-            if (stream.IsWriting)
-            {
-                stream.SendNext(moveInput);
-                stream.SendNext(turnInput);
-            }
-            //만약에 읽을 수 있는 상태라면
-            if (stream.IsReading)
-            {
-                recieveMoveInput = (Vector3)stream.ReceiveNext();
-                recieveTurnInput = (float)stream.ReceiveNext();
-            }
-        }
-
         public void Update() 
         {
             if (PhotonNetwork.IsMasterClient == false)
@@ -44,8 +26,8 @@ namespace Autohand.Demo{
             }
             else
             {
-                moveInput = recieveMoveInput;
-                turnInput = recieveTurnInput;
+                moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
+                turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
             }
 
             player.Move(moveInput);

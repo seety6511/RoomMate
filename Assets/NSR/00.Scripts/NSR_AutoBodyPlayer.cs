@@ -32,6 +32,10 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
 
             if (NSR_AutoHandPlayer.instance != null)
             {
+                // Tracking 위치 받기
+                NSR_AutoHandManager.instance.trackingContainer.transform.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
+                NSR_AutoHandManager.instance.trackingContainer.transform.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
+
                 // 손 위치 받기
                 hand_R.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_R_Pos;
                 hand_R.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_R_Rot;
@@ -61,21 +65,27 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
         }
     }
 
+    public OVRInput.Controller moveController;
+    public OVRInput.Axis2D moveAxis;
+
+    public OVRInput.Controller turnController;
+    public OVRInput.Axis2D turnAxis;
+
     [HideInInspector]
-    public Vector3 recieve_bodyPos;
+    public Vector2 recieve_moveInput;
     [HideInInspector]
-    public Quaternion recieve_bodyRot;
+    public float recieve_turnInput;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(NSR_AutoHandManager.instance.trackingSpace.transform.position);
-            stream.SendNext(NSR_AutoHandManager.instance.trackingSpace.transform.rotation);
+            stream.SendNext(OVRInput.Get(moveAxis, moveController));
+            stream.SendNext(OVRInput.Get(turnAxis, turnController).x);
         }
         if (stream.IsReading)
         {
-            recieve_bodyPos = (Vector3)stream.ReceiveNext();
-            recieve_bodyRot = (Quaternion)stream.ReceiveNext();
+            recieve_moveInput = (Vector2)stream.ReceiveNext();
+            recieve_turnInput = (float)stream.ReceiveNext();
         }
     }
 }
