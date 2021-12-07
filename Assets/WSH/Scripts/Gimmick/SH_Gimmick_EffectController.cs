@@ -38,7 +38,6 @@ public class SH_Gimmick_EffectController : MonoBehaviour
                 break;
 
             case SH_GimmickState.Activating:
-            case SH_GimmickState.ActivatingKeep:
                 CreateEffect(activatingEffect);
                 break;
 

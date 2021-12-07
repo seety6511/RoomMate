@@ -81,7 +81,6 @@ public class SH_Gimmick_ModelStateMachine : MonoBehaviour
                 break;
 
             case SH_GimmickState.Activating:
-            case SH_GimmickState.ActivatingKeep:
                 Change(activatingState);
                 break;
 
