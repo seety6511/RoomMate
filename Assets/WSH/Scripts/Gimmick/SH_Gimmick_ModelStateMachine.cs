@@ -76,10 +76,12 @@ public class SH_Gimmick_ModelStateMachine : MonoBehaviour
         switch (parent.gimmickState)
         {
             case SH_GimmickState.Active:
+            case SH_GimmickState.ActiveKeep:
                 Change(activeState);
                 break;
 
             case SH_GimmickState.Activating:
+            case SH_GimmickState.ActivatingKeep:
                 Change(activatingState);
                 break;
 

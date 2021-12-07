@@ -91,6 +91,21 @@ public class OVRCameraRig : MonoBehaviour
 	/// </summary>
 	public bool disableEyeAnchorCameras = false;
 
+	public void LeftChange(Camera cam)
+    {
+		_leftEyeCamera = cam;
+    }
+
+	public void RightChange(Camera cam)
+    {
+		_rightEyeCamera = cam;
+    }
+
+	public void CenterChange(Camera cam)
+    {
+		_centerEyeCamera = cam;
+    }
+
 
 	protected bool _skipUpdate = false;
 	protected readonly string trackingSpaceName = "TrackingSpace";
