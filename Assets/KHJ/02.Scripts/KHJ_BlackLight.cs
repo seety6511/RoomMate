@@ -1,29 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class KHJ_BlackLight : SH_Gimmick
+[RequireComponent(typeof(AudioSource))]
+public class KHJ_BlackLight : MonoBehaviour
 {
     public bool isBattery;
-    protected override IEnumerator ActiveEffect()
+    public bool isHolding;
+    public GameObject Light;
+    public AudioClip clickSound;
+    AudioSource source;
+
+    private void Start()
     {
-        base.ActiveEffect();
-        if (isActive)
+        source = GetComponent<AudioSource>();
+        Light.SetActive(false);
+    }
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
         {
-            isActive = false;
-            Waiting();
-            yield break;
+            Activate();
         }
     }
-    protected override void Active()
+    
+    public void Activate()
     {
+        source.PlayOneShot(clickSound);
         if (!isBattery)
             return;
-
-        base.Active();
-    }
-    protected override void Activating()
-    {
-        base.Activating();
+        Light.SetActive(!Light.activeSelf);
     }
 }
