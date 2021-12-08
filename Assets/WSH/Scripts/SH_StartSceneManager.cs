@@ -9,8 +9,15 @@ public enum SH_SceneName
     SH_Main,
     NSR_ConnetScene,
 }
-public class SH_StartScene : MonoBehaviour
+public class SH_StartSceneManager : MonoBehaviour
 {
+    public GameObject doorPrefab;
+    public float doorInterval;
+
+    public void LoadSave()
+    {
+
+    }
     public void GameStart()
     {
         Debug.Log("GameStart");

@@ -20,7 +20,6 @@ public enum SH_GimmickState
     Disable,    //단발성. 이 상태면 아무 상호작용을 하지 않는다.
     Reload,     //연속성
     ActiveKeep,       //Active이후 바로 넘어가는 상태.
-    ActivatingKeep,   //Activating 이후 바로 넘어가는 상태.
 }
 
 //기믹 부모클래스
@@ -68,7 +67,6 @@ public class SH_Gimmick : MonoBehaviour
 
     protected virtual void Start()
     {
-        //Debug.Log("2");
     }
 
     protected virtual void Update()
@@ -96,10 +94,6 @@ public class SH_Gimmick : MonoBehaviour
 
             case SH_GimmickState.Activating:
                 Activating();
-                break;
-
-            case SH_GimmickState.ActivatingKeep:
-                KeepActivating();
                 break;
 
             case SH_GimmickState.Disable:
@@ -152,19 +146,22 @@ public class SH_Gimmick : MonoBehaviour
     /// </summary>
     /// <param name="state"></param>
     /// <param name="force"></param>
-    protected void StateChange(SH_GimmickState state, Collider col)
+    bool triggerStay;
+    protected bool StateChange(SH_GimmickState state, Collider col)
     {
         if (!InteractibleCheck(col))
-            return;
-
+            return false;
+        triggerStay = true;
         StateChange(state);
+        return true;
     }
-    protected void StateChange(SH_GimmickState state, Collision col)
+    protected bool StateChange(SH_GimmickState state, Collision col)
     {
         if (!InteractibleCheck(col))
-            return;
-
+            return false;
+        triggerStay = true;
         StateChange(state);
+        return true;
     }
     bool KeepStateCheck()
     {
@@ -172,8 +169,11 @@ public class SH_Gimmick : MonoBehaviour
         {
             if (gimmickState == SH_GimmickState.ActiveKeep)
                 return true;
-            if (gimmickState == SH_GimmickState.ActivatingKeep)
+            if (gimmickState == SH_GimmickState.Activating)
+            {
+                inputWait = false;
                 return true;
+            }
         }
         return false;
     }
@@ -194,9 +194,6 @@ public class SH_Gimmick : MonoBehaviour
             case SH_GimmickState.Active:
             case SH_GimmickState.ActiveKeep:
             case SH_GimmickState.Activating:
-            case SH_GimmickState.ActivatingKeep:
-                if (gimmickState == state)
-                    return;
                 break;
 
             case SH_GimmickState.Clear:
@@ -226,9 +223,59 @@ public class SH_Gimmick : MonoBehaviour
     protected virtual void Hovering()
     {
         //Debug.Log("Hovering : 7");
-        InputWaiting();
+        StartCoroutine(InputWaiting());
     }
 
+    float inputTimer = 0f;
+    float inputTime = 1f;
+    bool alreadyInput;
+    bool inputWait;
+
+    IEnumerator InputWaiting()
+    {
+        inputTime = 1f;
+        if (inputWait)
+            yield break;
+
+        inputWait = true;
+        bool input = false;
+        while (triggerStay && inputWait)
+        {
+            if (Input.GetKey(pcKey) && gimmickState != SH_GimmickState.Activating)
+            {
+                input = true;
+                inputTimer += Time.deltaTime;
+            }
+            else if (Input.GetKeyUp(pcKey))
+            {
+                break;
+            }
+
+            if (OVRInput.Get(vrKey) && gimmickState != SH_GimmickState.Activating)
+            {
+                input = true;
+                inputTimer += Time.deltaTime;
+            }
+            else if (OVRInput.GetUp(vrKey))
+            {
+                break;
+            }
+
+            if (inputTimer >= inputTime)
+            {
+                StateChange(SH_GimmickState.Activating);
+                break;
+            }
+            yield return null;
+        }
+
+        inputWait = false;
+        if (input && inputTimer < inputTime)
+        {
+            StateChange(SH_GimmickState.Active);
+        }
+        inputTimer = 0f;
+    }
     protected virtual void Active()
     {
         //Debug.Log("Active : 8");
@@ -247,12 +294,12 @@ public class SH_Gimmick : MonoBehaviour
     {
         //Debug.Log("Activating Start : 10");
         StartCoroutine(ActivatingEvent());
+        StartCoroutine(InputWaiting());
     }
     protected virtual IEnumerator ActivatingEvent()
     {
         yield return null;
         //Debug.Log("11");
-        StateChange(SH_GimmickState.ActivatingKeep);
     }
     protected virtual void Disable()
     {
@@ -268,58 +315,7 @@ public class SH_Gimmick : MonoBehaviour
     {
         yield return null;
     }
-    float inputTimer = 0f;
-    float inputTime;
-    bool alreadyInput;
-    bool inputWait;
-    IEnumerator InputWaiting()
-    {
-        inputTime = 1f;
-        if (inputWait)
-            yield break;
-        inputWait = true;
 
-        while(gimmickState != SH_GimmickState.Disable && inputWait)
-        {
-            if (Input.GetKeyDown(pcKey))
-                StateChange(SH_GimmickState.Active);
-            else if (Input.GetKey(pcKey))
-                inputTimer += Time.deltaTime;
-            else if (Input.GetKey(pcKey))
-                inputWait = false;
-
-            if (OVRInput.GetDown(vrKey))
-                StateChange(SH_GimmickState.Active);
-            else if (OVRInput.Get(vrKey))
-                inputTimer += Time.deltaTime;
-            else if (OVRInput.GetUp(vrKey))
-                inputWait = false;
-
-            if (inputTime <= inputTimer)
-            {
-                alreadyInput = true;
-                StateChange(SH_GimmickState.Activating);
-
-                if (Input.GetKeyUp(pcKey))
-                {
-                    StateChange(SH_GimmickState.Waiting);
-                    inputTimer = 0f;
-                    alreadyInput = false;
-                    inputWait = false;
-                }
-
-                if (OVRInput.GetUp(vrKey))
-                {
-                    StateChange(SH_GimmickState.Waiting);
-                    inputTimer = 0f;
-                    alreadyInput = false;
-                    inputWait = false;
-                }
-            }
-            yield return null;
-        }
-        
-    }
 
     #endregion
 
@@ -354,7 +350,8 @@ public class SH_Gimmick : MonoBehaviour
     }
     protected virtual void OnTriggerExit(Collider col)
     {
-        StateChange(SH_GimmickState.Waiting, col);
+        if (StateChange(SH_GimmickState.Waiting, col))
+            triggerStay = false;
     }
     protected virtual void OnCollisionEnter(Collision col)
     {
@@ -366,7 +363,8 @@ public class SH_Gimmick : MonoBehaviour
     }
     protected virtual void OnCollisionExit(Collision col)
     {
-        StateChange(SH_GimmickState.Waiting, col);
+        if (StateChange(SH_GimmickState.Waiting, col))
+            triggerStay = false;
     }
     #endregion
 

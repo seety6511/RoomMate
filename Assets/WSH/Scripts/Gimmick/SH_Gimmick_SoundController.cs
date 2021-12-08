@@ -44,7 +44,6 @@ public class SH_Gimmick_SoundController : MonoBehaviour
                 break;
 
             case SH_GimmickState.Activating:
-            case SH_GimmickState.ActivatingKeep:
                 ClipPlay(activaingSound, true);
                 break;
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SH_Illusion : MonoBehaviour
+public class SH_PatternGrid : MonoBehaviour
 {
+    
 }
