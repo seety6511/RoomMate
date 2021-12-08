@@ -45,6 +45,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform[] body_zone_objects;
 
     public GameObject autoHandPlayerContainer;
+
+    public Transform tv_camera;
     void Start()
     {
         if (PhotonNetwork.IsConnected)
