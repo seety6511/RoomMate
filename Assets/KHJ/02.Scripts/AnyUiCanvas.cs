@@ -46,6 +46,7 @@ namespace AnyUI
         }
         protected override void OnDestroy()
         {
+#if UNITY_EDITOR
             //TODO only the case if whole game object is destroyed and not the component alone
             if (Event.current != null && (Event.current.commandName == "SoftDelete" || Event.current.commandName == "Delete"))
             {
@@ -54,7 +55,7 @@ namespace AnyUI
                 DestroyImmediate(eventCamera);
             }
             base.OnDestroy();
-
+#endif
         }
         
     }
