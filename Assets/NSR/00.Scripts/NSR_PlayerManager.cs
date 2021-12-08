@@ -38,14 +38,13 @@ public class NSR_PlayerManager : MonoBehaviourPun
             PhotonNetwork.SendRate = 50;
             PhotonNetwork.SerializationRate = 50;
 
-            // 마스터는 BodyPlayer 마스터가 아니면 HandPlayer 생성
+            // 마스터는 HandPlayer 마스터가 아니면 BodyPlayer 생성
             if (PhotonNetwork.IsMasterClient)
             {
-                PhotonNetwork.Instantiate("NSR_BodyPlayer", new Vector3(0, 1.6f, 0), Quaternion.identity);
             }
             else
             {
-                PhotonNetwork.Instantiate("NSR_HandPlayer", new Vector3(15f, 1.6f, -2.56f), Quaternion.identity);
+                PhotonNetwork.Instantiate("NSR_Auto Body Player", new Vector3(15f, 1.6f, -2.56f), Quaternion.identity);
             }
 
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);

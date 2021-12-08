@@ -19,7 +19,9 @@ namespace Autohand {
         public Transform forwardFollow;
         [Tooltip("This should NOT be a child of this body. This should be a GameObject that contains all the tracked objects (head/controllers)")]
         public Transform trackingContainer;
+        [HideInInspector]
         public Hand handRight;
+        [HideInInspector]
         public Hand handLeft;
 
         [AutoToggleHeader("Movement")]
@@ -150,6 +152,11 @@ namespace Autohand {
         }
 
         public virtual void Start() {
+
+            //headCamera = NSR_AutoHandManager.instance.headCamera;
+            //forwardFollow = NSR_AutoHandManager.instance.forwardFollow;
+            //trackingContainer = NSR_AutoHandManager.instance.trackingContainer;
+
             startRot = headCamera.transform.rotation;
 
             gameObject.layer = LayerMask.NameToLayer(HandPlayerLayer);
@@ -176,6 +183,9 @@ namespace Autohand {
             deltaY = transform.position.y;
 
             CreateHeadFollower();
+
+            handLeft = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
+            handRight = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
         }
 
         protected virtual void OnEnable() {
