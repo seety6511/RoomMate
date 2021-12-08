@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using Autohand.Demo;
 
 public class NSR_AutoHandManager : MonoBehaviourPun
 {
@@ -43,6 +44,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform[] hand_zone_objects;
     public Transform[] body_zone_objects;
 
+    public GameObject autoHandPlayerContainer;
     void Start()
     {
         if (PhotonNetwork.IsConnected)
@@ -62,6 +64,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
         }
+
     }
 
 }

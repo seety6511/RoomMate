@@ -15,9 +15,6 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
     public GameObject hand_R;
     public GameObject hand_L;
 
-    public Vector3 RplayerPos;
-    public Quaternion RPlayerRot;
-
     public Transform[] leftFingers;
     public Transform[] rightFingers;
     void Update()
@@ -43,7 +40,7 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
                 hand_L.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_L_Rot;
 
                 //손가락 위치 받기
-                for (int i = 0; i < leftFingers.Length; i++)
+                for (int i = 0; i < 15; i++)
                 {
                     leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
                     leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
@@ -51,7 +48,7 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
                     rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
                 }
                 //오브젝트 위치 받기
-                for (int i = 0; i < NSR_AutoHandManager.instance.body_zone_objects.Length; i++)
+                for (int i = 0; i < NSR_AutoHandPlayer.instance.recieve_objects_Pos.Length; i++)
                 {
                     NSR_AutoHandManager.instance.body_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
                     NSR_AutoHandManager.instance.body_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
