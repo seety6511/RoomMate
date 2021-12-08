@@ -47,6 +47,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public GameObject autoHandPlayerContainer;
 
     public Transform tv_camera;
+    public GameObject head_light;
     void Start()
     {
         if (PhotonNetwork.IsConnected)
@@ -67,6 +68,38 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
         }
 
+    }
+
+    private void Update()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (tv_camera.gameObject.activeSelf == false)
+            {
+                tv_camera.gameObject.SetActive(true);
+            }
+
+            if (NSR_AutoBodyPlayer.instance != null)
+            {
+                if (NSR_AutoBodyPlayer.instance.recieve_lightInput)
+                {
+                    head_light.gameObject.SetActive(true);
+                }
+                else
+                {
+                    head_light.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                head_light.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            if (tv_camera.gameObject.activeSelf == true)
+                tv_camera.gameObject.SetActive(false);
+        }
     }
 
 }

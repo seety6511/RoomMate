@@ -80,6 +80,8 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
     public Vector3 recieve_headCamera_Pos;
     [HideInInspector]
     public Quaternion recieve_headCamera_Rot;
+
+    public bool recieve_lightInput;
    
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -89,6 +91,8 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
             stream.SendNext(OVRInput.Get(turnAxis, turnController).x);
             stream.SendNext(NSR_AutoHandManager.instance.headCamera.transform.position);
             stream.SendNext(NSR_AutoHandManager.instance.headCamera.transform.rotation);
+
+            stream.SendNext(OVRInput.Get(OVRInput.Button.One, moveController));
         }
         if (stream.IsReading)
         {
@@ -96,6 +100,8 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
             recieve_turnInput = (float)stream.ReceiveNext();
             recieve_headCamera_Pos = (Vector3)stream.ReceiveNext();
             recieve_headCamera_Rot = (Quaternion)stream.ReceiveNext();
+
+            recieve_lightInput = (bool)stream.ReceiveNext();
         }
     }
 }
