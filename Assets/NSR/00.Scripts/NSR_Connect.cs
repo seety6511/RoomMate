@@ -9,13 +9,7 @@ using Photon.Realtime;
 // 3. 방 생성 or 방 입장
 public class NSR_Connect : MonoBehaviourPunCallbacks
 {
-
-    void Awake()
-    {
-        Screen.SetResolution(960, 640, false);
-    }
-
-    private void Start()
+    public void Connect()
     {
         if (PhotonNetwork.IsConnected == false)
         {
@@ -51,6 +45,6 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         print("방입장 완료");
 
-        PhotonNetwork.LoadLevel("NSR_Scene");
+        PhotonNetwork.LoadLevel("SH_Main");
     }
 }
