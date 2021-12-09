@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using DG.Tweening;
 
 public class KHJ_SmartPhone : MonoBehaviour
 {
@@ -28,42 +28,29 @@ public class KHJ_SmartPhone : MonoBehaviour
         Mail,
         Phone,
     }
-
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            StartCoroutine(FadeIn(AppBG));
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha8))
-        {
-            StartCoroutine(FadeOut(AppBG));
-        }
-
-
         //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         if (Input.GetButtonDown("Fire1"))
         {
             //Ray ray = new Ray(trRight.position, trRight.forward);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Debug.Log("O"+ray.origin);
+            Debug.Log("M"+Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
             {
+                Debug.Log("H" + hitInfo.point);
                 //키패드 클릭 실행
                 if (hitInfo.collider.name.Contains("App"))
                 {
-                    StartCoroutine(StartApp(hitInfo.collider.gameObject));
+                    StartApp(hitInfo.collider.gameObject);
                 }
                 else if (hitInfo.collider.name.Contains("HomeButton"))
                 {
                     if (IsRunningApp)
                     {
-                        StartCoroutine(EndApp());
+                        EndApp();
                     }
                 }
                 else if (hitInfo.collider.name.Contains("Toggle"))
@@ -93,55 +80,27 @@ public class KHJ_SmartPhone : MonoBehaviour
         }
     }
 
-    IEnumerator StartApp(GameObject obj)
+
+    float duration = 0.4f;
+    void StartApp(GameObject obj)
     {
-        AppBG.SetActive(true);
-        StartCoroutine(FadeIn(AppBG));
+        AppBG.GetComponent<Image>().DOFade(1, duration).SetAutoKill(false).SetEase(Ease.InOutQuad).Pause();
+        AppBG.transform.DOScale(1, duration).SetAutoKill(false).SetEase(Ease.InOutCirc).Pause();
+        DOTween.Play(AppBG.GetComponent<Image>());
+        DOTween.Play(AppBG.transform);
         IsRunningApp = true;
+        obj.GetComponent<KHJ_App>().App.SetActive(true);
         RunningApp = obj.GetComponent<KHJ_App>();
-        yield return new WaitForSeconds(0.1f);
-        if (IsRunningApp)
-            obj.GetComponent<KHJ_App>().App.SetActive(true);
     }
-    IEnumerator EndApp()
+    void EndApp()
     {
+        AppBG.GetComponent<Image>().DOFade(0, duration).SetAutoKill(false).SetEase(Ease.InOutQuad).Pause();
+        AppBG.transform.DOScale(0.2f, duration).SetAutoKill(false).SetEase(Ease.InOutCirc).Pause();
+        DOTween.Play(AppBG.GetComponent<Image>());
+        DOTween.Play(AppBG.transform);
         IsRunningApp = false;
         RunningApp.App.SetActive(false);
         RunningApp = null;
-        StartCoroutine(FadeOut(AppBG));
-        yield return new WaitForSeconds(0.1f);
-        AppBG.SetActive(false);
-    }
-
-    float time1 = 0f;
-    float F_time1 = 0.2f;
-    IEnumerator FadeIn(GameObject img)
-    {
-        Color alpha = img.GetComponent<Image>().color;
-        alpha.a = 0;
-        time1 = 0f;
-        while (alpha.a < 1f)
-        {
-            print("FI "+alpha.a);
-            time1 += Time.deltaTime / F_time1;
-            alpha.a = Mathf.Lerp(0,1, time1);
-            yield return null;
-            img.GetComponent<Image>().color = alpha;
-        }
-    }
-    IEnumerator FadeOut(GameObject img)
-    {
-        Color alpha = img.GetComponent<Image>().color;
-        alpha.a = 1;
-        time1 = 0f;
-        while (alpha.a > 0f)
-        {
-            print("FO " + alpha.a);
-            time1 += Time.deltaTime / F_time1;
-            alpha.a = Mathf.Lerp(1,0, time1);
-            yield return null;
-            img.GetComponent<Image>().color = alpha;
-        }
     }
     void Switch_App(AppName name)
     {
