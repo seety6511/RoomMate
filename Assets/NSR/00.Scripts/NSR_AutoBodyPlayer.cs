@@ -12,6 +12,59 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
         if (instance == null) instance = this;
     }
 
+    public GameObject hand_R;
+    public GameObject hand_L;
+
+    public Transform[] leftFingers;
+    public Transform[] rightFingers;
+    void Update()
+    {
+        // 마스터가 아니라면 = bodyPlayer
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+
+            hand_L.SetActive(true);
+            hand_R.SetActive(true);
+
+
+            if (NSR_AutoHandPlayer.instance != null)
+            {
+                // Tracking 위치 받기
+                NSR_AutoHandManager.instance.trackingContainer.transform.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
+                NSR_AutoHandManager.instance.trackingContainer.transform.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
+
+                // 손 위치 받기
+                hand_R.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_R_Pos;
+                hand_R.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_R_Rot;
+                hand_L.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_L_Pos;
+                hand_L.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_L_Rot;
+
+                //손가락 위치 받기
+                for (int i = 0; i < 15; i++)
+                {
+                    leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
+                    leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
+                    rightFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
+                    rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
+                }
+                //오브젝트 위치 받기
+                for (int i = 0; i < NSR_AutoHandPlayer.instance.recieve_objects_Pos.Length; i++)
+                {
+                    NSR_AutoHandManager.instance.body_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
+                    NSR_AutoHandManager.instance.body_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
+                }
+            }
+        }
+        else
+        {
+            hand_L.SetActive(false);
+            hand_R.SetActive(false);
+
+            NSR_AutoHandManager.instance.tv_camera.position = recieve_headCamera_Pos;
+            NSR_AutoHandManager.instance.tv_camera.rotation = recieve_headCamera_Rot;
+        }
+    }
+
     public OVRInput.Controller moveController;
     public OVRInput.Axis2D moveAxis;
 
@@ -28,7 +81,6 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
     [HideInInspector]
     public Quaternion recieve_headCamera_Rot;
 
-    [HideInInspector]
     public bool recieve_lightInput;
    
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
