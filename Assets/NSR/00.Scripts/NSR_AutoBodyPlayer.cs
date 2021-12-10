@@ -48,7 +48,7 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
                     rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
                 }
                 //오브젝트 위치 받기
-                for (int i = 0; i < NSR_AutoHandPlayer.instance.recieve_objects_Pos.Length; i++)
+                for (int i = 0; i < NSR_AutoHandManager.instance.body_zone_objects.Length; i++)
                 {
                     NSR_AutoHandManager.instance.body_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
                     NSR_AutoHandManager.instance.body_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];

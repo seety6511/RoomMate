@@ -99,6 +99,21 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         {
             if (tv_camera.gameObject.activeSelf == true)
                 tv_camera.gameObject.SetActive(false);
+
+            if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))
+            {
+                head_light.gameObject.SetActive(true);
+            }
+            else
+            {
+                head_light.gameObject.SetActive(false);
+            }
+
+            if (NSR_AutoHandPlayer.instance != null)
+            {
+                autoHandPlayer.transform.position = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Pos;
+                autoHandPlayer.transform.rotation = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Rot;
+            }
         }
     }
 
