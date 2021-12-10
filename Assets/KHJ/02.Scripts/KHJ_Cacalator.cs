@@ -5,6 +5,10 @@ using UnityEngine.UI;
 using TMPro;
 public class KHJ_Cacalator : MonoBehaviour
 {
+    //A + B = C
+    public float A;
+    public float B;
+    public float C;
     public float NowInput;
     public TMP_Text value;
     void Start()

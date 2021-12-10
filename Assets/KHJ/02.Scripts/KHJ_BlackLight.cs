@@ -15,17 +15,9 @@ public class KHJ_BlackLight : MonoBehaviour
         source = GetComponent<AudioSource>();
         Light.SetActive(false);
     }
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Activate();
-        }
-    }
-    
     public void Activate()
     {
-        source.PlayOneShot(clickSound);
+        //source.PlayOneShot(clickSound);
         if (!isBattery)
             return;
         Light.SetActive(!Light.activeSelf);
