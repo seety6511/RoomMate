@@ -60,14 +60,14 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
                 NSR_AutoHandManager.instance.hand_zone.SetActive(false);
             }
             // AutoHandPlayerContainer 부모로 하고 위치 받기
-            if(NSR_AutoHandManager.instance.autoHandPlayer.parent == null)
-            {
-                NSR_AutoHandManager.instance.autoHandPlayer.parent = NSR_AutoHandManager.instance.autoHandPlayerContainer.transform;
-                NSR_AutoHandManager.instance.autoHandPlayer.localPosition = Vector3.zero;
-                NSR_AutoHandManager.instance.autoHandPlayer.localRotation = Quaternion.identity;
-            }
-            NSR_AutoHandManager.instance.autoHandPlayerContainer.transform.position = recieve_autoHandPlayer_Pos;
-            NSR_AutoHandManager.instance.autoHandPlayerContainer.transform.rotation = recieve_autoHandPlayer_Rot;
+            //if(NSR_AutoHandManager.instance.autoHandPlayer.parent == null)
+            //{
+            //    NSR_AutoHandManager.instance.autoHandPlayer.parent = NSR_AutoHandManager.instance.autoHandPlayerContainer.transform;
+            //    NSR_AutoHandManager.instance.autoHandPlayer.localPosition = Vector3.zero;
+            //    NSR_AutoHandManager.instance.autoHandPlayer.localRotation = Quaternion.identity;
+            //}
+            //NSR_AutoHandManager.instance.autoHandPlayerContainer.transform.position = recieve_autoHandPlayer_Pos;
+            //NSR_AutoHandManager.instance.autoHandPlayerContainer.transform.rotation = recieve_autoHandPlayer_Rot;
 
         }
 
