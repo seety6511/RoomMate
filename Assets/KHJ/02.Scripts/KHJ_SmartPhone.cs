@@ -35,12 +35,9 @@ public class KHJ_SmartPhone : MonoBehaviour
         {
             //Ray ray = new Ray(trRight.position, trRight.forward);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Debug.Log("O"+ray.origin);
-            Debug.Log("M"+Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
             {
-                Debug.Log("H" + hitInfo.point);
                 //키패드 클릭 실행
                 if (hitInfo.collider.name.Contains("App"))
                 {

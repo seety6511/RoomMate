@@ -10,6 +10,7 @@ public class KHJ_Clock : MonoBehaviour
     public string nowTime;
     public TMP_Text text;
     public TMP_Text AMPM;
+    public TMP_Text PlayTime;
     void Start()
     {
     }
@@ -17,8 +18,9 @@ public class KHJ_Clock : MonoBehaviour
     public string[] tmp;
     void Update()
     {
+        PlayTime.text = ((int)Time.realtimeSinceStartup / 60).ToString("D2") + ":" + ((int)Time.realtimeSinceStartup % 60).ToString("D2");
+
         nowTime = DateTime.Now.ToString();
-        //2021-12-09 PM 12:51:07
         tmp = nowTime.Split(' ');
 
         AMPM.text = tmp[1];
