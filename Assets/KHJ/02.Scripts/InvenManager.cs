@@ -105,7 +105,7 @@ public class InvenManager : MonoBehaviour
             {
                 NowItem.transform.parent = null;
                 NowItem.GetComponent<Rigidbody>().isKinematic = false;
-                if (Items[i].GetComponent<Grabbable>())
+                if (NowItem.GetComponent<Grabbable>())
                     NowItem.GetComponent<Grabbable>().enabled = true;
                 NowItem = null;
             }
