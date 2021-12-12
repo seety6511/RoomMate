@@ -134,8 +134,8 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             stream.SendNext(NSR_AutoHandManager.instance.trackingContainer.transform.position);
             stream.SendNext(NSR_AutoHandManager.instance.trackingContainer.transform.rotation);
             // AutoHandPlayer 위치 보내기
-            stream.SendNext(NSR_AutoHandManager.instance.autoHandPlayer.transform.position);
-            stream.SendNext(NSR_AutoHandManager.instance.autoHandPlayer.transform.rotation);
+            stream.SendNext(NSR_AutoHandManager.instance.autoHandPlayer.position);
+            stream.SendNext(NSR_AutoHandManager.instance.autoHandPlayer.rotation);
 
             // 손 위치 보내기
             stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.position);

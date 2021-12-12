@@ -88,12 +88,16 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 tv_camera.gameObject.SetActive(true);
             }
 
+            if(auto_hand_player.activeSelf == false)
+            {
+                auto_hand_player.SetActive(true);
+            }
+
             // 손이 켜기
             if (hand_L.activeSelf == false)
             {
                 hand_L.SetActive(true);
                 hand_R.SetActive(true);
-                auto_hand_player.SetActive(true);
             }
 
             // 바디 손 끄기
@@ -133,6 +137,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             {
                 head_light.gameObject.SetActive(false);
             }
+
         }
         // bodyPlayer
         else
@@ -146,6 +151,10 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             {
                 hand_L.SetActive(false);
                 hand_R.SetActive(false);
+            }
+
+            if (auto_hand_player.activeSelf)
+            {
                 auto_hand_player.SetActive(false);
             }
 
@@ -179,8 +188,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 autoHandPlayer.transform.position = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Pos;
                 autoHandPlayer.transform.rotation = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Rot;
                 // Tracking 위치 받기
-                trackingContainer.transform.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
-                trackingContainer.transform.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
+                trackingContainer.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
+                trackingContainer.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
                 // 손 위치 받기
                 body_hand_R.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_R_Pos;
                 body_hand_R.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_R_Rot;
