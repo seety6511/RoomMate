@@ -35,6 +35,7 @@ public class KHJ_DoorButton : MonoBehaviour
             door.ClearBtn();
             door.under.text = "Clear";
             door.isOpened = true;
+            KHJ_SceneManager_1.instance.Scene1Clear();
         }
         else
         {
