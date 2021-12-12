@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Autohand;
 public class InvenManager : MonoBehaviour
 {
     public static InvenManager instance;
@@ -50,6 +50,7 @@ public class InvenManager : MonoBehaviour
     }
     void OnOffInven()
     {
+        //인벤토리 껏다 켰다하기
         bool input;
         if (NSR_AutoHandManager.instance.isMaster)
             input = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
@@ -104,6 +105,8 @@ public class InvenManager : MonoBehaviour
             {
                 NowItem.transform.parent = null;
                 NowItem.GetComponent<Rigidbody>().isKinematic = false;
+                if (Items[i].GetComponent<Grabbable>())
+                    NowItem.GetComponent<Grabbable>().enabled = true;
                 NowItem = null;
             }
         }
@@ -151,11 +154,15 @@ public class InvenManager : MonoBehaviour
         
         Items[0].transform.localPosition = new Vector3(-r, 0, 0);
         Items[0].GetComponent<Rigidbody>().isKinematic = true;
+        if (Items[0].GetComponent<Grabbable>())
+            Items[0].GetComponent<Grabbable>().enabled = false;
         if (Items.Count == 1) return;
 
         //2개 이상일 때
         for (int i = 1; i < Items.Count; i++)
         {
+            if(Items[i].GetComponent<Grabbable>())
+                Items[i].GetComponent<Grabbable>().enabled = false;
             Items[i].GetComponent<Rigidbody>().isKinematic = true;
             Items[i].transform.localPosition = new Vector3(r * Mathf.Cos((180 - (360.0f / Items.Count) * i) * (Mathf.PI / 180)), 
                 0, r * Mathf.Sin((180 - (360.0f / Items.Count) * i) * (Mathf.PI / 180)));
