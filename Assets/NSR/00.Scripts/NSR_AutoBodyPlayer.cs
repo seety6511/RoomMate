@@ -77,9 +77,9 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
     public float recieve_turnInput;
 
     [HideInInspector]
-    public Vector3 recieve_headCamera_Pos;
+    public Vector3 recieve_tv_camera_pos;
     [HideInInspector]
-    public Quaternion recieve_headCamera_Rot;
+    public Quaternion recieve_tv_camera_Rot;
 
     public bool recieve_lightInput;
    
@@ -89,8 +89,8 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(OVRInput.Get(moveAxis, moveController));
             stream.SendNext(OVRInput.Get(turnAxis, turnController).x);
-            stream.SendNext(NSR_AutoHandManager.instance.headCamera.transform.position);
-            stream.SendNext(NSR_AutoHandManager.instance.headCamera.transform.rotation);
+            stream.SendNext(NSR_AutoHandManager.instance.tv_camera_pos.position);
+            stream.SendNext(NSR_AutoHandManager.instance.tv_camera_pos.rotation);
 
             stream.SendNext(OVRInput.Get(OVRInput.Button.One, moveController));
         }
@@ -98,8 +98,8 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
         {
             recieve_moveInput = (Vector2)stream.ReceiveNext();
             recieve_turnInput = (float)stream.ReceiveNext();
-            recieve_headCamera_Pos = (Vector3)stream.ReceiveNext();
-            recieve_headCamera_Rot = (Quaternion)stream.ReceiveNext();
+            recieve_tv_camera_pos = (Vector3)stream.ReceiveNext();
+            recieve_tv_camera_Rot = (Quaternion)stream.ReceiveNext();
 
             recieve_lightInput = (bool)stream.ReceiveNext();
         }

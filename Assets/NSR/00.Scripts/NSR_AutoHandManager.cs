@@ -16,6 +16,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         Screen.SetResolution(960, 640, false);
     }
 
+    #region 
     public Camera headCamera;
     public Transform forwardFollow;
     public Transform trackingContainer;
@@ -52,6 +53,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     public Transform[] hand_zone_objects;
     public Transform[] body_zone_objects;
+    public Transform tv_camera_pos;
+    #endregion
     void Start()
     {
         if (PhotonNetwork.IsConnected)
@@ -123,8 +126,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 }
 
                 // 화면 카메라 위치 받기
-                tv_camera.position = NSR_AutoBodyPlayer.instance.recieve_headCamera_Pos;
-                tv_camera.rotation = NSR_AutoBodyPlayer.instance.recieve_headCamera_Rot;
+                tv_camera.position = NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos;
+                tv_camera.rotation = NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot;
             }
             else
             {
