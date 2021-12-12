@@ -12,9 +12,9 @@ public class KHJ_DiaryButton : MonoBehaviour
         diary = KHJ_Diary.instance;
         bgImage = GetComponentInChildren<Image>();
     }
+    /*not use
     public void ClickButton()
     {
-        /*old
         if(num == 0)
         {
             //초기화 버튼이면 초기화
@@ -32,10 +32,8 @@ public class KHJ_DiaryButton : MonoBehaviour
                 diary.able = false;
                 StartCoroutine(waitforsecond());
             }
-        }*/
-        Debug.Log("Button_"+num+"_Input");
-        diary.Input(this);
-    }
+        }
+    }*/
 
     /*not use
     IEnumerator waitforsecond()
@@ -57,18 +55,18 @@ public class KHJ_DiaryButton : MonoBehaviour
         }
     }*/
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer != LayerMask.NameToLayer("Finger"))
-            return;
-        ClickButton();
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.layer != LayerMask.NameToLayer("Hand"))
+    //        return;
+    //    diary.Input(this);
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Finger"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
-        ClickButton();
+        diary.Input(this);
     }
     public void BtnInputEft()
     {

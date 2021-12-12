@@ -11,11 +11,12 @@ public class KHJ_Diary : MonoBehaviour
 	//ÀÚ¹°¼è ¹öÆ°µé
 	public KHJ_DiaryButton[] buttons;
 	public GameObject PasswordHint;
-		//ÀÚ¹°¼è + ÀÚ¹°¼è ¹öÆ°
-	public GameObject Lock;
+		
 	*/
 
 	public static KHJ_Diary instance;
+	//ÀÚ¹°¼è + ÀÚ¹°¼è ¹öÆ°
+	public SH_FractureControl locker;
 	//¿­·È´ÂÁö
 	public bool isOpened;
 	public AnimatedBookController bookController;
@@ -32,9 +33,8 @@ public class KHJ_Diary : MonoBehaviour
 	public List<int> AnswerList;
 	public List<int> ButtonInputList;
 	 */
-	public string answer;
-	string answerInput;
 	public Modular3DText hintText;
+	public List<KHJ_DiaryButton> answer = new List<KHJ_DiaryButton>();
 	public List<KHJ_DiaryButton> inputButtonList = new List<KHJ_DiaryButton>();
 	private void Awake()
 	{
@@ -56,7 +56,11 @@ public class KHJ_Diary : MonoBehaviour
 			AnswerList.Add(int.Parse(Answer[i].ToString()));
         }*/
 
-		hintText.Text = answer;
+		foreach(var t in answer)
+        {
+			hintText.Text += t.num;
+        }
+		
 		able = true;
 	}
 	//void Update()
@@ -116,25 +120,15 @@ public class KHJ_Diary : MonoBehaviour
         }
 
 		if (inputButtonList.Contains(button))
+        {
 			return;
+        }
 
+		Debug.Log("Input : " + button.num);
 		button.BtnInputEft();
-		answerInput += button.num;
 		inputButtonList.Add(button);
 
-		Debug.Log("Answer : " + answerInput);
-		if (CheckAnswer())
-		{
-			isOpened = true;
-			PlaySound(correctSound);
-			TurnPrePage();
-		}
-		else
-		{
-			able = true;
-			PlaySound(incorrectSound);
-			ClearBtn();
-		}
+		CheckAnswer();
 	}
 	public void TurnPrePage()
 	{
@@ -160,17 +154,45 @@ public class KHJ_Diary : MonoBehaviour
 		return check;
     }*/
 
-	public bool CheckAnswer()
+	public void CheckAnswer()
 	{
-		if (answer == answerInput)
-			return true;
+		if (answer.Count != inputButtonList.Count)
+        {
+			Debug.Log("Incorrect Answer");
+			return;
+        }
 
-		if (answer.Length == answerInput.Length)
-			answerInput = null;
-
-		return false;
+		for (int i = 0; i < answer.Count; ++i)
+		{
+			if (!answer.Contains(inputButtonList[i]))
+			{
+				StartCoroutine(FailEvent());
+				return;
+			}
+		}
+		StartCoroutine(OpenEvent());
 	}
 
+	IEnumerator OpenEvent()
+    {
+		Debug.Log("Clear");
+		isOpened = true;
+		PlaySound(correctSound);
+		yield return new WaitForSeconds(1f);
+		//Lock.Fracture();
+		locker.gameObject.transform.parent = null;
+		locker.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+		TurnPrePage();
+	}
+
+	IEnumerator FailEvent()
+    {
+		Debug.Log("False");
+		PlaySound(incorrectSound);
+		able = true;
+		yield return new WaitForSeconds(1f);
+		ClearBtn();
+	}
 	/*old
 	public void ClearBtn()
 	{
@@ -183,6 +205,7 @@ public class KHJ_Diary : MonoBehaviour
 	*/
 	public void ClearBtn()
 	{
+		Debug.Log("ClearBTn");
 		foreach (KHJ_DiaryButton btn in inputButtonList)
 		{
 			btn.ClearButton();
