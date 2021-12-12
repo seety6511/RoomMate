@@ -126,6 +126,9 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
     public Vector3[] recieve_objects_Pos;
     public Quaternion[] recieve_objects_Rot;
+    public Vector3[] recieve_objects_Scale;
+
+    public bool[] receive_input_R;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -139,7 +142,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
             // 손 위치 보내기
             stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.position);
-            stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.rotation); 
+            stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.rotation);
             stream.SendNext(NSR_AutoHandManager.instance.hand_R.transform.position);
             stream.SendNext(NSR_AutoHandManager.instance.hand_R.transform.rotation);
             // 손가락 위치 보내기
@@ -156,7 +159,12 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             {
                 stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.position);
                 stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.rotation);
+                stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.localScale);
             }
+
+            stream.SendNext(OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
+            stream.SendNext(OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
+            stream.SendNext(OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
         }
         if (stream.IsReading)
         {
@@ -186,6 +194,12 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             {
                 recieve_objects_Pos[i] = (Vector3)stream.ReceiveNext();
                 recieve_objects_Rot[i] = (Quaternion)stream.ReceiveNext();
+                recieve_objects_Scale[i] = (Vector3)stream.ReceiveNext();
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                receive_input_R[i] = (bool)stream.ReceiveNext();
             }
         }
     }

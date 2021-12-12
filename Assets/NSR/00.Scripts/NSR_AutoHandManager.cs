@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
-using Autohand.Demo;
+using Autohand;
 
 public class NSR_AutoHandManager : MonoBehaviourPun
 {
@@ -39,8 +39,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform[] leftFingers;
     public Transform[] rightFingers;
 
-    public GameObject hand_zone;
-    public GameObject body_zone;
+    //public GameObject hand_zone;
+    //public GameObject body_zone;
 
     public Transform tv_camera;
     public GameObject head_light;
@@ -52,8 +52,10 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform[] body_rightFingers;
 
     public Transform[] hand_zone_objects;
-    public Transform[] body_zone_objects;
+    //public Transform[] body_zone_objects;
     public Transform tv_camera_pos;
+
+    public bool isMaster;
     #endregion
     void Start()
     {
@@ -82,6 +84,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // 마스터라면 = handPlayer
         if (PhotonNetwork.IsMasterClient)
         {
+            isMaster = true;
             // 화면 카메라 켜기
             if (tv_camera.gameObject.activeSelf == false)
             {
@@ -107,14 +110,23 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 body_hand_R.SetActive(false);
             }
 
-            // 핸드 맵 켜고 바디 맵 끄기
-            if (body_zone.activeSelf)
+            //// 핸드 맵 켜고 바디 맵 끄기
+            //if (body_zone.activeSelf)
+            //{
+            //    body_zone.SetActive(false);
+            //}
+            //if (hand_zone.activeSelf == false)
+            //{
+            //    hand_zone.SetActive(true);
+            //}
+
+            for(int i = 0; i < hand_zone_objects.Length; i++)
             {
-                body_zone.SetActive(false);
-            }
-            if (hand_zone.activeSelf == false)
-            {
-                hand_zone.SetActive(true);
+                Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                if (grabbable != null)
+                {
+                    grabbable.enabled = true;
+                }
             }
 
             if (NSR_AutoBodyPlayer.instance != null)
@@ -142,6 +154,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // bodyPlayer
         else
         {
+            isMaster = false;
+
             // 화면 카메라 끄기
             if (tv_camera.gameObject.activeSelf == true)
                 tv_camera.gameObject.SetActive(false);
@@ -163,13 +177,21 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             body_hand_R.SetActive(true);
 
             // 맵 켜고 끄기
-            if (body_zone.activeSelf == false)
+            //if (body_zone.activeSelf == false)
+            //{
+            //    body_zone.SetActive(true);
+            //}
+            //if (hand_zone.activeSelf)
+            //{
+            //    hand_zone.SetActive(false);
+            //}
+            for (int i = 0; i < hand_zone_objects.Length; i++)
             {
-                body_zone.SetActive(true);
-            }
-            if (hand_zone.activeSelf)
-            {
-                hand_zone.SetActive(false);
+                Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                if (grabbable != null)
+                {
+                    grabbable.enabled = false;
+                }
             }
 
             // 해드라이팅 켜고 끄기
@@ -204,10 +226,11 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                     body_rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
                 }
                 //오브젝트 위치 받기
-                for (int i = 0; i < NSR_AutoHandManager.instance.body_zone_objects.Length; i++)
+                for (int i = 0; i < hand_zone_objects.Length; i++)
                 {
-                    body_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
-                    body_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
+                    hand_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
+                    hand_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
+                    hand_zone_objects[i].transform.localScale = NSR_AutoHandPlayer.instance.recieve_objects_Scale[i];
                 }
             }
         }

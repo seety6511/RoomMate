@@ -34,8 +34,8 @@ public class InvenManager : MonoBehaviour
         GetItem();
         SetItem();
         int layer = 1 << LayerMask.NameToLayer("GainItem");
-        //Ray ray = new Ray(trRight.position, trRight.forward);
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = new Ray(trRight.position, trRight.forward);
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
         {
@@ -50,11 +50,16 @@ public class InvenManager : MonoBehaviour
     }
     void OnOffInven()
     {
-        //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        if (Input.GetButtonDown("Fire1"))
+        bool input;
+        if (NSR_AutoHandManager.instance.isMaster)
+            input = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
+        else
+            input = NSR_AutoHandPlayer.instance.receive_input_R[1];
+        if (input)
+        //if (Input.GetButtonDown("Fire1"))
         {
-            //Ray ray = new Ray(trRight.position, trRight.forward);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = new Ray(trRight.position, trRight.forward);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
             {
@@ -69,8 +74,14 @@ public class InvenManager : MonoBehaviour
     public float offset;
     void OnTouch()
     {
+        bool input;
+        if (NSR_AutoHandManager.instance.isMaster)
+            input = OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
+        else
+            input = NSR_AutoHandPlayer.instance.receive_input_R[0];
+        if (input)
         //if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        if (Input.GetButton("Fire1"))
+        //if (Input.GetButton("Fire1"))
         {
             if (NowItem != null)
             {
@@ -100,11 +111,17 @@ public class InvenManager : MonoBehaviour
     void GetItem()
     {
         int layer = 1 << LayerMask.NameToLayer("GainItem");
+        bool input;
+        if (NSR_AutoHandManager.instance.isMaster)
+            input = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
+        else
+            input = NSR_AutoHandPlayer.instance.receive_input_R[1];
+        if (input)
         //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        if (Input.GetButtonDown("Fire1"))
+        //if (Input.GetButtonDown("Fire1"))
         {
-            //Ray ray = new Ray(trRight.position, trRight.forward);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = new Ray(trRight.position, trRight.forward);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
             {
@@ -147,7 +164,13 @@ public class InvenManager : MonoBehaviour
     void DropObj()
     {
         //1. 만약에 오른쪽 그랩버튼을 놓으면
-        if (OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        bool input;
+        if (NSR_AutoHandManager.instance.isMaster)
+            input = OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
+        else
+            input = NSR_AutoHandPlayer.instance.receive_input_R[2];
+        if (input)
+        //if (OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         {
             if (trCatchedR != null)
             {
@@ -162,6 +185,8 @@ public class InvenManager : MonoBehaviour
     public float throwPower = 5;
     void Throwobj(Transform obj, OVRInput.Controller controller)
     {
+        if (NSR_AutoHandManager.instance.isMaster == false) return;
+
         //던지는 방향 (이동속력)
         Vector3 dir = OVRInput.GetLocalControllerVelocity(controller);
         // 던지는 회전방향 (회전속력)

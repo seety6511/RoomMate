@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 
-public class NSR_InvenHand : MonoBehaviourPun
+public class NSR_InvenHand : MonoBehaviour
 {
     public bool left;
     void Update()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (NSR_AutoHandManager.instance.isMaster)
         {
             if (left)
             {
