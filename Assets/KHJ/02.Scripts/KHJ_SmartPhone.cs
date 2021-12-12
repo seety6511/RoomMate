@@ -9,6 +9,7 @@ public class KHJ_SmartPhone : MonoBehaviour
     public GameObject AppBG;
     public GameObject[] Apps;
     public bool IsRunningApp;
+    public bool IsSolved;
     public KHJ_App RunningApp;
     public enum AppName
     {
@@ -30,25 +31,30 @@ public class KHJ_SmartPhone : MonoBehaviour
     }
     void Update()
     {
+        if (!Pattern1.gameObject.activeSelf)
+        {
+            IsSolved = true;
+        }
         //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         if (Input.GetButtonDown("Fire1"))
         {
             //Ray ray = new Ray(trRight.position, trRight.forward);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Debug.Log("O"+ray.origin);
-            Debug.Log("M"+Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
             {
-                Debug.Log("H" + hitInfo.point);
                 //키패드 클릭 실행
                 if (hitInfo.collider.name.Contains("App"))
                 {
+                    if (!IsSolved)
+                    {
+                        return;
+                    }
                     StartApp(hitInfo.collider.gameObject);
                 }
                 else if (hitInfo.collider.name.Contains("HomeButton"))
                 {
-                    if (IsRunningApp)
+                    if (IsRunningApp && IsSolved)
                     {
                         EndApp();
                     }
@@ -57,13 +63,45 @@ public class KHJ_SmartPhone : MonoBehaviour
                 {
                     hitInfo.collider.GetComponent<KHJ_Toggle>().OnTrigger();
                 }
+                else if (hitInfo.collider.name.Contains("Play"))
+                {
+                    hitInfo.collider.GetComponent<KHJ_PlayAudio>().OnTrigger();
+                }
+                else if (hitInfo.collider.name.Contains("ButtonUI"))
+                {
+                    hitInfo.collider.GetComponent<KHJ_ButtonUI>().OnClick();
+                }
+                else if (hitInfo.collider.name.Contains("Pattern"))
+                {
+                    hitInfo.collider.GetComponent<KHJ_ButtonUI>().OnClick();
+                }
                 Set_smartphone();
             }
-        }        
+        }
+        if (Input.GetButton("Fire1"))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitInfo;
+            if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
+            {
+                if (hitInfo.collider.name.Contains("Pattern"))
+                {
+                    hitInfo.collider.GetComponent<KHJ_ButtonUI>().OnClick();
+                }
+            }
+        }
+        if (Input.GetButtonUp("Fire1"))
+        {
+            if(Pattern1.drawing == true)
+            {
+                Pattern1.Init();
+            }
+        }
     }
-
+    public KHJ_Pattern Pattern1;
     void Set_smartphone()
     {
+
         if (IsRunningApp)
         {
             foreach(GameObject obj in Apps)
@@ -138,5 +176,18 @@ public class KHJ_SmartPhone : MonoBehaviour
                 break;
         }
     }
-
+    public GameObject AlarmObj;
+    public void EndAlarm()
+    {
+        StartCoroutine(EndAlarm_());
+        AlarmObj.GetComponentInChildren<Image>().DOFade(0, duration).SetAutoKill(false).SetEase(Ease.InOutQuad).Pause();
+        AlarmObj.transform.DOScale(0.2f, duration).SetAutoKill(false).SetEase(Ease.InOutCirc).Pause();
+        DOTween.Play(AlarmObj.GetComponentInChildren<Image>());
+        DOTween.Play(AlarmObj.transform);
+    }
+    IEnumerator EndAlarm_()
+    {
+        yield return new WaitForSeconds(0.4f);
+        AlarmObj.SetActive(false);
+    }
 }
