@@ -43,7 +43,7 @@ namespace Autohand {
         public bool autoAdjustColliderHeight = true;
         [ShowIf("autoAdjustColliderHeight")]
         [Tooltip("Minimum and maximum auto adjusted height, to adjust height without auto adjustment change capsule collider height instead")]
-        public Vector2 minMaxHeight = new Vector2(0.7f, 2f);
+        public Vector2 minMaxHeight = new Vector2(0.7f, 1.6f);
 
 
 
@@ -152,10 +152,6 @@ namespace Autohand {
         }
 
         public virtual void Start() {
-
-            //headCamera = NSR_AutoHandManager.instance.headCamera;
-            //forwardFollow = NSR_AutoHandManager.instance.forwardFollow;
-            //trackingContainer = NSR_AutoHandManager.instance.trackingContainer;
 
             startRot = headCamera.transform.rotation;
 
