@@ -39,9 +39,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform[] leftFingers;
     public Transform[] rightFingers;
 
-    //public GameObject hand_zone;
-    //public GameObject body_zone;
-
     public Transform tv_camera;
     public GameObject head_light;
 
@@ -52,7 +49,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform[] body_rightFingers;
 
     public Transform[] hand_zone_objects;
-    //public Transform[] body_zone_objects;
     public Transform tv_camera_pos;
 
     public bool isMaster;
@@ -110,16 +106,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 body_hand_R.SetActive(false);
             }
 
-            //// ÇÚµå ¸Ê ÄÑ°í ¹Ùµð ¸Ê ²ô±â
-            //if (body_zone.activeSelf)
-            //{
-            //    body_zone.SetActive(false);
-            //}
-            //if (hand_zone.activeSelf == false)
-            //{
-            //    hand_zone.SetActive(true);
-            //}
-
             for(int i = 0; i < hand_zone_objects.Length; i++)
             {
                 Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
@@ -176,15 +162,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             body_hand_L.SetActive(true);
             body_hand_R.SetActive(true);
 
-            // ¸Ê ÄÑ°í ²ô±â
-            //if (body_zone.activeSelf == false)
-            //{
-            //    body_zone.SetActive(true);
-            //}
-            //if (hand_zone.activeSelf)
-            //{
-            //    hand_zone.SetActive(false);
-            //}
             for (int i = 0; i < hand_zone_objects.Length; i++)
             {
                 Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
@@ -228,12 +205,14 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 //¿ÀºêÁ§Æ® À§Ä¡ ¹Þ±â
                 for (int i = 0; i < hand_zone_objects.Length; i++)
                 {
-                    hand_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
-                    hand_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
-                    hand_zone_objects[i].transform.localScale = NSR_AutoHandPlayer.instance.recieve_objects_Scale[i];
+                    if(hand_zone_objects[i] != null)
+                    {
+                        hand_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
+                        hand_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
+                        hand_zone_objects[i].transform.localScale = NSR_AutoHandPlayer.instance.recieve_objects_Scale[i];
+                    }
                 }
             }
         }
     }
-
 }

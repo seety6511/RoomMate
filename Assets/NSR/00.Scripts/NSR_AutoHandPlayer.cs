@@ -14,48 +14,6 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
     void Update()
     {
-        //// 마스터라면 = handPlayer
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    // 손이 꺼져있으면 켜기
-        //    if (NSR_AutoHandManager.instance.hand_L.activeSelf == false)
-        //    {
-        //        NSR_AutoHandManager.instance.hand_L.SetActive(true);
-        //        NSR_AutoHandManager.instance.hand_R.SetActive(true);
-        //        NSR_AutoHandManager.instance.auto_hand_player.SetActive(true);
-        //    }
-        //    // 맵 켜고 끄기
-        //    if (NSR_AutoHandManager.instance.body_zone.activeSelf)
-        //    {
-        //        NSR_AutoHandManager.instance.body_zone.SetActive(false);
-        //    }
-        //    if (NSR_AutoHandManager.instance.hand_zone.activeSelf == false)
-        //    {
-        //        NSR_AutoHandManager.instance.hand_zone.SetActive(true);
-        //    }
-        //}
-        //// bodyPlayer
-        //else
-        //{
-        //    // 손 켜져있으면 끄기
-        //    if (NSR_AutoHandManager.instance.hand_L.activeSelf)
-        //    {
-        //        NSR_AutoHandManager.instance.hand_L.SetActive(false);
-        //        NSR_AutoHandManager.instance.hand_R.SetActive(false);
-        //        NSR_AutoHandManager.instance.auto_hand_player.SetActive(false);
-        //    }
-        //    // 맵 켜고 끄기
-        //    if (NSR_AutoHandManager.instance.body_zone.activeSelf == false)
-        //    {
-        //        NSR_AutoHandManager.instance.body_zone.SetActive(true);
-        //    }
-        //    if (NSR_AutoHandManager.instance.hand_zone.activeSelf)
-        //    {
-        //        NSR_AutoHandManager.instance.hand_zone.SetActive(false);
-        //    }
-
-        //}
-
         // 스페이스바 누르면 컨트롤 바꾸기
         if (Input.GetKeyDown(KeyCode.Space) || OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch))
         {
@@ -157,9 +115,12 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             // 오브젝트 위치 보내기
             for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
             {
-                stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.position);
-                stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.rotation);
-                stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.localScale);
+                if(NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
+                {
+                    stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.position);
+                    stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.rotation);
+                    stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.localScale);
+                }
             }
 
             stream.SendNext(OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
@@ -192,9 +153,12 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             //받은 오브젝트 위치
             for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
             {
-                recieve_objects_Pos[i] = (Vector3)stream.ReceiveNext();
-                recieve_objects_Rot[i] = (Quaternion)stream.ReceiveNext();
-                recieve_objects_Scale[i] = (Vector3)stream.ReceiveNext();
+                if(NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
+                {
+                    recieve_objects_Pos[i] = (Vector3)stream.ReceiveNext();
+                    recieve_objects_Rot[i] = (Quaternion)stream.ReceiveNext();
+                    recieve_objects_Scale[i] = (Vector3)stream.ReceiveNext();
+                }
             }
 
             for (int i = 0; i < 3; i++)
