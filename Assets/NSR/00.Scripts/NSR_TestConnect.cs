@@ -15,7 +15,7 @@ public class NSR_TestConnect : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected == false)
         {
             //게임 버전 설정
-            PhotonNetwork.GameVersion = "2";
+            PhotonNetwork.GameVersion = "1";
             //접속 시도 (name서버 -> master서버)
             PhotonNetwork.ConnectUsingSettings();
         }

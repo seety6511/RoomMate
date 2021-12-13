@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(AudioSource))]
 public class KHJ_KeyLock : MonoBehaviour
@@ -43,28 +44,21 @@ public class KHJ_KeyLock : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != key && !isOpen)
+        if (other.gameObject != key)
             return;
 
-        StartCoroutine(OpenEvent());
-    }
+        if (isOpen)
+            return;
 
-    IEnumerator OpenEvent()
-    {
         isOpen = true;
         source.PlayOneShot(openSound);
         key.transform.parent = this.transform;
+        key.GetComponent<Rigidbody>().isKinematic = true;
+        key.GetComponent<MeshCollider>().isTrigger = true;
         key.transform.localPosition = keyPos.transform.localPosition;
 
-        float timer = 0f;
-        while (timer<3f)
-        {
-            key.transform.localRotation = Quaternion.Lerp(key.transform.localRotation, Quaternion.Euler(0, 90f, 0), Time.deltaTime * 3);
-            body.transform.localRotation = Quaternion.Lerp(body.transform.localRotation, Quaternion.Euler(0, 90f, 0), Time.deltaTime * 3);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
+        key.transform.DOLocalRotate(new Vector3(0, 90f, 0), 2f);
+        body.transform.DOLocalRotate(new Vector3(0, 90f, 0), 2f);
         locker.LockControl(true);
     }
 }

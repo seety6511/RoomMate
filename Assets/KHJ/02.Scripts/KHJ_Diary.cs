@@ -16,7 +16,7 @@ public class KHJ_Diary : MonoBehaviour
 
 	public static KHJ_Diary instance;
 	//자물쇠 + 자물쇠 버튼
-	public SH_FractureControl locker;
+	public GameObject locker;
 	//열렸는지
 	public bool isOpened;
 	public AnimatedBookController bookController;
@@ -36,6 +36,7 @@ public class KHJ_Diary : MonoBehaviour
 	public Modular3DText hintText;
 	public List<KHJ_DiaryButton> answer = new List<KHJ_DiaryButton>();
 	public List<KHJ_DiaryButton> inputButtonList = new List<KHJ_DiaryButton>();
+
 	private void Awake()
 	{
 		if (instance == null)
@@ -43,6 +44,7 @@ public class KHJ_Diary : MonoBehaviour
 		else
 			Destroy(gameObject);
 	}
+
 	void Start()
 	{
 		bookController = GetComponent<AnimatedBookController>();
@@ -56,11 +58,11 @@ public class KHJ_Diary : MonoBehaviour
 			AnswerList.Add(int.Parse(Answer[i].ToString()));
         }*/
 
-		foreach(var t in answer)
-        {
+		foreach (var t in answer)
+		{
 			hintText.Text += t.num;
-        }
-		
+		}
+
 		able = true;
 	}
 	//void Update()
@@ -75,22 +77,22 @@ public class KHJ_Diary : MonoBehaviour
 	//		if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
 	//		{			
 	//			//키패드 클릭 실행
- //               if (hitInfo.collider.name.Contains("KeyPad"))
- //               {
+	//               if (hitInfo.collider.name.Contains("KeyPad"))
+	//               {
 	//				hitInfo.collider.gameObject.GetComponent<KHJ_DiaryButton>().ClickButton();
- //               }
+	//               }
 	//		}
 	//	}
 	//	//잠금/해제 셋팅
 	//	if (!isOpened)
- //       {
+	//       {
 	//		Lock.SetActive(true);
 	//		return;
- //       }
- //       else
- //       {
+	//       }
+	//       else
+	//       {
 	//		Lock.SetActive(false);
- //       }
+	//       }
 	//	//책 넘기기 조작
 	//	if (Input.GetKeyDown(KeyCode.RightArrow))
 	//	{
@@ -103,28 +105,27 @@ public class KHJ_Diary : MonoBehaviour
 	//		TurnNextPage();
 	//	}
 
- //       if (Input.GetKeyDown(KeyCode.Alpha3))
- //       {
+	//       if (Input.GetKeyDown(KeyCode.Alpha3))
+	//       {
 	//		//책 덮기
 	//		CloseBook();
- //       }
+	//       }
 	//	*/
 	//}
 
 	public void Input(KHJ_DiaryButton button)
 	{
-		if(button.num == "0")
-        {
+		if (button.num == "0")
+		{
 			ClearBtn();
 			return;
-        }
+		}
 
 		if (inputButtonList.Contains(button))
-        {
+		{
 			return;
-        }
+		}
 
-		Debug.Log("Input : " + button.num);
 		button.BtnInputEft();
 		inputButtonList.Add(button);
 
@@ -157,10 +158,10 @@ public class KHJ_Diary : MonoBehaviour
 	public void CheckAnswer()
 	{
 		if (answer.Count != inputButtonList.Count)
-        {
+		{
 			Debug.Log("Incorrect Answer");
 			return;
-        }
+		}
 
 		for (int i = 0; i < answer.Count; ++i)
 		{
@@ -174,7 +175,7 @@ public class KHJ_Diary : MonoBehaviour
 	}
 
 	IEnumerator OpenEvent()
-    {
+	{
 		Debug.Log("Clear");
 		isOpened = true;
 		PlaySound(correctSound);
@@ -182,11 +183,12 @@ public class KHJ_Diary : MonoBehaviour
 		//Lock.Fracture();
 		locker.gameObject.transform.parent = null;
 		locker.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+		Destroy(locker.gameObject, 5f);
 		TurnPrePage();
 	}
 
 	IEnumerator FailEvent()
-    {
+	{
 		Debug.Log("False");
 		PlaySound(incorrectSound);
 		able = true;
