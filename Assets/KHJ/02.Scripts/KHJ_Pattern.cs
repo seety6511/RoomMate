@@ -29,6 +29,10 @@ public class KHJ_Pattern : MonoBehaviour
                 drawing = false;
                 Clear();
             }
+            else
+            {
+                Init();
+            }
         }
     }
     bool PasswordCheck()
@@ -47,6 +51,7 @@ public class KHJ_Pattern : MonoBehaviour
     {
         yield return new WaitForSeconds(0.4f);
         gameObject.SetActive(false);
+        KHJ_SceneManager_1.instance.disappearWall();
     }
     public void NodeActive(int nodeNum)
     {

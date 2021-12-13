@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Autohand;
 
 [RequireComponent(typeof(AudioSource))]
 public class KHJ_KeyLock : MonoBehaviour
@@ -52,12 +53,15 @@ public class KHJ_KeyLock : MonoBehaviour
 
         isOpen = true;
         source.PlayOneShot(openSound);
-        key.transform.parent = this.transform;
+        key.GetComponent<Grabbable>().isGrabbable = false;
         key.GetComponent<Rigidbody>().isKinematic = true;
         key.GetComponent<MeshCollider>().isTrigger = true;
-        key.transform.localPosition = keyPos.transform.localPosition;
+        key.transform.position = keyPos.transform.position;
+        key.transform.rotation = Quaternion.Euler(0, 0, -90f);
 
-        key.transform.DOLocalRotate(new Vector3(0, 90f, 0), 2f);
+        key.transform.DOLocalRotate(new Vector3(90f, 0, -90f), 2f).onComplete
+                += delegate { key.transform.SetParent(transform); };
+
         body.transform.DOLocalRotate(new Vector3(0, 90f, 0), 2f);
         locker.LockControl(true);
     }

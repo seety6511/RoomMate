@@ -45,6 +45,6 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         print("방입장 완료");
 
-        PhotonNetwork.LoadLevel("SH_Main");
+        PhotonNetwork.LoadLevel("NSR_main");
     }
 }

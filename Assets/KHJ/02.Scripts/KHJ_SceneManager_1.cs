@@ -29,7 +29,12 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         volume.profile.TryGet<FilmGrain>(out film);
         volume.profile.TryGet<ChromaticAberration>(out chromatic);
         volume.profile.TryGet<ColorAdjustments>(out color);
-        StartCoroutine(Load());
+    }
+
+    public GameObject IllusionWall;
+    public void disappearWall()
+    {
+        IllusionWall.GetComponent<SH_Illusion>().DisappearingControl(true);
     }
     public void Scene1Clear()
     {

@@ -46,13 +46,22 @@ public class KHJ_Door : MonoBehaviour
         able = true;
         ClearBtn();
     }
+    //오른손 Transform
+    public Transform trRight;
+    //잡은 물체의 Transform
+    public Transform trCatchedR;
+
     void Update()
     {
-        //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        if (Input.GetButtonDown("Fire1") && able)
+        bool input;
+        if (NSR_AutoHandManager.instance.isMaster)
+            input = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
+        else
+            input = NSR_AutoHandPlayer.instance.receive_input_R[1];
+        if (input && able)
         {
-            //Ray ray = new Ray(trRight.position, trRight.forward);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = new Ray(trRight.position, trRight.forward);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
             {

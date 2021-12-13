@@ -11,7 +11,8 @@ public class KHJ_Diary : MonoBehaviour
 	//자물쇠 버튼들
 	public KHJ_DiaryButton[] buttons;
 	public GameObject PasswordHint;
-		
+	//비밀번호 입력 가능 상태인지
+	public bool able;
 	*/
 
 	public static KHJ_Diary instance;
@@ -20,8 +21,7 @@ public class KHJ_Diary : MonoBehaviour
 	//열렸는지
 	public bool isOpened;
 	public AnimatedBookController bookController;
-	//비밀번호 입력 가능 상태인지
-	public bool able;
+
 	//사운드
 	public AudioClip clickSound;
 	public AudioClip correctSound;
@@ -63,11 +63,11 @@ public class KHJ_Diary : MonoBehaviour
 			hintText.Text += t.num;
 		}
 
-		able = true;
 	}
+	/* not use
 	//void Update()
 	//{
-	//	/* not use
+	//	
 	//	//if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
 	//	if (Input.GetButtonDown("Fire1") && able)
 	//	{
@@ -110,7 +110,20 @@ public class KHJ_Diary : MonoBehaviour
 	//		//책 덮기
 	//		CloseBook();
 	//       }
-	//	*/
+
+	public void TurnPrePage()
+	{
+		bookController.TurnToPreviousPage();
+	}
+	public void TurnNextPage()
+	{
+		bookController.TurnToNextPage();
+	}
+	public void CloseBook()
+	{
+		bookController.CloseBook();
+	}
+*/
 	//}
 
 	public void Input(KHJ_DiaryButton button)
@@ -130,18 +143,6 @@ public class KHJ_Diary : MonoBehaviour
 		inputButtonList.Add(button);
 
 		CheckAnswer();
-	}
-	public void TurnPrePage()
-	{
-		bookController.TurnToPreviousPage();
-	}
-	public void TurnNextPage()
-	{
-		bookController.TurnToNextPage();
-	}
-	public void CloseBook()
-	{
-		bookController.CloseBook();
 	}
 
 	/* old
@@ -184,14 +185,13 @@ public class KHJ_Diary : MonoBehaviour
 		locker.gameObject.transform.parent = null;
 		locker.gameObject.GetComponent<Rigidbody>().isKinematic = false;
 		Destroy(locker.gameObject, 5f);
-		TurnPrePage();
+		bookController.TurnToPreviousPage();
 	}
 
 	IEnumerator FailEvent()
 	{
 		Debug.Log("False");
 		PlaySound(incorrectSound);
-		able = true;
 		yield return new WaitForSeconds(1f);
 		ClearBtn();
 	}

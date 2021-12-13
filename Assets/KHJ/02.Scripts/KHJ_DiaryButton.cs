@@ -66,6 +66,7 @@ public class KHJ_DiaryButton : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
+        Debug.Log("A");
         diary.Input(this);
     }
     public void BtnInputEft()

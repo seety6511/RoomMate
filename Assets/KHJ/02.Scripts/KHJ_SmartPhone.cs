@@ -29,17 +29,26 @@ public class KHJ_SmartPhone : MonoBehaviour
         Mail,
         Phone,
     }
+    //오른손 Transform
+    public Transform trRight;
+    //잡은 물체의 Transform
+    public Transform trCatchedR;
+
     void Update()
     {
         if (!Pattern1.gameObject.activeSelf)
         {
             IsSolved = true;
         }
-        //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        if (Input.GetButtonDown("Fire1"))
+        bool input1;
+        if (NSR_AutoHandManager.instance.isMaster)
+            input1 = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
+        else
+            input1 = NSR_AutoHandPlayer.instance.receive_input_R[1];
+        if (input1)
         {
-            //Ray ray = new Ray(trRight.position, trRight.forward);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = new Ray(trRight.position, trRight.forward);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
             {
@@ -78,7 +87,12 @@ public class KHJ_SmartPhone : MonoBehaviour
                 Set_smartphone();
             }
         }
-        if (Input.GetButton("Fire1"))
+        bool input2;
+        if (NSR_AutoHandManager.instance.isMaster)
+            input2 = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
+        else
+            input2 = NSR_AutoHandPlayer.instance.receive_input_R[1];
+        if (input2)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
@@ -90,7 +104,12 @@ public class KHJ_SmartPhone : MonoBehaviour
                 }
             }
         }
-        if (Input.GetButtonUp("Fire1"))
+        bool input3;
+        if (NSR_AutoHandManager.instance.isMaster)
+            input3 = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
+        else
+            input3 = NSR_AutoHandPlayer.instance.receive_input_R[1];
+        if (input3)
         {
             if(Pattern1.drawing == true)
             {

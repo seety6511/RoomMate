@@ -57,10 +57,8 @@ public class InvenManager : MonoBehaviour
         else
             input = NSR_AutoHandPlayer.instance.receive_input_R[1];
         if (input)
-        //if (Input.GetButtonDown("Fire1"))
         {
             Ray ray = new Ray(trRight.position, trRight.forward);
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
             {
@@ -81,8 +79,6 @@ public class InvenManager : MonoBehaviour
         else
             input = NSR_AutoHandPlayer.instance.receive_input_R[0];
         if (input)
-        //if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        //if (Input.GetButton("Fire1"))
         {
             if (NowItem != null)
             {
@@ -93,10 +89,6 @@ public class InvenManager : MonoBehaviour
                 NowItem.transform.rotation = trRight.rotation;
                 //잡은 물체를 trcatched에 넣어둔다
                 trCatchedR = NowItem.transform;
-
-                //Vector3 mousePos = Input.mousePosition;
-                //mousePos.z = Camera.main.nearClipPlane * offset;
-                //NowItem.transform.localPosition = Camera.main.ScreenToWorldPoint(mousePos);
             }
         }
         else
@@ -120,11 +112,8 @@ public class InvenManager : MonoBehaviour
         else
             input = NSR_AutoHandPlayer.instance.receive_input_R[1];
         if (input)
-        //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        //if (Input.GetButtonDown("Fire1"))
         {
             Ray ray = new Ray(trRight.position, trRight.forward);
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
             {
@@ -177,7 +166,6 @@ public class InvenManager : MonoBehaviour
         else
             input = NSR_AutoHandPlayer.instance.receive_input_R[2];
         if (input)
-        //if (OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         {
             if (trCatchedR != null)
             {
