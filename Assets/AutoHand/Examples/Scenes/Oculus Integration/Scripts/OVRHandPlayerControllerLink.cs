@@ -29,8 +29,11 @@ namespace Autohand.Demo{
                 }
                 else
                 {
-                    moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
-                    turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
+                    if(NSR_AutoBodyPlayer.instance != null)
+                    {
+                        moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
+                        turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
+                    }
                 }
             }
             else
