@@ -114,7 +114,8 @@ namespace Autohand {
         float deltaY;
         bool isGrounded = false;
         bool axisReset = true;
-        float playerHeight = 0;
+        [HideInInspector]
+        public float playerHeight = 0;
         float lastHeightOffset;
         bool lastCrouching;
 

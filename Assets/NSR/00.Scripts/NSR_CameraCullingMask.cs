@@ -16,7 +16,7 @@ public class NSR_CameraCullingMask : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (NSR_AutoHandManager.instance.handPlayer && !NSR_AutoHandManager.instance.bodyPlaeyr)
         {
             layer = 1 << 9;
         }

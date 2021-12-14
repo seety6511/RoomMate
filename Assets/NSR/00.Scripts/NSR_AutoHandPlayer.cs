@@ -11,21 +11,31 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     {
         if (instance == null) instance = this;
     }
+    void Update()
+    {
+        // 스페이스바 누르면 컨트롤 바꾸기
+        if (Input.GetKeyDown(KeyCode.Space) /*|| OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch)*/)
+        {
+            photonView.RPC("ChangeControl", RpcTarget.All);
+        }
 
-    //void Update()
-    //{
-    //    // 스페이스바 누르면 컨트롤 바꾸기
-    //    if (Input.GetKeyDown(KeyCode.Space) || OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch))
-    //    {
-    //        photonView.RPC("ChangeControl", RpcTarget.All);
-    //    }
-    //}
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            if(NSR_AutoHandManager.instance.bodyPlaeyr)
+                photonView.RPC("TakeHandControl", RpcTarget.All);
+            if(NSR_AutoHandManager.instance.handPlayer)
+                photonView.RPC("TakeBodyControl", RpcTarget.All);
+        }
+    }
 
+    //제어건 교환
 
     [PunRPC]
     void ChangeControl(PhotonMessageInfo info)
     {
-        PhotonNetwork.SetMasterClient(PhotonNetwork.MasterClient.GetNext());
+        //PhotonNetwork.SetMasterClient(PhotonNetwork.MasterClient.GetNext());
+        NSR_AutoHandManager.instance.handPlayer = !NSR_AutoHandManager.instance.handPlayer;
+        NSR_AutoHandManager.instance.bodyPlaeyr = !NSR_AutoHandManager.instance.bodyPlaeyr;
 
         Player you = null;
         Player me = null;
@@ -55,6 +65,75 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             // 내가 핸드 -> 바디
             NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
             NSR_AutoHandPlayer.instance.photonView.TransferOwnership(you);
+        }
+    }
+
+    [PunRPC]
+    void TakeBodyControl()
+    {
+        NSR_AutoHandManager.instance.bodyPlaeyr = !NSR_AutoHandManager.instance.bodyPlaeyr;
+
+        Player you = null;
+        Player me = null;
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+            {
+                me = PhotonNetwork.PlayerList[i];
+            }
+            else
+            {
+                you = PhotonNetwork.PlayerList[i];
+            }
+        }
+
+        if (me == null || you == null)
+            return;
+
+        if (me == NSR_AutoBodyPlayer.instance.photonView.Owner)
+        {
+            // 내가 바디 -> 핸드
+            NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
+        }
+        else
+        {
+            // 내가 핸드 -> 바디
+            NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
+        }
+    }
+
+    [PunRPC]
+    void TakeHandControl()
+    {
+        NSR_AutoHandManager.instance.bodyPlaeyr = !NSR_AutoHandManager.instance.bodyPlaeyr;
+
+        Player you = null;
+        Player me = null;
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+            {
+                me = PhotonNetwork.PlayerList[i];
+            }
+            else
+            {
+                you = PhotonNetwork.PlayerList[i];
+            }
+        }
+
+        if (me == null || you == null)
+            return;
+
+        if (me == NSR_AutoBodyPlayer.instance.photonView.Owner)
+        {
+            // 내가 바디 -> 핸드
+            NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
+        }
+        else
+        {
+            // 내가 핸드 -> 바디
+            NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
+
         }
     }
 
