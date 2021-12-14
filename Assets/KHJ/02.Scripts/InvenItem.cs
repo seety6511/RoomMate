@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Autohand;
 public class InvenItem : MonoBehaviour
 {
     public float size_value;
@@ -35,13 +35,29 @@ public class InvenItem : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name != "InvenButton")
+        if (other.name == "InvenButton")
+        {
+            OnTrigger();
+        }
+
+        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
-        OnTrigger();
+        else
+        {
+            if (InvenManager.instance.Items.Contains(gameObject) && GetComponent<Grabbable>().beingGrabbed)
+            {                
+                print("Grab");
+                GetComponent<Rigidbody>().isKinematic = false;
+                transform.parent = null;
+                InvenManager.instance.Items.Remove(gameObject);
+                transform.localScale = InitSize;
+                return;
+            }
+        }
     }
     private void OnTrigger()
     {
+        GetComponent<Grabbable>().HandsRelease();
         InvenManager.instance.GetItem(gameObject);
     }
-
 }

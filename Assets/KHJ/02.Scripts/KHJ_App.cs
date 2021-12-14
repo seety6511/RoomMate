@@ -19,7 +19,8 @@ public class KHJ_App : MonoBehaviour
         {
             return;
         }
-        KHJ_SmartPhone.instance.StartApp(gameObject);
+        if(!KHJ_SmartPhone.instance.IsRunningApp)
+            KHJ_SmartPhone.instance.StartApp(gameObject);
     }
 
 }
