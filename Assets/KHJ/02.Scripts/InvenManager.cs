@@ -31,7 +31,6 @@ public class InvenManager : MonoBehaviour
     void Update()
     {
         Pivot.transform.Rotate(new Vector3(0, PivotRotateSpeed, 0) * Time.deltaTime);
-        GetItem();
         SetItem();
         int layer = 1 << LayerMask.NameToLayer("GainItem");
         Ray ray = new Ray(trRight.position, trRight.forward);
@@ -45,8 +44,8 @@ public class InvenManager : MonoBehaviour
         {
             SelectedItem = null;
         }
-        OnTouch();
-        OnOffInven();
+        //OnTouch();
+        //OnOffInven();
     }
     void OnOffInven()
     {
@@ -103,37 +102,22 @@ public class InvenManager : MonoBehaviour
             }
         }
     }
-    void GetItem()
+    public void GetItem(GameObject getItem)
     {
-        int layer = 1 << LayerMask.NameToLayer("GainItem");
-        bool input;
-        if (NSR_AutoHandManager.instance.isMaster)
-            input = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
-        else
-            input = NSR_AutoHandPlayer.instance.receive_input_R[1];
-        if (input)
+        if (Items.Contains(getItem))
         {
-            Ray ray = new Ray(trRight.position, trRight.forward);
-            RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
-            {
-                //이미 리스트에 있는 경우엔 획득 X
-                if(Items.Contains(hitInfo.transform.gameObject))
-                {
-                    hitInfo.transform.parent = null;
-                    Items.Remove(hitInfo.transform.gameObject);
-                    hitInfo.transform.localScale = hitInfo.transform.GetComponent<InvenItem>().InitSize;
-                    NowItem = hitInfo.transform.gameObject;
-                    return;
-                }
-                //리스트에 없는 경우 획득
-                hitInfo.transform.parent = Pivot.transform;
-                hitInfo.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-                hitInfo.transform.localScale = Vector3.one * hitInfo.transform.GetComponent<InvenItem>().size_value;
-
-                Items.Add(hitInfo.transform.gameObject);
-            }
+            getItem.transform.parent = null;
+            Items.Remove(getItem);
+            getItem.transform.localScale = getItem.GetComponent<InvenItem>().InitSize;
+            NowItem = getItem;
+            return;
         }
+        //리스트에 없는 경우 획득
+        getItem.transform.parent = Pivot.transform;
+        getItem.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+        getItem.transform.localScale = Vector3.one * getItem.GetComponent<InvenItem>().size_value;
+
+        Items.Add(getItem);
     }
 
     public float r = 2;

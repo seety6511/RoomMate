@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public class KHJ_Pattern : MonoBehaviour
 {
@@ -20,8 +19,11 @@ public class KHJ_Pattern : MonoBehaviour
         drawer.positionCount = 0;
         drawing = false;
     }
-    private void Update()
+    public char[] charArr;
+    void Update()
     {
+        
+        
         if (activeNodes.Count == nodes.Length)
         {
             if (PasswordCheck())
@@ -32,6 +34,21 @@ public class KHJ_Pattern : MonoBehaviour
             else
             {
                 Init();
+            }
+        }
+
+        if (activeNodes.Count == 0)
+        {
+            drawer.positionCount = 1;
+        }
+        else
+        {
+            charArr = Inputanswer.ToCharArray();
+
+            for (int i = 0; i < activeNodes.Count; i++)
+            {
+                //실시간으로 라인 그려주기
+                drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1].transform.position);
             }
         }
     }
@@ -59,8 +76,6 @@ public class KHJ_Pattern : MonoBehaviour
         drawing = true;
         if (activeNodes.Count == 0)
         {
-            drawer.positionCount = 1;
-            drawer.SetPosition(0, node.transform.position);
             Inputanswer += (nodeNum + 1);
             activeNodes.Add(node);
             buttons[nodeNum].color = new Color32(0, 0, 0, 0);
@@ -72,7 +87,6 @@ public class KHJ_Pattern : MonoBehaviour
         Inputanswer += (nodeNum + 1);
         buttons[nodeNum].color = new Color32(0, 0, 0, 0);
         drawer.positionCount++;
-        drawer.SetPosition(activeNodes.Count, node.transform.position);
         activeNodes.Add(node);
     }
     

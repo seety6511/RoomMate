@@ -46,33 +46,6 @@ public class KHJ_Door : MonoBehaviour
         able = true;
         ClearBtn();
     }
-    //오른손 Transform
-    public Transform trRight;
-    //잡은 물체의 Transform
-    public Transform trCatchedR;
-
-    void Update()
-    {
-        bool input;
-        if (NSR_AutoHandManager.instance.isMaster)
-            input = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
-        else
-            input = NSR_AutoHandPlayer.instance.receive_input_R[1];
-        if (input && able)
-        {
-            Ray ray = new Ray(trRight.position, trRight.forward);
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
-            {
-                //키패드 클릭 실행
-                if (hitInfo.collider.name.Contains("DoorNumPad"))
-                {
-                    hitInfo.collider.gameObject.GetComponent<KHJ_DoorButton>().ClickButton();
-                }
-            }
-        }
-    }
     public bool CheckAnswer()
     {
         bool check = true;

@@ -10,6 +10,14 @@ public class KHJ_Toggle : MonoBehaviour
     public Image BG;
     public GameObject Warning;
     public GameObject Button;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
+            return;
+        OnTrigger();
+    }
+
     public void OnTrigger()
     {
         if (enable)

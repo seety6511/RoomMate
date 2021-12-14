@@ -11,6 +11,12 @@ public class KHJ_PlayAudio : MonoBehaviour
     {
         music = GetComponentInParent<KHJ_MusicApp>();
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
+            return;
+        OnTrigger();
+    }
     public void OnTrigger()
     {
         music.ChangeMusic(this);

@@ -31,6 +31,17 @@ public class InvenItem : MonoBehaviour
         {
             OutlineObj.GetComponent<Renderer>().material.SetColor("_OutlineColor", Color.red);
         }
-
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name != "InvenButton")
+            return;
+        OnTrigger();
+    }
+    private void OnTrigger()
+    {
+        InvenManager.instance.GetItem(gameObject);
+    }
+
 }

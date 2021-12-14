@@ -5,19 +5,22 @@ using UnityEngine;
 public class KHJ_BlackLight : MonoBehaviour
 {
     public bool isBattery;
-    public bool isHolding;
     public GameObject Light;
-    public AudioClip clickSound;
-    AudioSource source;
 
     private void Start()
     {
-        source = GetComponent<AudioSource>();
         Light.SetActive(false);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name != "Battery")
+            return;
+        isBattery = true;
+        other.gameObject.SetActive(false);
+        Light.SetActive(!Light.activeSelf);
     }
     public void Activate()
     {
-        //source.PlayOneShot(clickSound);
         if (!isBattery)
             return;
         Light.SetActive(!Light.activeSelf);

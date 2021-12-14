@@ -43,6 +43,7 @@ public class KHJ_SceneManager_1 : MonoBehaviour
     }
     public GameObject CurvedUI;
     public AudioClip clip;
+    public GameObject Player;
     IEnumerator Load()
     {
         DOTween.To(() => chromatic.intensity.value, x => chromatic.intensity.value = x, 1, 3).SetEase(Ease.InOutQuad);
@@ -50,16 +51,16 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         yield return new WaitForSeconds(3);
         GetComponent<AudioSource>().PlayOneShot(clip);
         GameObject gameObject = Instantiate(CurvedUI);
-        gameObject.transform.position = GameObject.Find("Player").transform.position;
-        gameObject.transform.rotation = GameObject.Find("Player").transform.rotation;
+        gameObject.transform.position = Player.transform.position;
+        gameObject.transform.rotation = Player.transform.rotation;
         yield return new WaitForSeconds(1.4f);
         DOTween.To(() => color.colorFilter.value, x => color.colorFilter.value = x, new Color32(0,0,0,0), 3).SetEase(Ease.InOutQuad);
         yield return new WaitForSeconds(4f);
 
-        var ao = SceneManager.LoadSceneAsync(0);
-        while (!ao.isDone)
-        {
-            yield return null;
-        }
+        //var ao = SceneManager.LoadSceneAsync(0);
+        //while (!ao.isDone)
+        //{
+        //    yield return null;
+        //}
     }
 }

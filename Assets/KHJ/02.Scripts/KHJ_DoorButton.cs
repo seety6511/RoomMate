@@ -11,6 +11,14 @@ public class KHJ_DoorButton : MonoBehaviour
     {
         door = KHJ_Door.instance;
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
+            return;
+
+        if(KHJ_Door.instance.able)
+            ClickButton();
+    }
     public void ClickButton()
     {
         //입력값 넣기
