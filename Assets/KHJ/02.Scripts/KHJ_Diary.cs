@@ -57,12 +57,12 @@ public class KHJ_Diary : MonoBehaviour
         {
 			AnswerList.Add(int.Parse(Answer[i].ToString()));
         }*/
-
+		string text = null;
 		foreach (var t in answer)
 		{
-			hintText.Text += t.num;
+			text += t.num;
 		}
-
+		hintText.UpdateText(text);
 	}
 	/* not use
 	//void Update()
@@ -183,6 +183,7 @@ public class KHJ_Diary : MonoBehaviour
 		yield return new WaitForSeconds(1f);
 		//Lock.Fracture();
 		locker.gameObject.transform.parent = null;
+		locker.gameObject.GetComponent<Rigidbody>().useGravity = true;
 		locker.gameObject.GetComponent<Rigidbody>().isKinematic = false;
 		Destroy(locker.gameObject, 5f);
 		bookController.TurnToPreviousPage();

@@ -2,16 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//anchor가 null 이면 현재 자기 자신의 위치를 originPos로 한다.
 public class SH_PosLock : MonoBehaviour
 {
     Vector3 originPos;
     public bool posLock;
+    public Transform anchor;
     public bool xLock;
     public bool yLock;
     public bool zLock;
     private void Awake()
     {
-        originPos = transform.position;
+        originPos = anchor != null ? anchor.position : transform.position;
+    }
+    public void UnLock()
+    {
+        posLock = false;
+    }
+    public void Lock()
+    {
+        posLock = true;
     }
     private void FixedUpdate()
     {
