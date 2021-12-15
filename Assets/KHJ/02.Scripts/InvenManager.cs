@@ -34,7 +34,6 @@ public class InvenManager : MonoBehaviour
         SetItem();
         int layer = 1 << LayerMask.NameToLayer("GainItem");
         Ray ray = new Ray(trRight.position, trRight.forward);
-        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
         {
@@ -71,7 +70,6 @@ public class InvenManager : MonoBehaviour
         //¸®½ºÆ®¿¡ ¾ø´Â °æ¿ì È¹µæ
         getItem.transform.parent = Pivot.transform;
         getItem.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-        getItem.transform.localScale = Vector3.one * getItem.GetComponent<InvenItem>().size_value;
 
         Items.Add(getItem);
     }

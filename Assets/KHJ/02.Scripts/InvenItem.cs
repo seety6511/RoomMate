@@ -26,33 +26,19 @@ public class InvenItem : MonoBehaviour
         if (InvenManager.instance.Items.Contains(gameObject))
         {
             OutlineObj.GetComponent<Renderer>().material.SetColor("_OutlineColor", Color.blue);
+            transform.localScale = Vector3.one * size_value;
         }
         else
         {
             OutlineObj.GetComponent<Renderer>().material.SetColor("_OutlineColor", Color.red);
+            transform.localScale = InitSize;
         }
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.name == "InvenButton")
         {
             OnTrigger();
-        }
-
-        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
-            return;
-        else
-        {
-            if (InvenManager.instance.Items.Contains(gameObject) && GetComponent<Grabbable>().beingGrabbed)
-            {                
-                print("Grab");
-                GetComponent<Rigidbody>().isKinematic = false;
-                transform.parent = null;
-                InvenManager.instance.Items.Remove(gameObject);
-                transform.localScale = InitSize;
-                return;
-            }
         }
     }
     private void OnTrigger()
