@@ -22,7 +22,7 @@ namespace Autohand.Demo{
             if (PhotonNetwork.IsConnected)
             {
 
-                if (PhotonNetwork.IsMasterClient == false)
+                if (NSR_AutoHandManager.instance.bodyPlaeyr)
                 {
                     moveInput = OVRInput.Get(moveAxis, moveController);
                     turnInput = OVRInput.Get(turnAxis, turnController).x;

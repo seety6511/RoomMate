@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
+// 포톤 뷰 교환 else 없애도 되는지 해보기
 public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 {
     public static NSR_AutoHandPlayer instance;
@@ -34,8 +35,10 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     void ChangeControl(PhotonMessageInfo info)
     {
         //PhotonNetwork.SetMasterClient(PhotonNetwork.MasterClient.GetNext());
-        NSR_AutoHandManager.instance.handPlayer = !NSR_AutoHandManager.instance.handPlayer;
-        NSR_AutoHandManager.instance.bodyPlaeyr = !NSR_AutoHandManager.instance.bodyPlaeyr;
+       
+            NSR_AutoHandManager.instance.handPlayer = !NSR_AutoHandManager.instance.handPlayer;
+            NSR_AutoHandManager.instance.bodyPlaeyr = !NSR_AutoHandManager.instance.bodyPlaeyr;
+        
 
         Player you = null;
         Player me = null;
@@ -90,14 +93,12 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         if (me == null || you == null)
             return;
 
-        if (me == NSR_AutoBodyPlayer.instance.photonView.Owner)
+        if (you == NSR_AutoBodyPlayer.instance.photonView.Owner)
         {
-            // 내가 바디 -> 핸드
             NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
         }
         else
         {
-            // 내가 핸드 -> 바디
             NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
         }
     }
@@ -105,7 +106,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     [PunRPC]
     void TakeHandControl()
     {
-        NSR_AutoHandManager.instance.bodyPlaeyr = !NSR_AutoHandManager.instance.bodyPlaeyr;
+        NSR_AutoHandManager.instance.handPlayer = !NSR_AutoHandManager.instance.handPlayer;
 
         Player you = null;
         Player me = null;
@@ -127,13 +128,14 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         if (me == NSR_AutoBodyPlayer.instance.photonView.Owner)
         {
             // 내가 바디 -> 핸드
-            NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
+            //NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
+            NSR_AutoHandPlayer.instance.photonView.TransferOwnership(me);
         }
         else
         {
             // 내가 핸드 -> 바디
-            NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
-
+            //NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
+            NSR_AutoHandPlayer.instance.photonView.TransferOwnership(you);
         }
     }
 
