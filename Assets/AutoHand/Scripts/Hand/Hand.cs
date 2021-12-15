@@ -231,7 +231,7 @@ namespace Autohand {
         /// <summary>Function for controller trigger fully pressed -> Grabs whatever is directly in front of and closest to the hands palm</summary>
         public virtual void Grab(GrabType grabType) {
             OnTriggerGrab?.Invoke(this, null);
-            foreach(var triggerArea in triggerEventAreas) {
+            foreach (var triggerArea in triggerEventAreas) {
                 triggerArea.Grab(this);
             }
 
@@ -253,7 +253,6 @@ namespace Autohand {
         public virtual void Grab(RaycastHit hit, Grabbable grab, GrabType grabType = GrabType.InstantGrab) {
             bool objectFree = grab.body.isKinematic != true && grab.body.constraints == RigidbodyConstraints.None && grab.parentOnGrab;
             if(!grabbing && holdingObj == null && this.CanGrab(grab) && objectFree) {
-
                 var estimatedRadius = Vector3.Distance(hit.point, hit.transform.position);
                 var difference = (grab.transform.position - hit.point) + (palmTransform.forward * estimatedRadius * 2f);
                 var startPos = grab.transform.position;
@@ -273,7 +272,8 @@ namespace Autohand {
 
         /// <summary>Attempts grab on given grabbable</summary>
         public virtual void TryGrab(Grabbable grab) {
-            if(!grabbing && holdingObj == null && this.CanGrab(grab)) {
+            print("D");
+            if (!grabbing && holdingObj == null && this.CanGrab(grab)) {
                 if(tryGrab != null)
                     StopCoroutine(tryGrab);
                 tryGrab = StartCoroutine(TryGrab());
@@ -808,7 +808,13 @@ namespace Autohand {
             while(grab.beingGrabbed)
                 yield return new WaitForEndOfFrame();
 
-
+            if (InvenManager.instance.Items.Contains(grab.gameObject))
+            {
+                InvenManager.instance.Items.Remove(grab.gameObject);
+                grab.gameObject.transform.parent = null;
+                grab.body.isKinematic = false;
+            }
+            
             CancelPose();
             ClearPoseArea();
 
@@ -840,8 +846,6 @@ namespace Autohand {
                 CancelGrab();
                 yield break;
             }
-
-
 
             //SETS GRAB POINT
             grabPoint.parent = hit.transform;
