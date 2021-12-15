@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
-//using Autohand;
+using Autohand;
 
 // 조건문 핸드인 경우 아닌경우 바디인 경우 아닌경우로 바꾸기
 public class NSR_AutoHandManager : MonoBehaviourPun
@@ -116,15 +116,14 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 body_hand_R.SetActive(false);
             }
 
-            //for(int i = 0; i < hand_zone_objects.Length; i++)
-            //{
-
-            //    if (hand_zone_objects[i].GetComponent<Grabbable>())
-            //    {
-            //        Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
-            //        grabbable.enabled = true;
-            //    }
-            //}
+            for (int i = 0; i < hand_zone_objects.Length; i++)
+            {
+                Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                if (grabbable != null)
+                {
+                    grabbable.enabled = true;
+                }
+            }
 
             // 핸드이고 바디인 경우
             if (bodyPlaeyr)
@@ -240,14 +239,14 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 if (tv_camera.gameObject.activeSelf == true)
                     tv_camera.gameObject.SetActive(false);
 
-                //for (int i = 0; i < hand_zone_objects.Length; i++)
-                //{
-                //    if (hand_zone_objects[i].GetComponent<Grabbable>())
-                //    {
-                //        Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
-                //        grabbable.enabled = false;
-                //    }
-                //}
+                for (int i = 0; i < hand_zone_objects.Length; i++)
+                {
+                    Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                    if (grabbable != null)
+                    {
+                        grabbable.enabled = false;
+                    }
+                }
 
                 // 해드라이팅 켜고 끄기
                 if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))

@@ -23,9 +23,19 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         if (Input.GetKeyDown(KeyCode.K))
         {
             if(NSR_AutoHandManager.instance.bodyPlaeyr)
+            {
                 photonView.RPC("TakeHandControl", RpcTarget.All);
-            if(NSR_AutoHandManager.instance.handPlayer)
+
+            }
+            else if(NSR_AutoHandManager.instance.handPlayer)
+            {
                 photonView.RPC("TakeBodyControl", RpcTarget.All);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+
         }
     }
 
