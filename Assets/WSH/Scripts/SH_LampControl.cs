@@ -10,9 +10,21 @@ public class SH_LampControl : MonoBehaviour
     public void OnOff()
     {
         lightObj.SetActive(!lightObj.activeSelf);
+        var property = bulbMat.GetColor("Emission");
+
         if (lightObj.activeSelf)
-            bulbMat.color = Color.white;
+        {
+            if (property != null)
+                bulbMat.SetColor("Emission", Color.white);
+            else
+                bulbMat.color = Color.white;
+        }
         else
-            bulbMat.color = Color.black;
+        {
+            if (property != null)
+                bulbMat.SetColor("Emission", Color.black);
+            else
+                bulbMat.color = Color.black;
+        }
     }
 }
