@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-
 public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 {
     public static NSR_AutoHandPlayer instance;
@@ -11,21 +10,46 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     {
         if (instance == null) instance = this;
     }
-
-    //void Update()
-    //{
-    //    // 스페이스바 누르면 컨트롤 바꾸기
-    //    if (Input.GetKeyDown(KeyCode.Space) || OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch))
-    //    {
-    //        photonView.RPC("ChangeControl", RpcTarget.All);
-    //    }
-    //}
-
-
-    [PunRPC]
-    void ChangeControl(PhotonMessageInfo info)
+    bool beforeHand;
+    void Update()
     {
-        PhotonNetwork.SetMasterClient(PhotonNetwork.MasterClient.GetNext());
+        // 스페이스바 누르면 컨트롤 바꾸기
+        if (Input.GetKeyDown(KeyCode.Space) /*|| OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch)*/)
+        {
+            photonView.RPC("GetControl", RpcTarget.All, true, false);
+            photonView.RPC("GetControl", RpcTarget.All, false, false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+            photonView.RPC("GetControl", RpcTarget.All, !NSR_AutoHandManager.instance.handPlayer, false);
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (NSR_AutoHandManager.instance.handPlayer == beforeHand)
+                photonView.RPC("GetControl", RpcTarget.All, false, true);
+            else
+                photonView.RPC("GetControl", RpcTarget.All, true, true);
+        }
+    }
+
+    // 제어건 가져오기
+    [PunRPC]
+    void GetControl(bool handPlayer, bool re)
+    {
+        if (re)
+        {
+            NSR_AutoHandManager.instance.handPlayer = beforeHand;
+            NSR_AutoHandManager.instance.bodyplayer = !beforeHand;
+        }
+        else
+        {
+            beforeHand = NSR_AutoHandManager.instance.handPlayer;
+
+            if (handPlayer)
+                NSR_AutoHandManager.instance.handPlayer = !NSR_AutoHandManager.instance.handPlayer;
+            else
+                NSR_AutoHandManager.instance.bodyplayer = !NSR_AutoHandManager.instance.bodyplayer;
+        }
 
         Player you = null;
         Player me = null;
@@ -44,17 +68,35 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         if (me == null || you == null)
             return;
 
-        if (me == NSR_AutoBodyPlayer.instance.photonView.Owner)
+        if (re)
         {
-            // 내가 바디 -> 핸드
-            NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
-            NSR_AutoHandPlayer.instance.photonView.TransferOwnership(me);
+            if (beforeHand)
+            {
+                NSR_AutoHandPlayer.instance.photonView.TransferOwnership(me);
+                NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
+            }
+            else
+            {
+                NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
+                NSR_AutoHandPlayer.instance.photonView.TransferOwnership(you);
+            }
         }
         else
         {
-            // 내가 핸드 -> 바디
-            NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
-            NSR_AutoHandPlayer.instance.photonView.TransferOwnership(you);
+            if (me == NSR_AutoBodyPlayer.instance.photonView.Owner)
+            {
+                if (handPlayer)
+                    NSR_AutoHandPlayer.instance.photonView.TransferOwnership(me);
+                else
+                    NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
+            }
+            else
+            {
+                if (handPlayer)
+                    NSR_AutoHandPlayer.instance.photonView.TransferOwnership(you);
+                else
+                    NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
+            }
         }
     }
 
@@ -89,6 +131,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     public bool[] receive_input_R;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+
         if (stream.IsWriting)
         {
             // Tracking 위치 보내기
@@ -115,7 +158,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             // 오브젝트 위치 보내기
             for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
             {
-                if(NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
+                if (NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
                 {
                     stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.position);
                     stream.SendNext(NSR_AutoHandManager.instance.hand_zone_objects[i].transform.rotation);
@@ -153,7 +196,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             //받은 오브젝트 위치
             for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
             {
-                if(NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
+                if (NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
                 {
                     recieve_objects_Pos[i] = (Vector3)stream.ReceiveNext();
                     recieve_objects_Rot[i] = (Quaternion)stream.ReceiveNext();
@@ -166,5 +209,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
                 receive_input_R[i] = (bool)stream.ReceiveNext();
             }
         }
+
+
     }
 }

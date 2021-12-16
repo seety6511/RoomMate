@@ -7,7 +7,7 @@ public class NSR_InvenHand : MonoBehaviour
     public bool left;
     void Update()
     {
-        if (NSR_AutoHandManager.instance.isMaster)
+        if (NSR_AutoHandManager.instance.handPlayer)
         {
             if (left)
             {

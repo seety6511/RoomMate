@@ -13,10 +13,10 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
     }
 
     public OVRInput.Controller moveController;
-    public OVRInput.Axis2D moveAxis;
+    //public OVRInput.Axis2D moveAxis;
 
-    public OVRInput.Controller turnController;
-    public OVRInput.Axis2D turnAxis;
+    //public OVRInput.Controller turnController;
+    //public OVRInput.Axis2D turnAxis;
 
     [HideInInspector]
     public Vector2 recieve_moveInput;
@@ -34,8 +34,8 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(OVRInput.Get(moveAxis, moveController));
-            stream.SendNext(OVRInput.Get(turnAxis, turnController).x);
+            //stream.SendNext(OVRInput.Get(moveAxis, moveController));
+            //stream.SendNext(OVRInput.Get(turnAxis, turnController).x);
             stream.SendNext(NSR_AutoHandManager.instance.tv_camera_pos.position);
             stream.SendNext(NSR_AutoHandManager.instance.tv_camera_pos.rotation);
 
@@ -43,8 +43,8 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
         }
         if (stream.IsReading)
         {
-            recieve_moveInput = (Vector2)stream.ReceiveNext();
-            recieve_turnInput = (float)stream.ReceiveNext();
+            //recieve_moveInput = (Vector2)stream.ReceiveNext();
+            //recieve_turnInput = (float)stream.ReceiveNext();
             recieve_tv_camera_pos = (Vector3)stream.ReceiveNext();
             recieve_tv_camera_Rot = (Quaternion)stream.ReceiveNext();
 

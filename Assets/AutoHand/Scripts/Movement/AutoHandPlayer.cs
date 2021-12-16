@@ -19,9 +19,9 @@ namespace Autohand {
         public Transform forwardFollow;
         [Tooltip("This should NOT be a child of this body. This should be a GameObject that contains all the tracked objects (head/controllers)")]
         public Transform trackingContainer;
-        [HideInInspector]
+        //[HideInInspector]
         public Hand handRight;
-        [HideInInspector]
+        //[HideInInspector]
         public Hand handLeft;
 
         [AutoToggleHeader("Movement")]
@@ -114,7 +114,8 @@ namespace Autohand {
         float deltaY;
         bool isGrounded = false;
         bool axisReset = true;
-        float playerHeight = 0;
+        [HideInInspector]
+        public float playerHeight = 0;
         float lastHeightOffset;
         bool lastCrouching;
 
@@ -180,8 +181,8 @@ namespace Autohand {
 
             CreateHeadFollower();
 
-            handLeft = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
-            handRight = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
+            //handLeft = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
+            //handRight = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
         }
 
         protected virtual void OnEnable() {
