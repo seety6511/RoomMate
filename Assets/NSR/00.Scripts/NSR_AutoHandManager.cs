@@ -41,6 +41,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Transform[] rightFingers;
 
     public Transform tv_camera;
+    public GameObject handZone;
     public GameObject head_light;
 
     public GameObject body_hand_R;
@@ -131,8 +132,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 layer = ~(1 << 9);
 
                 // 화면 카메라 끄기
-                if (tv_camera.gameObject.activeSelf == true)
-                    tv_camera.gameObject.SetActive(false);
+                if (handZone.gameObject.activeSelf == true)
+                    handZone.gameObject.SetActive(false);
 
                 // 해드라이팅 켜고 끄기
                 if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))
@@ -151,9 +152,9 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 layer = 1 << 9;
 
                 // 화면 카메라 켜기
-                if (tv_camera.gameObject.activeSelf == false)
+                if (handZone.gameObject.activeSelf == false)
                 {
-                    tv_camera.gameObject.SetActive(true);
+                    handZone.gameObject.SetActive(true);
                 }
 
                 if (NSR_AutoBodyPlayer.instance != null)
@@ -236,8 +237,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             {
                 layer = ~(1 << 9);
                 // 화면 카메라 끄기
-                if (tv_camera.gameObject.activeSelf == true)
-                    tv_camera.gameObject.SetActive(false);
+                if (handZone.gameObject.activeSelf == true)
+                    handZone.gameObject.SetActive(false);
 
                 for (int i = 0; i < hand_zone_objects.Length; i++)
                 {
@@ -264,9 +265,9 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 layer = 1 << 9;
 
                 // 화면 카메라 켜기
-                if (tv_camera.gameObject.activeSelf == false)
+                if (handZone.gameObject.activeSelf == false)
                 {
-                    tv_camera.gameObject.SetActive(true);
+                    handZone.gameObject.SetActive(true);
                 }
 
                 if (NSR_AutoBodyPlayer.instance != null)
