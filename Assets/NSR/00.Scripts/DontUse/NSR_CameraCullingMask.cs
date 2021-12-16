@@ -10,7 +10,7 @@ public class NSR_CameraCullingMask : MonoBehaviourPun
     int layer;
     void Update()
     {
-        if (NSR_AutoHandManager.instance.bodyPlaeyr)
+        if (NSR_AutoHandManager.instance.bodyplayer)
         {
             layer = ~(1 << 9);
         }

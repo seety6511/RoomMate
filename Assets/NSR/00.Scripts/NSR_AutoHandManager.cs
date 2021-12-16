@@ -55,7 +55,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     [HideInInspector]
     public bool isMaster;
     public bool handPlayer;
-    public bool bodyPlaeyr;
+    public bool bodyplayer;
 
     public Camera[] cam;
     int layer;
@@ -71,13 +71,13 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             if (PhotonNetwork.IsMasterClient)
             {
                 handPlayer = true;
-                bodyPlaeyr = false;
+                bodyplayer = false;
                 PhotonNetwork.Instantiate("NSR_Auto_Hand_Player", Vector3.zero, Quaternion.identity);
             }
             else
             {
                 handPlayer = false;
-                bodyPlaeyr = true;
+                bodyplayer = true;
                 PhotonNetwork.Instantiate("NSR_Auto_Body_Player", Vector3.zero, Quaternion.identity);
             }
 
@@ -126,7 +126,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             }
 
             // 핸드이고 바디인 경우
-            if (bodyPlaeyr)
+            if (bodyplayer)
             {
                 layer = ~(1 << 9);
 
@@ -232,7 +232,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 }
             }
             //바디만인 경우
-            if (bodyPlaeyr)
+            if (bodyplayer)
             {
                 layer = ~(1 << 9);
                 // 화면 카메라 끄기

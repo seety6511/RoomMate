@@ -22,19 +22,19 @@ namespace Autohand.Demo{
             if (PhotonNetwork.IsConnected)
             {
 
-                if (NSR_AutoHandManager.instance.bodyPlaeyr)
+                if (NSR_AutoHandManager.instance.bodyplayer)
                 {
                     moveInput = OVRInput.Get(moveAxis, moveController);
                     turnInput = OVRInput.Get(turnAxis, turnController).x;
                 }
-                else
-                {
-                    if(NSR_AutoBodyPlayer.instance != null)
-                    {
-                        moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
-                        turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
-                    }
-                }
+                //else
+                //{
+                //    if(NSR_AutoBodyPlayer.instance != null)
+                //    {
+                //        moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
+                //        turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
+                //    }
+                //}
             }
             else
             {
