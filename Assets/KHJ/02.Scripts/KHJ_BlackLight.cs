@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Autohand;
 [RequireComponent(typeof(AudioSource))]
 public class KHJ_BlackLight : MonoBehaviour
 {
@@ -15,9 +16,12 @@ public class KHJ_BlackLight : MonoBehaviour
     {
         if (other.gameObject.name != "Battery")
             return;
+
         isBattery = true;
+        other.GetComponent<Grabbable>().HandsRelease();
         other.gameObject.SetActive(false);
-        Light.SetActive(!Light.activeSelf);
+        if(GetComponent<Grabbable>().IsHeld())
+            Light.SetActive(!Light.activeSelf);
     }
     public void Activate()
     {
@@ -25,4 +29,5 @@ public class KHJ_BlackLight : MonoBehaviour
             return;
         Light.SetActive(!Light.activeSelf);
     }
+
 }
