@@ -6,20 +6,13 @@ using Photon.Pun;
 public class NSR_Flashlight : MonoBehaviourPun
 {
     public GameObject blacklight;
-    [HideInInspector]
-    public bool grabbing;
-    void Update()
+    public void Grab(bool on)
     {
-        if (NSR_AutoHandPlayer.instance != null)
-        {
-
-        }
+        photonView.RPC("BlackLight", RpcTarget.All, on);
     }
-
-
-
-    public void Grabbing(bool grab)
+    [PunRPC]
+    void BlackLight(bool on)
     {
-        grabbing = grab;
+        blacklight.SetActive(on);
     }
 }

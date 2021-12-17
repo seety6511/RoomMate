@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class SH_LampControl : MonoBehaviour
+public class SH_LampControl : MonoBehaviourPun
 {
     public GameObject lightObj;
     public Material bulbMat;    
 
-    public void OnOff()
+    public void Grab()
+    {
+        photonView.RPC("OnOff", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void OnOff()
     {
         lightObj.SetActive(!lightObj.activeSelf);
         var property = bulbMat.GetColor("Emission");
