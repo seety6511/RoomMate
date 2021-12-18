@@ -120,9 +120,11 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             for (int i = 0; i < hand_zone_objects.Length; i++)
             {
                 Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
                 if (grabbable != null)
                 {
                     grabbable.enabled = true;
+                    nsr_grabbable.enabled = true;
                 }
             }
 
@@ -243,9 +245,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 for (int i = 0; i < hand_zone_objects.Length; i++)
                 {
                     Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                    NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
+
                     if (grabbable != null)
                     {
                         grabbable.enabled = false;
+                        nsr_grabbable.enabled = false;
                     }
                 }
 
