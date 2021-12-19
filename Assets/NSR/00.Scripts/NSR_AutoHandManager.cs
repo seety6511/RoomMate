@@ -122,10 +122,9 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
                 NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
                 if (grabbable != null)
-                {
                     grabbable.enabled = true;
+                if(nsr_grabbable != null)
                     nsr_grabbable.enabled = true;
-                }
             }
 
             // 핸드이고 바디인 경우
