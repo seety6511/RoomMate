@@ -71,15 +71,15 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             // 마스터는 HandPlayer 마스터가 아니면 BodyPlayer 생성
             if (PhotonNetwork.IsMasterClient)
             {
-                handPlayer = true;
-                bodyplayer = false;
-                PhotonNetwork.Instantiate("NSR_Auto_Hand_Player", Vector3.zero, Quaternion.identity);
-            }
-            else
-            {
                 handPlayer = false;
                 bodyplayer = true;
                 PhotonNetwork.Instantiate("NSR_Auto_Body_Player", Vector3.zero, Quaternion.identity);
+            }
+            else
+            {
+                handPlayer = true;
+                bodyplayer = false;
+                PhotonNetwork.Instantiate("NSR_Auto_Hand_Player", Vector3.zero, Quaternion.identity);
             }
 
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
@@ -89,6 +89,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     private void Update()
     {
+        if (PhotonNetwork.IsConnected == false) return;
+
         for (int i = 0; i < cam.Length; i++)
         {
             cam[i].cullingMask = layer;
@@ -120,10 +122,11 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             for (int i = 0; i < hand_zone_objects.Length; i++)
             {
                 Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
                 if (grabbable != null)
-                {
                     grabbable.enabled = true;
-                }
+                if(nsr_grabbable != null)
+                    nsr_grabbable.enabled = true;
             }
 
             // 핸드이고 바디인 경우
@@ -208,19 +211,23 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 // Tracking 위치 받기
                 trackingContainer.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
                 trackingContainer.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
+                
                 // 손 위치 받기
                 body_hand_R.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_R_Pos;
                 body_hand_R.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_R_Rot;
                 body_hand_L.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_L_Pos;
                 body_hand_L.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_L_Rot;
-                //손가락 위치 받기
-                for (int i = 0; i < 15; i++)
-                {
-                    body_leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
-                    body_leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
-                    body_rightFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
-                    body_rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
-                }
+                
+                    //왼손 손가락 위치 받기
+                    for (int i = 0; i < 15; i++)
+                    {
+                        body_leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
+                        body_leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
+                        body_rightFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
+                        body_rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
+                    }
+        
+
                 //오브젝트 위치 받기
                 for (int i = 0; i < hand_zone_objects.Length; i++)
                 {
@@ -243,9 +250,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 for (int i = 0; i < hand_zone_objects.Length; i++)
                 {
                     Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                    NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
+
                     if (grabbable != null)
                     {
                         grabbable.enabled = false;
+                        nsr_grabbable.enabled = false;
                     }
                 }
 
