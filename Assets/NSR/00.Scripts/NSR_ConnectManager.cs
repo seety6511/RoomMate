@@ -19,9 +19,16 @@ public class NSR_ConnectManager : MonoBehaviourPunCallbacks
     }
 
     public InputField roomName;
-    private void PlayBtn()
+    public void PlayBtn()
     {
-        Connect();
+        if(roomName.text.Length < 2)
+        {
+            print("방 이름 2글자 이상");
+        }
+        else
+        {
+            Connect();
+        }
     }
     public void Connect()
     {

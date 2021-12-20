@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Autohand;
 
 //놓을때 던지기
 //집을때 손가락 피봇 위치 설정하기
@@ -9,14 +8,19 @@ using Autohand;
 public class NSR_Grabbable : MonoBehaviour
 {
     public float range;
-    bool leftCatched;
-    bool rightCatched;
-
-    public Transform Pos;
     Rigidbody rig;
+
+    public Transform leftPos;
+    public Transform rightPos;
 
     public Transform hand_L;
     public Transform hand_R;
+
+    public GameObject leftPivot;
+    public GameObject rightPivot;
+
+    bool leftCatched;
+    bool rightCatched;
 
     void Start()
     {
@@ -27,77 +31,64 @@ public class NSR_Grabbable : MonoBehaviour
     {
         //Transform hand_L = NSR_AutoHandManager.instance.hand_L.transform;
         //Transform hand_R = NSR_AutoHandManager.instance.hand_R.transform;
-        float dis_L = Vector3.Distance(transform.position, hand_L.position);
-        float dis_R = Vector3.Distance(transform.position, hand_R.position);
 
-        if (rightCatched == false && leftCatched == false)
+        if (leftCatched == false && rightCatched == false)
         {
-            
-            //if(OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch))
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (dis_L < range)
-                {
-                    transform.parent = hand_L;
-                    transform.position = Pos.position;
-                    transform.rotation = Pos.rotation;
-                    hand_L.GetComponent<Hand>().enabled = false;
-                    rig.isKinematic = true;
-                    rig.useGravity = false;
 
-                    leftCatched = true;
-                }
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch) || Input.GetMouseButtonDown(0))
+            {
+                Grab(hand_L, leftPos, leftPivot);
+                leftCatched = true;
             }
-            //if(OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
-
-            if (Input.GetMouseButtonDown(1))
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch) || Input.GetMouseButtonDown(1))
             {
-                if (dis_R < range)
-                {
-                    transform.parent = hand_R;
-                    transform.position = Pos.position;
-                    transform.rotation = Pos.rotation;
-                    rig.useGravity = false;
-                    rig.isKinematic = true;
-                    hand_L.GetComponent<Hand>().enabled = false;
-
-                    rightCatched = true;
-                }
+                Grab(hand_R, rightPos, rightPivot);
+                rightCatched = true;
             }
         }
 
-        
-
-        if(leftCatched)
+        if (leftCatched)
         {
-            //if(OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch))
-
-            if (Input.GetMouseButtonUp(0))
+            if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch) || Input.GetMouseButtonUp(0))
             {
-                transform.parent = null;
-
-                rig.isKinematic = false;
-                rig.useGravity = true;
-                hand_L.GetComponent<Hand>().enabled = true;
-
+                Drop(hand_L, leftPivot);
                 leftCatched = false;
             }
         }
-
-        if (rightCatched)
+        else if (rightCatched)
         {
-            //if(OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
-
-            if (Input.GetMouseButtonUp(1))
+            if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch) || Input.GetMouseButtonUp(1))
             {
-                transform.parent = null;
-
-                rig.useGravity = true;
-                rig.isKinematic = false;
-                hand_R.GetComponent<Hand>().enabled = true;
-
+                Drop(hand_R, rightPivot);
                 rightCatched = false;
             }
+        }
+
+        void Grab(Transform hand, Transform pos, GameObject pivot)
+        {
+            float dis = Vector3.Distance(transform.position, hand.position);
+
+            if (dis < range)
+            {
+                transform.parent = hand;
+                transform.position = pos.position;
+                transform.rotation = pos.rotation;
+                rig.isKinematic = true;
+                rig.useGravity = false;
+
+                hand.Find("Pivot").gameObject.SetActive(false);
+                pivot.SetActive(true);
+            }
+        }
+
+        void Drop(Transform hand, GameObject pivot)
+        {
+            transform.parent = null;
+            rig.useGravity = true;
+            rig.isKinematic = false;
+
+            hand.Find("Pivot").gameObject.SetActive(true);
+            pivot.SetActive(false);
         }
     }
 }
