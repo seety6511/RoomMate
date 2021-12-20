@@ -10,11 +10,11 @@ public class SH_PageControl : MonoBehaviour
     {
         abc = FindObjectOfType<AnimatedBookController>();
     }
-
     public enum PageDir
     {
         Next,
         Prev,
+        Close,
     }
     public PageDir dir;
     private void OnTriggerEnter(Collider other)
@@ -30,6 +30,9 @@ public class SH_PageControl : MonoBehaviour
 
             case PageDir.Prev:
                 abc.TurnToPreviousPage();
+                break;
+            case PageDir.Close:
+                abc.CloseBook();
                 break;
         }
     }

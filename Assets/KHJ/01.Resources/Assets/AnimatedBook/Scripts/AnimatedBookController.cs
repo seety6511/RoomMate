@@ -267,7 +267,7 @@ public class AnimatedBookController : MonoBehaviour {
 	public void TurnToPreviousPage() {
 		// If book is closed, open it
 		if (state == BOOK_STATE.CLOSED) {
-			anim.SetTrigger ("OpenBook");
+			//anim.SetTrigger ("OpenBook");
 		}
 		// If book is opened ...
 		else if (state == BOOK_STATE.OPENED) {
