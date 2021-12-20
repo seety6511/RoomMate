@@ -5,6 +5,7 @@ using UnityEngine;
 //놓을때 던지기
 //집을때 손가락 피봇 위치 설정하기
 // 잡은 손 바꾸기
+// 오토핸드랑 동시 작동 막기
 public class NSR_Grabbable : MonoBehaviour
 {
     public float range;
@@ -34,19 +35,20 @@ public class NSR_Grabbable : MonoBehaviour
 
         if (leftCatched == false && rightCatched == false)
         {
-
+            // 왼손 집기
             if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch) || Input.GetMouseButtonDown(0))
             {
                 Grab(hand_L, leftPos, leftPivot);
                 leftCatched = true;
             }
+            // 오른손 집기
             if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch) || Input.GetMouseButtonDown(1))
             {
                 Grab(hand_R, rightPos, rightPivot);
                 rightCatched = true;
             }
         }
-
+        //왼손 놓기
         if (leftCatched)
         {
             if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch) || Input.GetMouseButtonUp(0))
@@ -55,6 +57,7 @@ public class NSR_Grabbable : MonoBehaviour
                 leftCatched = false;
             }
         }
+        // 오른손 놓기
         else if (rightCatched)
         {
             if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch) || Input.GetMouseButtonUp(1))
