@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Autohand;
 
 //놓을때 던지기
-//집을때 손가락 피봇 위치 설정하기
 // 잡은 손 바꾸기
-// 오토핸드랑 동시 작동 막기
 public class NSR_Grabbable : MonoBehaviour
 {
     public float range;
@@ -33,19 +32,18 @@ public class NSR_Grabbable : MonoBehaviour
         //Transform hand_L = NSR_AutoHandManager.instance.hand_L.transform;
         //Transform hand_R = NSR_AutoHandManager.instance.hand_R.transform;
 
+
         if (leftCatched == false && rightCatched == false)
         {
             // 왼손 집기
             if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch) || Input.GetMouseButtonDown(0))
             {
-                Grab(hand_L, leftPos, leftPivot);
-                leftCatched = true;
+                leftCatched = Grab(hand_L, leftPos, leftPivot);
             }
             // 오른손 집기
             if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch) || Input.GetMouseButtonDown(1))
             {
-                Grab(hand_R, rightPos, rightPivot);
-                rightCatched = true;
+                rightCatched = Grab(hand_R, rightPos, rightPivot);
             }
         }
         //왼손 놓기
@@ -66,32 +64,73 @@ public class NSR_Grabbable : MonoBehaviour
                 rightCatched = false;
             }
         }
-
-        void Grab(Transform hand, Transform pos, GameObject pivot)
-        {
-            float dis = Vector3.Distance(transform.position, hand.position);
-
-            if (dis < range)
-            {
-                transform.parent = hand;
-                transform.position = pos.position;
-                transform.rotation = pos.rotation;
-                rig.isKinematic = true;
-                rig.useGravity = false;
-
-                hand.Find("Pivot").gameObject.SetActive(false);
-                pivot.SetActive(true);
-            }
-        }
-
-        void Drop(Transform hand, GameObject pivot)
-        {
-            transform.parent = null;
-            rig.useGravity = true;
-            rig.isKinematic = false;
-
-            hand.Find("Pivot").gameObject.SetActive(true);
-            pivot.SetActive(false);
-        }
     }
+
+    bool Grab(Transform hand, Transform pos, GameObject pivot)
+    {
+        float dis = Vector3.Distance(transform.position, hand.position);
+
+        if (dis < range)
+        {
+            transform.parent = hand;
+            transform.position = pos.position;
+            transform.rotation = pos.rotation;
+            rig.isKinematic = true;
+            rig.useGravity = false;
+
+            hand.Find("Pivot").gameObject.SetActive(false);
+            pivot.SetActive(true);
+
+            return true;
+        }
+        return false;
+    }
+    void Drop(Transform hand, GameObject pivot)
+    {
+        transform.parent = null;
+        rig.useGravity = true;
+        rig.isKinematic = false;
+
+        if (hand.GetComponent<Hand>().left)
+        {
+            ThrowObjL();
+        }
+        else
+        {
+            ThrowObjR();
+        }
+
+        hand.Find("Pivot").gameObject.SetActive(true);
+        pivot.SetActive(false);
+    } 
+
+    public float throwPower = 5;
+    void ThrowObjR()
+    {
+
+        //던진 힘
+        Vector3 dir = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch);
+        //던진 돌림힘
+        Vector3 torque = OVRInput.GetLocalControllerAngularVelocity(OVRInput.Controller.RTouch);
+
+        rig.velocity = dir * throwPower;
+        //가져온 Rigidbody 의 angularVelocity 값에 angularDir 을 넣자
+        rig.angularVelocity = torque;
+    }
+
+    //왼손 놓을 때 던지기
+    void ThrowObjL()
+    {
+
+        //던진 힘
+        Vector3 dir = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.LTouch);
+        //던진 돌림힘
+        Vector3 torque = OVRInput.GetLocalControllerAngularVelocity(OVRInput.Controller.LTouch);
+
+        rig.velocity = dir * throwPower;
+        //가져온 Rigidbody 의 angularVelocity 값에 angularDir 을 넣자
+        rig.angularVelocity = torque;
+    }
+
 }
+

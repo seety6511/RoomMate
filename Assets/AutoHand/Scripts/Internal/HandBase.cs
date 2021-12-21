@@ -69,7 +69,7 @@ namespace Autohand {
         [Space]
 
 
-        [Tooltip("Maximum distance for pickup"), Min(0.01f)]
+        [Tooltip("Maximum distance for pickup"), Min(-1)]
         public float reachDistance = 0.3f;
 
         [Tooltip("Makes grab smoother; also based on range and reach distance - a very near grab is instant and a max distance grab is [X] frames"), Min(0)]

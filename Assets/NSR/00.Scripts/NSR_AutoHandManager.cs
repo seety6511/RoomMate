@@ -87,8 +87,31 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     }
 
+    bool isMini;
+    public Transform[] miniObjs;
     private void Update()
     {
+        isMini = false;
+        for (int i = 0; i < miniObjs.Length; i++)
+        {
+            float dis = Vector3.Distance(miniObjs[i].position, hand_R.transform.position);
+
+            if (dis < 0.1f)
+            {
+                isMini = true;
+                break;
+            }
+        }
+
+        if (isMini)
+        {
+            hand_R.GetComponent<Hand>().reachDistance = -1;
+        }
+        else
+        {
+            hand_R.GetComponent<Hand>().reachDistance = 0.25f;
+        }
+
         if (PhotonNetwork.IsConnected == false) return;
 
         for (int i = 0; i < cam.Length; i++)
