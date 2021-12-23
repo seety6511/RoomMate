@@ -60,6 +60,9 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     public Camera[] cam;
     int layer;
+
+    public bool leftCatched;
+    public bool rightCatched;
     #endregion
     void Start()
     {

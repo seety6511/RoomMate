@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Autohand;
-
-//놓을때 던지기
-// 잡은 손 바꾸기
 public class NSR_Grabbable : MonoBehaviour
 {
     public float range;
@@ -33,35 +30,42 @@ public class NSR_Grabbable : MonoBehaviour
         //Transform hand_R = NSR_AutoHandManager.instance.hand_R.transform;
 
 
-        if (leftCatched == false && rightCatched == false)
+        if (NSR_AutoHandManager.instance.leftCatched == false)
         {
             // 왼손 집기
             if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch) || Input.GetMouseButtonDown(0))
             {
                 leftCatched = Grab(hand_L, leftPos, leftPivot);
+                NSR_AutoHandManager.instance.leftCatched = leftCatched;
             }
+        }
+        if (NSR_AutoHandManager.instance.rightCatched == false)
+        {
             // 오른손 집기
             if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch) || Input.GetMouseButtonDown(1))
             {
                 rightCatched = Grab(hand_R, rightPos, rightPivot);
+                NSR_AutoHandManager.instance.rightCatched = rightCatched;
             }
         }
+      
         //왼손 놓기
         if (leftCatched)
         {
             if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch) || Input.GetMouseButtonUp(0))
             {
-                Drop(hand_L, leftPivot);
-                leftCatched = false;
+                leftCatched = Drop(hand_L, leftPivot);
+                NSR_AutoHandManager.instance.leftCatched = leftCatched;
+
             }
         }
         // 오른손 놓기
-        else if (rightCatched)
+        if (rightCatched)
         {
             if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch) || Input.GetMouseButtonUp(1))
             {
-                Drop(hand_R, rightPivot);
-                rightCatched = false;
+                rightCatched = Drop(hand_R, rightPivot);
+                NSR_AutoHandManager.instance.rightCatched = rightCatched;
             }
         }
     }
@@ -72,6 +76,18 @@ public class NSR_Grabbable : MonoBehaviour
 
         if (dis < range)
         {
+            if (rightCatched)
+            {
+                NSR_AutoHandManager.instance.rightCatched = Drop(hand_R, rightPivot);
+                rightCatched = false;
+            }
+
+            if (leftCatched)
+            {
+                NSR_AutoHandManager.instance.leftCatched = Drop(hand_L, leftPivot);
+                leftCatched = false;
+            }
+
             transform.parent = hand;
             transform.position = pos.position;
             transform.rotation = pos.rotation;
@@ -85,7 +101,7 @@ public class NSR_Grabbable : MonoBehaviour
         }
         return false;
     }
-    void Drop(Transform hand, GameObject pivot)
+    bool Drop(Transform hand, GameObject pivot)
     {
         transform.parent = null;
         rig.useGravity = true;
@@ -102,34 +118,30 @@ public class NSR_Grabbable : MonoBehaviour
 
         hand.Find("Pivot").gameObject.SetActive(true);
         pivot.SetActive(false);
+
+        return false;
     } 
 
     public float throwPower = 5;
     void ThrowObjR()
     {
-
-        //던진 힘
-        Vector3 dir = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch);
-        //던진 돌림힘
-        Vector3 torque = OVRInput.GetLocalControllerAngularVelocity(OVRInput.Controller.RTouch);
-
-        rig.velocity = dir * throwPower;
-        //가져온 Rigidbody 의 angularVelocity 값에 angularDir 을 넣자
-        rig.angularVelocity = torque;
+        if (rig != null)
+        {
+            rig.velocity = hand_R.GetComponent<Hand>().ThrowVelocity() * throwPower;
+            var throwAngularVel = hand_R.GetComponent<Hand>().ThrowAngularVelocity();
+            if (!float.IsNaN(throwAngularVel.x) && !float.IsNaN(throwAngularVel.y) && !float.IsNaN(throwAngularVel.z))
+                rig.angularVelocity = throwAngularVel;
+        }
     }
-
-    //왼손 놓을 때 던지기
     void ThrowObjL()
     {
-
-        //던진 힘
-        Vector3 dir = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.LTouch);
-        //던진 돌림힘
-        Vector3 torque = OVRInput.GetLocalControllerAngularVelocity(OVRInput.Controller.LTouch);
-
-        rig.velocity = dir * throwPower;
-        //가져온 Rigidbody 의 angularVelocity 값에 angularDir 을 넣자
-        rig.angularVelocity = torque;
+        if (rig != null)
+        {
+            rig.velocity = hand_L.GetComponent<Hand>().ThrowVelocity() * throwPower;
+            var throwAngularVel = hand_L.GetComponent<Hand>().ThrowAngularVelocity();
+            if (!float.IsNaN(throwAngularVel.x) && !float.IsNaN(throwAngularVel.y) && !float.IsNaN(throwAngularVel.z))
+                rig.angularVelocity = throwAngularVel;
+        }
     }
 
 }
