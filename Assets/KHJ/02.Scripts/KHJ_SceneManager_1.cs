@@ -26,6 +26,7 @@ public class KHJ_SceneManager_1 : MonoBehaviour
     }
     private void Start()
     {
+        //포스트프로세스 필드값들
         volume.profile.TryGet<FilmGrain>(out film);
         volume.profile.TryGet<ChromaticAberration>(out chromatic);
         volume.profile.TryGet<ColorAdjustments>(out color);
@@ -34,7 +35,7 @@ public class KHJ_SceneManager_1 : MonoBehaviour
     public GameObject IllusionWall;
     public void disappearWall()
     {
-        IllusionWall.GetComponent<SH_Illusion>().DisappearingControl(true);
+        IllusionWall.SetActive(false);
     }
     public void Scene1Clear()
     {
@@ -46,10 +47,12 @@ public class KHJ_SceneManager_1 : MonoBehaviour
     public GameObject Player;
     IEnumerator Load()
     {
+        //엔딩 연출
         DOTween.To(() => chromatic.intensity.value, x => chromatic.intensity.value = x, 1, 3).SetEase(Ease.InOutQuad);
         DOTween.To(() => film.intensity.value, x => film.intensity.value = x, 1, 3).SetEase(Ease.InOutQuad);
         yield return new WaitForSeconds(3);
         GetComponent<AudioSource>().PlayOneShot(clip);
+        //챕터 1클리어 UI
         GameObject gameObject = Instantiate(CurvedUI);
         gameObject.transform.position = Player.transform.position;
         gameObject.transform.rotation = Player.transform.rotation;
