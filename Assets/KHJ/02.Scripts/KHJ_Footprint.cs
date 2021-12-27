@@ -5,17 +5,17 @@ using DG.Tweening;
 public class KHJ_Footprint : MonoBehaviour
 {
     public KHJ_TriggerNameCheck[] names;
+    public BoxCollider[] boxes;
+    //손, 발에 닿았는지 확인하는 bool 변수
     public bool hand_R;
     public bool hand_L;
     public bool foot;
-
+    //클리어 했는지 확인하는 bool 변수
     public bool isSolved = false;
-    public Material material;
-    public Material material2;
     void Start()
     {
         names = GetComponentsInChildren<KHJ_TriggerNameCheck>();
-        material = Hand_R.GetComponent<Material>();
+        boxes = GetComponentsInChildren<BoxCollider>();
     }
     public void AnswerCheck()
     {
@@ -24,6 +24,7 @@ public class KHJ_Footprint : MonoBehaviour
         if (InputCheck())
         {
             SolveEffect();
+            isSolved = true;
         }
     }
     bool InputCheck()
@@ -40,24 +41,35 @@ public class KHJ_Footprint : MonoBehaviour
     }
 
     public GameObject Nextfoorpuzzle;
-    public GameObject Hand_R;
-    public GameObject Hand_L;
-    public GameObject Foot_R;
-    public GameObject Foot_L;
+    public SkinnedMeshRenderer[] HandmeshRenderer;
+    public MeshRenderer[] FootmeshRenderer;
+    public Material TransparentMaterial_1;
+    public Material TransparentMaterial_2;
     void SolveEffect()
     {
         if(Nextfoorpuzzle != null)
         {
             Nextfoorpuzzle.SetActive(true);
-            Hand_R.transform.DOMove(new Vector3(0, -3, 0), 2).SetRelative();
-            Hand_L.transform.DOMove(new Vector3(0, -3, 0), 2).SetRelative();
-            Foot_R.transform.DOMove(new Vector3(0, -3, 0), 2).SetRelative();
-            Foot_L.transform.DOMove(new Vector3(0, -3, 0), 2).SetRelative();
         }
         else
         {
             KHJ_SceneManager_1.instance.disappearWall();
         }
-        //Destroy(gameObject);
+        //콜라이더 없애기
+        foreach (BoxCollider box in boxes) box.enabled = false;
+
+        //손발 없어지는 효과
+        foreach (SkinnedMeshRenderer renderer in HandmeshRenderer)
+        {
+            renderer.material = TransparentMaterial_1;
+            renderer.material.SetFloat("_FillPercent", 1.5f);
+            renderer.material.DOFloat(0, "_FillPercent", 2);
+        }
+        foreach (MeshRenderer renderer in FootmeshRenderer)
+        {
+            renderer.material = TransparentMaterial_2;
+            renderer.material.SetFloat("_FillPercent", 1.5f);
+            renderer.material.DOFloat(-0.5f, "_FillPercent", 2);
+        }
     }
 }
