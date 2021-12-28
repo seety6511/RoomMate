@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+[RequireComponent(typeof(AudioSource))]
 public class KHJ_Footprint : MonoBehaviour
 {
     public KHJ_TriggerNameCheck[] names;
@@ -12,10 +13,13 @@ public class KHJ_Footprint : MonoBehaviour
     public bool foot;
     //클리어 했는지 확인하는 bool 변수
     public bool isSolved = false;
+    AudioSource source;
+    public AudioClip clearSound;
     void Start()
     {
         names = GetComponentsInChildren<KHJ_TriggerNameCheck>();
         boxes = GetComponentsInChildren<BoxCollider>();
+        source = GetComponent<AudioSource>();
     }
     public void AnswerCheck()
     {
@@ -32,7 +36,7 @@ public class KHJ_Footprint : MonoBehaviour
         hand_R = names[0].OnTouch;
         hand_L = names[1].OnTouch;
         foot = names[2].OnTouch;
-        if (hand_R && hand_L)
+        if (hand_R && hand_L && foot)
         {
             return true;
         }
@@ -47,7 +51,8 @@ public class KHJ_Footprint : MonoBehaviour
     public Material TransparentMaterial_2;
     void SolveEffect()
     {
-        if(Nextfoorpuzzle != null)
+        source.PlayOneShot(clearSound);
+        if (Nextfoorpuzzle != null)
         {
             Nextfoorpuzzle.SetActive(true);
         }

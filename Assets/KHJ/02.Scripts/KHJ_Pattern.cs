@@ -8,9 +8,9 @@ public class KHJ_Pattern : MonoBehaviour
     public string answer1 = "135798642";
     public string answer2 = "137986542";
     public string Inputanswer;
-    public GameObject[] nodes;
+    public Vector3[] nodes;
     public Image[] buttons;
-    public List<GameObject> activeNodes = new List<GameObject>();
+    public List<Vector3> activeNodes = new List<Vector3>();
     LineRenderer drawer;
     public bool drawing;
     private void Awake()
@@ -22,8 +22,6 @@ public class KHJ_Pattern : MonoBehaviour
     public char[] charArr;
     void Update()
     {
-        
-        
         if (activeNodes.Count == nodes.Length)
         {
             if (PasswordCheck())
@@ -33,22 +31,26 @@ public class KHJ_Pattern : MonoBehaviour
             }
             else
             {
-                Init();
+                StartCoroutine(Initialize());
             }
         }
-
-        if (activeNodes.Count == 0)
+        if (!KHJ_SmartPhone.instance.IsTouching)
         {
-            drawer.positionCount = 1;
+            Init();
         }
         else
         {
-            charArr = Inputanswer.ToCharArray();
-
-            for (int i = 0; i < activeNodes.Count; i++)
+            if (activeNodes.Count != 0)
             {
-                //실시간으로 라인 그려주기
-                drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1].transform.position);
+                charArr = Inputanswer.ToCharArray();
+                for (int i = 0; i < activeNodes.Count; i++)
+                {
+                    //실시간으로 라인 그려주기
+                    drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
+                }
+                Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;
+                WorldToLocal.z = -0.0001f;
+                drawer.SetPosition(activeNodes.Count, WorldToLocal);
             }
         }
     }
@@ -68,14 +70,14 @@ public class KHJ_Pattern : MonoBehaviour
     {
         yield return new WaitForSeconds(0.4f);
         gameObject.SetActive(false);
-        KHJ_SceneManager_1.instance.disappearWall();
     }
     public void NodeActive(int nodeNum)
     {
-        GameObject node = nodes[nodeNum];
+        Vector3 node = nodes[nodeNum];
         drawing = true;
         if (activeNodes.Count == 0)
         {
+            drawer.positionCount = 2;
             Inputanswer += (nodeNum + 1);
             activeNodes.Add(node);
             buttons[nodeNum].color = new Color32(0, 0, 0, 0);
@@ -89,7 +91,11 @@ public class KHJ_Pattern : MonoBehaviour
         drawer.positionCount++;
         activeNodes.Add(node);
     }
-    
+    IEnumerator Initialize()
+    {
+        yield return new WaitForSeconds(0.4f);
+        Init();
+    }
     public void Init()
     {
         foreach(Image image in buttons)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-
+[RequireComponent(typeof(AudioSource))]
 public class KHJ_SmartPhone : MonoBehaviour
 {
     public static KHJ_SmartPhone instance;
@@ -11,7 +11,14 @@ public class KHJ_SmartPhone : MonoBehaviour
     public GameObject[] Apps;
     public bool IsRunningApp;
     public bool IsSolved;
+    public bool IsTouching;
     public KHJ_App RunningApp;
+    AudioSource source;
+    public AudioClip openSound;
+    void Start()
+    {
+        source = GetComponent<AudioSource>();
+    }
     public enum AppName
     {
         Caculator,
@@ -46,11 +53,30 @@ public class KHJ_SmartPhone : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    //화면 터치시 터치된 좌표
+    public Transform TouchPos;
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
+        IsTouching = true;
     }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
+            return;
+        IsTouching = true;
+        TouchPos = other.transform;
+        
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
+            return;
+        IsTouching = false;
+        TouchPos = null;
+    }
+    public GameObject tmp;
     void Update()
     {
         if (!Pattern1.gameObject.activeSelf)
@@ -58,6 +84,15 @@ public class KHJ_SmartPhone : MonoBehaviour
             IsSolved = true;
         }
         Set_smartphone();
+        if (IsTouching)
+        {
+            tmp.SetActive(true);
+            tmp.transform.position = TouchPos.position;
+        }
+        else
+        {
+            tmp.SetActive(false);
+        }
     }
 
     public KHJ_Pattern Pattern1;
@@ -83,6 +118,7 @@ public class KHJ_SmartPhone : MonoBehaviour
     float duration = 0.4f;
     public void StartApp(GameObject obj)
     {
+        source.PlayOneShot(openSound);
         AppBG.GetComponent<Image>().DOFade(1, duration).SetAutoKill(false).SetEase(Ease.InOutQuad).Pause();
         AppBG.transform.DOScale(1, duration).SetAutoKill(false).SetEase(Ease.InOutCirc).Pause();
         DOTween.Play(AppBG.GetComponent<Image>());
@@ -93,6 +129,7 @@ public class KHJ_SmartPhone : MonoBehaviour
     }
     public void EndApp()
     {
+        source.PlayOneShot(openSound);
         AppBG.GetComponent<Image>().DOFade(0, duration).SetAutoKill(false).SetEase(Ease.InOutQuad).Pause();
         AppBG.transform.DOScale(0.2f, duration).SetAutoKill(false).SetEase(Ease.InOutCirc).Pause();
         DOTween.Play(AppBG.GetComponent<Image>());
