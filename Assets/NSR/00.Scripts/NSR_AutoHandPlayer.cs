@@ -119,15 +119,23 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     [HideInInspector]
     public Quaternion recieve_hand_R_Rot;
 
+    [HideInInspector]
     public Vector3[] recieve_left_finger_Pos;
+    [HideInInspector]
     public Quaternion[] recieve_left_finger_Rot;
+    [HideInInspector]
     public Vector3[] recieve_right_finger_Pos;
+    [HideInInspector]
     public Quaternion[] recieve_right_finger_Rot;
 
+    [HideInInspector]
     public Vector3[] recieve_objects_Pos;
+    [HideInInspector]
     public Quaternion[] recieve_objects_Rot;
+    [HideInInspector]
     public Vector3[] recieve_objects_Scale;
 
+    [HideInInspector]
     public bool[] receive_input_R;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

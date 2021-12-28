@@ -58,7 +58,7 @@ public class NSR_ConnectManager : MonoBehaviourPunCallbacks
         //인원수 제한
         roomOptions.MaxPlayers = 2;
 
-        PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom("main", roomOptions, TypedLobby.Default);
     }
     //방 입장 성공시
     public override void OnJoinedRoom()

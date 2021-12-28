@@ -8,18 +8,21 @@ public class KHJ_BlackLight : MonoBehaviour
     public bool isBattery;
     public GameObject Light;
 
+    public GameObject obj;
+    public GameObject coll;
+
     private void Start()
     {
         Light.SetActive(false);
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name != "Battery")
+        if (other.gameObject != coll)
             return;
 
         isBattery = true;
-        other.GetComponent<Grabbable>().HandsRelease();
-        other.gameObject.SetActive(false);
+        obj.GetComponent<Grabbable>().HandsRelease();
+        obj.gameObject.SetActive(false);
         if(GetComponent<Grabbable>().IsHeld())
             Light.SetActive(!Light.activeSelf);
     }

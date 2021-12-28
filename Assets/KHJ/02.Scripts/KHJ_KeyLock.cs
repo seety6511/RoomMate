@@ -7,6 +7,7 @@ using Autohand;
 [RequireComponent(typeof(AudioSource))]
 public class KHJ_KeyLock : MonoBehaviour
 {
+    public GameObject keyColl;
     public GameObject key;
     public bool isOpen;
     public GameObject body;
@@ -21,7 +22,7 @@ public class KHJ_KeyLock : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != key)
+        if (other.gameObject != keyColl)
             return;
 
         if (isOpen)
