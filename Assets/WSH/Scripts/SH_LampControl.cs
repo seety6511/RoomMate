@@ -16,11 +16,12 @@ public class SH_LampControl : MonoBehaviourPun
     }
 
     [PunRPC]
-    void OnOff()
+    public void OnOff()
     {
         foreach (var light in lightObj)
         {
-            light.SetActive(!light.activeSelf);
+            var l = light.GetComponentInChildren<Light>();
+            l.enabled = !l.enabled;
 
             var meshMaterials = light.GetComponent<MeshRenderer>().materials;
 
@@ -35,7 +36,7 @@ public class SH_LampControl : MonoBehaviourPun
                 }
             }
             var w = result.shader.FindPropertyIndex(proName);
-            if (light.activeSelf)
+            if (l.enabled)
             {
                 if (w != -1)
                     result.SetColor(proName, Color.white);
