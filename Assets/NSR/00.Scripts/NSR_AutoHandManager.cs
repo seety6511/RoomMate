@@ -145,15 +145,15 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 body_hand_R.SetActive(false);
             }
 
-            for (int i = 0; i < hand_zone_objects.Length; i++)
-            {
-                Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
-                NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
-                if (grabbable != null)
-                    grabbable.enabled = true;
-                if(nsr_grabbable != null)
-                    nsr_grabbable.enabled = true;
-            }
+            //for (int i = 0; i < hand_zone_objects.Length; i++)
+            //{
+            //    Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+            //    NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
+            //    if (grabbable != null)
+            //        grabbable.enabled = true;
+            //    if(nsr_grabbable != null)
+            //        nsr_grabbable.enabled = true;
+            //}
 
             // 핸드이고 바디인 경우
             if (bodyplayer)
@@ -273,21 +273,21 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 if (handZone.gameObject.activeSelf == true)
                     handZone.gameObject.SetActive(false);
 
-                for (int i = 0; i < hand_zone_objects.Length; i++)
-                {
-                    Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
-                    NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
+                //for (int i = 0; i < hand_zone_objects.Length; i++)
+                //{
+                //    Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
+                //    NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
 
-                    if (grabbable != null)
-                    {
-                        grabbable.enabled = false;
-                    }
+                //    if (grabbable != null)
+                //    {
+                //        grabbable.enabled = false;
+                //    }
 
-                    if(nsr_grabbable != null)
-                    {
-                        nsr_grabbable.enabled = false;
-                    }
-                }
+                //    if(nsr_grabbable != null)
+                //    {
+                //        nsr_grabbable.enabled = false;
+                //    }
+                //}
 
                 // 해드라이팅 켜고 끄기
                 if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))
