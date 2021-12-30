@@ -16,7 +16,7 @@ public class NSR_GrabTest : MonoBehaviour
 
     AnimatedBookController book;
 
-    public Collider coll;
+    //public Collider coll;
     void Start()
     {
         handL = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
@@ -33,23 +33,13 @@ public class NSR_GrabTest : MonoBehaviour
             if (Pivot_L.activeSelf)
                 Pivot_L.SetActive(false);
             gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-
-            if (objL.gameObject.name == gameObject.name)
-            {
-                handL.Release();
-            }
         }
 
         if (objR != null)
         {
-            if (Pivot_L.activeSelf)
-                Pivot_L.SetActive(false);
-            gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-
-            if (objR.gameObject.name == gameObject.name)
-            {
-                handR.Release();
-            }
+            if (Pivot_R.activeSelf)
+                Pivot_R.SetActive(false);
+            gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
         }
     }
     void Update()
