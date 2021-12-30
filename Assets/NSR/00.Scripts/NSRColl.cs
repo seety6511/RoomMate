@@ -8,4 +8,9 @@ public class NSRColl : MonoBehaviour
     {
         print(gameObject.name + "°ú ºÎµúÈù ¹°°Ç : " + collision.gameObject.name);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        print(gameObject.name + "°ú ºÎµúÈù ¹°°Ç : " + other.gameObject.name);
+    }
 }

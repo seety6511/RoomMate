@@ -2,11 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-public class KHJ_Drawer : MonoBehaviour
+using Photon.Pun;
+public class KHJ_Drawer : MonoBehaviourPun
 {
     public bool Open;
     public bool Moving;
-    public void OnOffDrawer()
+
+    public void RPCOnOffDrawer()
+    {
+        photonView.RPC("OnOffDrawer", RpcTarget.All);
+    }
+    void OnOffDrawer()
     {
         Moving = true;
         if (!Open)
