@@ -6,6 +6,6 @@ public class NSRColl : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        print("ºÎµúÈù ¹°°Ç : " + collision.gameObject.name);
+        print(gameObject.name + "°ú ºÎµúÈù ¹°°Ç : " + collision.gameObject.name);
     }
 }
