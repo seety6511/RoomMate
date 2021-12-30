@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-public class KHJ_Toggle : MonoBehaviour
+using Photon.Pun;
+public class KHJ_Toggle : MonoBehaviourPun
 {
     public bool enable;
     public GameObject Target;
@@ -11,13 +12,17 @@ public class KHJ_Toggle : MonoBehaviour
     public GameObject Warning;
     public GameObject Button;
 
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
-        OnTrigger();
+
+        photonView.RPC("OnTrigger", RpcTarget.All);
+        //OnTrigger();
     }
 
+    [PunRPC]
     public void OnTrigger()
     {
         if (enable)

@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class KHJ_PlayAudio : MonoBehaviour
+using Photon.Pun;
+public class KHJ_PlayAudio : MonoBehaviourPun
 {
     public KHJ_MusicApp music;
     public AudioClip clip;
@@ -15,8 +16,11 @@ public class KHJ_PlayAudio : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
-        OnTrigger();
+
+        photonView.RPC("OnTrigger", RpcTarget.All);
+        //OnTrigger();
     }
+    [PunRPC]
     public void OnTrigger()
     {
         music.ChangeMusic(this);
