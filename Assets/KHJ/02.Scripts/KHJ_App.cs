@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class KHJ_App : MonoBehaviour
+public class KHJ_App : MonoBehaviourPun
 {
     public GameObject App;
     public KHJ_SmartPhone.AppName appName;
@@ -11,8 +12,11 @@ public class KHJ_App : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
-        Run_App_Trigger();
+
+        photonView.RPC("Run_App_Trigger", RpcTarget.All);
+        //Run_App_Trigger();
     }
+    [PunRPC]
     public void Run_App_Trigger()
     {
         if (!KHJ_SmartPhone.instance.IsSolved)

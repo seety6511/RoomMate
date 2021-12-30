@@ -25,6 +25,33 @@ public class NSR_GrabTest : MonoBehaviour
         book = GetComponentInChildren<AnimatedBookController>();
     }
 
+
+    private void OnDisable()
+    {
+        if (objL != null)
+        {
+            if (Pivot_L.activeSelf)
+                Pivot_L.SetActive(false);
+            gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
+
+            if (objL.gameObject.name == gameObject.name)
+            {
+                handL.Release();
+            }
+        }
+
+        if (objR != null)
+        {
+            if (Pivot_L.activeSelf)
+                Pivot_L.SetActive(false);
+            gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
+
+            if (objR.gameObject.name == gameObject.name)
+            {
+                handR.Release();
+            }
+        }
+    }
     void Update()
     {
         objL = handL.holdingObj;

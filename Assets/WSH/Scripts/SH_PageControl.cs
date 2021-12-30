@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class SH_PageControl : MonoBehaviour
+public class SH_PageControl : MonoBehaviourPun
 {
     AnimatedBookController abc;
 
@@ -25,15 +26,36 @@ public class SH_PageControl : MonoBehaviour
         switch (dir)
         {
             case PageDir.Next:
-                abc.TurnToNextPage();
+                photonView.RPC("RPC_TurnToNextPage", RpcTarget.All);
+                //abc.TurnToNextPage();
                 break;
 
             case PageDir.Prev:
-                abc.TurnToPreviousPage();
+                photonView.RPC("RPC_TurnToPreviousPage", RpcTarget.All);
+                //abc.TurnToPreviousPage();
                 break;
             case PageDir.Close:
-                abc.CloseBook();
+                photonView.RPC("RPC_CloseBook", RpcTarget.All);
+                //abc.CloseBook();
                 break;
         }
+    }
+
+    [PunRPC]
+    void RPC_TurnToNextPage()
+    {
+        abc.TurnToNextPage();
+    }
+
+    [PunRPC]
+    void RPC_TurnToPreviousPage()
+    {
+        abc.TurnToPreviousPage();
+    }
+
+    [PunRPC]
+    void RPC_CloseBook()
+    {
+        abc.CloseBook();
     }
 }

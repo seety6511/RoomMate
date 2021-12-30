@@ -1,24 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Autohand;
 public class NSR_Grabbable : MonoBehaviour
 {
     public Transform leftPos;
     public Transform rightPos;
 
-    Vector3 firstPos;
-    Quaternion firstRot;
-
     public bool isLeft;
     public bool isRight;
 
     public bool isKey;
-    void Start()
-    {
-        firstPos = transform.position;
-        firstRot = transform.rotation;
-    }
     void Update()
     {
         if (isLeft)
