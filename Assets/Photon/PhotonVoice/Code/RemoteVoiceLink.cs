@@ -3,17 +3,18 @@
     using Voice;
     using System;
 
-    public class RemoteVoiceLink : IEquatable<RemoteVoiceLink>
+    public class RemoteVoiceLink
     {
-        public readonly VoiceInfo Info;
-        public readonly int PlayerId;
-        public readonly int VoiceId;
-        public readonly int ChannelId;
+        public VoiceInfo Info { get; private set; }
+        public int PlayerId { get; private set; }
+        public int VoiceId { get; private set; }
+        public int ChannelId { get; private set; }
 
         public event Action<FrameOut<float>> FloatFrameDecoded;
         public event Action RemoteVoiceRemoved;
 
-        public RemoteVoiceLink(VoiceInfo info, int playerId, int voiceId, int channelId, ref RemoteVoiceOptions options)
+        public RemoteVoiceLink(VoiceInfo info, int playerId, int voiceId, int channelId,
+            ref RemoteVoiceOptions options)
         {
             this.Info = info;
             this.PlayerId = playerId;
@@ -37,23 +38,6 @@
             {
                 this.FloatFrameDecoded(floats);
             }
-        }
-
-        private string cached;
-        public override string ToString()
-        {
-            if (string.IsNullOrEmpty(this.cached))
-            {
-                this.cached = string.Format("[p#:{0},v#:{1},c#:{2},i:{{{3}}}]", this.PlayerId, this.VoiceId, this.ChannelId, this.Info);
-            }
-            return this.cached;
-        }
-
-        public bool Equals(RemoteVoiceLink other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return this.PlayerId == other.PlayerId && this.VoiceId == other.VoiceId || this.Info.UserData == other.Info.UserData;
         }
     }
 }

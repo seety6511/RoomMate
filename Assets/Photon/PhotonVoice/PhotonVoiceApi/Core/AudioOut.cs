@@ -478,16 +478,9 @@ namespace Photon.Voice
 
         public void Flush()
         {
-            if (processInService)
+            lock (this.frameQueue)
             {
-                lock (this.frameQueue)
-                {
-                    this.frameQueue.Enqueue(null);
-                }
-            }
-            else
-            {
-                processFrame(null, this.playLoopCount * this.bufferSamples + OutPos);
+                this.frameQueue.Enqueue(null);
             }
         }
 
