@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class KHJ_Pattern : MonoBehaviour
+public class KHJ_Pattern : MonoBehaviourPun
 {
     public string answer1 = "135798642";
     public string answer2 = "137986542";
@@ -27,7 +28,8 @@ public class KHJ_Pattern : MonoBehaviour
             if (PasswordCheck())
             {
                 drawing = false;
-                Clear();
+                photonView.RPC("Clear", RpcTarget.All);
+                //Clear();
             }
             else
             {
@@ -62,6 +64,8 @@ public class KHJ_Pattern : MonoBehaviour
             return true;
         return false;
     }
+
+    [PunRPC]
     void Clear()
     {
         StartCoroutine(Clear_());

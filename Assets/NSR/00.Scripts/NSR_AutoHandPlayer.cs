@@ -154,6 +154,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             stream.SendNext(NSR_AutoHandManager.instance.hand_L.transform.rotation);
             stream.SendNext(NSR_AutoHandManager.instance.hand_R.transform.position);
             stream.SendNext(NSR_AutoHandManager.instance.hand_R.transform.rotation);
+
             // 손가락 위치 보내기
             for (int i = 0; i < 15; i++)
             {
