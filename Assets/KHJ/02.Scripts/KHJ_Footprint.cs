@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Photon.Pun;
 [RequireComponent(typeof(AudioSource))]
-public class KHJ_Footprint : MonoBehaviour
+public class KHJ_Footprint : MonoBehaviourPun
 {
     public KHJ_TriggerNameCheck[] names;
     public BoxCollider[] boxes;
@@ -27,7 +28,7 @@ public class KHJ_Footprint : MonoBehaviour
             return;
         if (InputCheck())
         {
-            SolveEffect();
+            photonView.RPC("SolveEffect", RpcTarget.All);
             isSolved = true;
         }
     }
@@ -49,6 +50,8 @@ public class KHJ_Footprint : MonoBehaviour
     public MeshRenderer[] FootmeshRenderer;
     public Material TransparentMaterial_1;
     public Material TransparentMaterial_2;
+
+    [PunRPC]
     void SolveEffect()
     {
         source.PlayOneShot(clearSound);
