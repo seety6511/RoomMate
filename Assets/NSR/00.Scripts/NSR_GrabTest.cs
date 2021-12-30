@@ -42,13 +42,13 @@ public class NSR_GrabTest : MonoBehaviour
                         if(Pivot_L.activeSelf)
                             Pivot_L.SetActive(false);
                         gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-                        coll.enabled = true;
+                        //coll.enabled = true;
                     }
                     else
                     {
                         if (Pivot_L.activeSelf == false)
                             Pivot_L.SetActive(true);
-                        coll.enabled = false;
+                        //coll.enabled = false;
                         NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
                         if (child.isLeft == false)
                         {
@@ -58,7 +58,7 @@ public class NSR_GrabTest : MonoBehaviour
                 }
                 else
                 {
-                    coll.enabled = false;
+                    //coll.enabled = false;
                     if (Pivot_L.activeSelf == false)
                         Pivot_L.SetActive(true);
                     NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
@@ -74,7 +74,7 @@ public class NSR_GrabTest : MonoBehaviour
 
                     Pivot_L.SetActive(false);
                 gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-                coll.enabled = true;
+                //coll.enabled = true;
             }
         }
         else
@@ -83,7 +83,7 @@ public class NSR_GrabTest : MonoBehaviour
 
                 Pivot_L.SetActive(false);
             gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-            coll.enabled = true;
+            //coll.enabled = true;
         }
 
         // ¿À¸¥¼Õ
@@ -99,11 +99,11 @@ public class NSR_GrabTest : MonoBehaviour
 
                             Pivot_R.SetActive(false);
                         gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
-                        coll.enabled = true;
+                        //coll.enabled = true;
                     }
                     else
                     {
-                        coll.enabled = false;
+                        //coll.enabled = false;
                         if (Pivot_R.activeSelf == false)
 
                             Pivot_R.SetActive(true);
@@ -116,7 +116,7 @@ public class NSR_GrabTest : MonoBehaviour
                 }
                 else
                 {
-                    coll.enabled = false;
+                    //coll.enabled = false;
                     if (Pivot_R.activeSelf == false)
 
                         Pivot_R.SetActive(true);
@@ -130,7 +130,7 @@ public class NSR_GrabTest : MonoBehaviour
             }
             else
             {
-                coll.enabled = true;
+                //coll.enabled = true;
                 if (Pivot_R.activeSelf)
 
                     Pivot_R.SetActive(false);
@@ -139,7 +139,7 @@ public class NSR_GrabTest : MonoBehaviour
         }
         else
         {
-            coll.enabled = true;
+            //coll.enabled = true;
             if (Pivot_R.activeSelf)
 
                 Pivot_R.SetActive(false);
