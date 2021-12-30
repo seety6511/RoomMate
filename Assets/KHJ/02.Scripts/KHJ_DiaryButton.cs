@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class KHJ_DiaryButton : MonoBehaviour
+using Photon.Pun;
+public class KHJ_DiaryButton : MonoBehaviourPun
 {
     public Image bgImage;
     KHJ_Diary diary;
@@ -67,6 +68,13 @@ public class KHJ_DiaryButton : MonoBehaviour
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
         Debug.Log("A");
+        photonView.RPC("DiaryInput", RpcTarget.All);
+        
+    }
+
+    [PunRPC]
+    void DiaryInput()
+    {
         diary.Input(this);
     }
     public void BtnInputEft()
