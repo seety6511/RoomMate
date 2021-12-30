@@ -45,6 +45,7 @@ public class KHJ_SceneManager_1 : MonoBehaviour
     public GameObject CurvedUI;
     public AudioClip clip;
     public GameObject Player;
+    public Transform PlayerCam;
     IEnumerator Load()
     {
         //엔딩 연출
@@ -55,7 +56,7 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         //챕터 1클리어 UI
         GameObject gameObject = Instantiate(CurvedUI);
         gameObject.transform.position = Player.transform.position;
-        gameObject.transform.rotation = Player.transform.rotation;
+        gameObject.transform.rotation = PlayerCam.rotation;
         yield return new WaitForSeconds(1.4f);
         DOTween.To(() => color.colorFilter.value, x => color.colorFilter.value = x, new Color32(0,0,0,0), 3).SetEase(Ease.InOutQuad);
         yield return new WaitForSeconds(4f);
