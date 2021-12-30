@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class KHJ_ButtonUI : MonoBehaviour
+using Photon.Pun;
+public class KHJ_ButtonUI : MonoBehaviourPun
 {
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
 
-        OnClick();
+        photonView.RPC("OnClick", RpcTarget.All);
     }
+    [PunRPC]
     public void OnClick()
     {
         GetComponent<Button>().onClick.Invoke();

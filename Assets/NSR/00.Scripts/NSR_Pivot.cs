@@ -1,31 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 
-public class NSR_Pivot : MonoBehaviourPun
+public class NSR_Pivot : MonoBehaviour
 {
     public GameObject mainPivot;
-    public GameObject samePivot;
-
+    public bool active;
     private void OnEnable()
     {
+        active = true;
         mainPivot.SetActive(false);
-        if(NSR_AutoHandManager.instance.handPlayer)
-            photonView.RPC("SetPivot", RpcTarget.Others, true);
     }
 
     private void OnDisable()
     {
+        active = true;
         mainPivot.SetActive(true);
-        if (NSR_AutoHandManager.instance.handPlayer)
-            photonView.RPC("SetPivot", RpcTarget.Others, false);
-    }
-
-    [PunRPC]
-    void SetPivot(bool onOff)
-    {
-        samePivot.SetActive(onOff);
     }
 
 }
