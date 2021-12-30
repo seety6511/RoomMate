@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class KHJ_DoorButton : MonoBehaviour
+using Photon.Pun;
+public class KHJ_DoorButton : MonoBehaviourPun
 {
     KHJ_Door door;
     public int num;
@@ -16,9 +16,10 @@ public class KHJ_DoorButton : MonoBehaviour
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
 
-        if(KHJ_Door.instance.able)
-            ClickButton();
+        if (KHJ_Door.instance.able)
+            photonView.RPC("ClickButton", RpcTarget.All);
     }
+    [PunRPC]
     public void ClickButton()
     {
         //입력값 넣기
