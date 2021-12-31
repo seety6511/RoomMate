@@ -69,7 +69,7 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         if(openCreateDoor)
             PhotonNetwork.CreateRoom("1234", roomOptions, TypedLobby.Default);
         else if(openJoinDoor)
-            PhotonNetwork.JoinRoom(KHJ_Door.instance.InputString);
+            PhotonNetwork.JoinRoom("1234");
 
     }
     //방 입장 성공시
