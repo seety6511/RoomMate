@@ -8,7 +8,7 @@ public class NSR_HandZone : MonoBehaviour
     public Transform OVRCameraRig;
     void Update()
     {
-        transform.position = autoHandPlayer.position;
+        transform.position = OVRCameraRig.position;
         transform.rotation = OVRCameraRig.rotation;
     }
 }
