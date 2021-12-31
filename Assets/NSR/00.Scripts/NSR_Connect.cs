@@ -57,20 +57,33 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
     }
 
     //로비진입 성공 시 방 입장 시도
+    RoomOptions roomOptions;
     public override void OnJoinedLobby()
     {
         base.OnJoinedLobby();
         print("로비 진입 성공");
 
-        RoomOptions roomOptions = new RoomOptions();
+
+        roomOptions = new RoomOptions();
         //인원수 제한
         roomOptions.MaxPlayers = 2;
+    }
 
-        if(openCreateDoor)
-            PhotonNetwork.CreateRoom("1234", roomOptions, TypedLobby.Default);
-        else if(openJoinDoor)
-            PhotonNetwork.JoinRoom("1234");
-
+    private void Update()
+    {
+        if (PhotonNetwork.InLobby)
+        {
+            if (openCreateDoor)
+            {
+                PhotonNetwork.CreateRoom("1234", roomOptions, TypedLobby.Default);
+                openCreateDoor = false;
+            }
+            else if (openJoinDoor)
+            {
+                PhotonNetwork.JoinRoom("1234");
+                openJoinDoor = false;
+            }
+        }
     }
     //방 입장 성공시
     public override void OnJoinedRoom()
@@ -78,7 +91,7 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         print("방입장 완료");
 
-        PhotonNetwork.LoadLevel("NSR_main");
+        PhotonNetwork.LoadLevel("KHJ_Test");
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -86,7 +99,6 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinRoomFailed(returnCode, message);
 
         joinFailText.SetActive(true);
-        openJoinDoor = false;
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -94,7 +106,6 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnCreateRoomFailed(returnCode, message);
 
         createFailText.SetActive(true);
-        openCreateDoor = false;
     }
 }
 

@@ -15,86 +15,68 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         //해상도 조정
         Screen.SetResolution(960, 640, false);
 
-        headCamera = transform.Find("CenterEyeAnchor").GetComponent<Camera>();
-        forwardFollow = transform.Find("CenterEyeAnchor").transform;
-        trackingContainer = transform.Find("OVRCameraRig").transform;
-        trackingSpace = transform.Find("TrackingSpace").transform;
-        autoHandPlayer = transform.Find("Auto Hand Player").transform;
-        recoderImageInTV = transform.Find("Recorder_Image").GetComponent<Image>();
-        speakerImageInTV = transform.Find("Speaker_Image").GetComponent<Image>();
-        hand_L = transform.Find("ClassicHand (L) (OVR)").gameObject;
-        hand_R = transform.Find("ClassicHand (R) (OVR)").gameObject;
-        auto_hand_player = transform.Find("Auto Hand Player").gameObject;
-        tv_camera = transform.Find("Camera").transform;
-        handZone = transform.Find("HandZone").gameObject;
-        head_light = transform.Find("Spot Light").gameObject;
+        //headCamera = transform.Find("CenterEyeAnchor").GetComponent<Camera>();
+        //forwardFollow = transform.Find("CenterEyeAnchor").transform;
+        //trackingContainer = transform.Find("OVRCameraRig").transform;
+        //trackingSpace = transform.Find("TrackingSpace").transform;
+        //autoHandPlayer = transform.Find("Auto Hand Player").transform;
+        //recoderImageInTV = transform.Find("Recorder_Image").GetComponent<Image>();
+        //speakerImageInTV = transform.Find("Speaker_Image").GetComponent<Image>();
+        //hand_L = transform.Find("ClassicHand (L) (OVR)").gameObject;
+        //hand_R = transform.Find("ClassicHand (R) (OVR)").gameObject;
+        //auto_hand_player = transform.Find("Auto Hand Player").gameObject;
+        //tv_camera = transform.Find("Camera").transform;
+        //handZone = transform.Find("HandZone").gameObject;
+        //head_light = transform.Find("Spot Light").gameObject;
 
-        body_hand_R = transform.Find("Hand_R").gameObject;
-        body_hand_L = transform.Find("Hand_L").gameObject;
-        tv_camera_pos = transform.Find("Tv_cameara_Pos").transform;
-        loadingText = transform.Find("LoadingText").gameObject;
+        //body_hand_R = transform.Find("Hand_R").gameObject;
+        //body_hand_L = transform.Find("Hand_L").gameObject;
+        //tv_camera_pos = transform.Find("Tv_cameara_Pos").transform;
+        //loadingText = transform.Find("LoadingText").gameObject;
     }
 
     #region 
-    [HideInInspector]
+    //[HideInInspector]
     public Camera headCamera;
-    [HideInInspector]
+    //[HideInInspector]
     public Transform forwardFollow;
-    [HideInInspector]
     public Transform trackingContainer;
-    [HideInInspector]
     public Transform trackingSpace;
-    [HideInInspector]
     public Transform autoHandPlayer;
-    [HideInInspector]
     public Image recoderImageInTV;
-    [HideInInspector]
     public Image speakerImageInTV;
-    [HideInInspector]
     public GameObject hand_L;
-    [HideInInspector]
     public GameObject hand_R;
-    [HideInInspector]
     public GameObject auto_hand_player;
 
     public Transform[] leftFingers;
     public Transform[] rightFingers;
 
-    [HideInInspector]
     public Transform tv_camera;
-    [HideInInspector]
     public GameObject handZone;
-    [HideInInspector]
     public GameObject head_light;
 
-    [HideInInspector]
     public GameObject body_hand_R;
-    [HideInInspector]
     public GameObject body_hand_L;
 
     public Transform[] body_leftFingers;
     public Transform[] body_rightFingers;
 
     public Transform[] hand_zone_objects;
-    [HideInInspector]
     public Transform tv_camera_pos;
 
-    [HideInInspector]
     public bool isMaster;
-    [HideInInspector]
     public bool handPlayer;
-    [HideInInspector]
     public bool bodyplayer;
 
     public Camera[] cams;
-    [HideInInspector]
     public GameObject loadingText;
     int layer;
 
-    [HideInInspector]
     public bool leftCatched;
-    [HideInInspector]
     public bool rightCatched;
+
+    public GameObject tv_Canvas;
     #endregion
 
     void Start()
@@ -131,12 +113,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
         if (NSR_BodyPlayer.instance == null)
         {
-            tv_camera.gameObject.SetActive(false);
+            tv_Canvas.gameObject.SetActive(false);
             loadingText.SetActive(true);
         }
         else
         {
-            tv_camera.gameObject.SetActive(true);
+            tv_Canvas.gameObject.SetActive(true);
             loadingText.SetActive(false);
         }
 
