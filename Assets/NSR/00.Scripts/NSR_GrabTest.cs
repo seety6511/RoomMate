@@ -5,8 +5,8 @@ using Autohand;
 
 public class NSR_GrabTest : MonoBehaviour
 {
-    Hand handL;
-    Hand handR;
+    public Hand handL;
+    public Hand handR;
 
     public GameObject Pivot_L;
     public GameObject Pivot_R;
@@ -19,8 +19,8 @@ public class NSR_GrabTest : MonoBehaviour
     public Collider coll;
     void Start()
     {
-        handL = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
-        handR = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
+        //handL = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
+        //handR = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
 
         book = GetComponentInChildren<AnimatedBookController>();
     }

@@ -28,7 +28,9 @@ public class InvenManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    void Update()
+
+   
+    private void Update()
     {
         Pivot.transform.Rotate(new Vector3(0, PivotRotateSpeed, 0) * Time.deltaTime);
         SetItem();

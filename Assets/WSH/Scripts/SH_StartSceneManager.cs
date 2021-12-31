@@ -21,7 +21,7 @@ public class SH_StartSceneManager : MonoBehaviour
     public void GameStart()
     {
         Debug.Log("GameStart");
-        StartCoroutine(Load(SH_SceneName.NSR_ConnetScene.ToString()));
+        StartCoroutine(Load("KHJ_Test"));
     }
 
     IEnumerator Load(string name)

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
+using UnityEditor;
 
 public class KHJ_SceneManager_1 : MonoBehaviour
 {
@@ -30,6 +31,17 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         volume.profile.TryGet<FilmGrain>(out film);
         volume.profile.TryGet<ChromaticAberration>(out chromatic);
         volume.profile.TryGet<ColorAdjustments>(out color);
+    }
+    public GameObject CurvedUIMenu;
+    private void Update()
+    {
+        if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Four, OVRInput.Controller.LTouch))
+        {
+            print("Menu");
+            CurvedUIMenu.SetActive(!CurvedUIMenu.activeSelf);
+            CurvedUIMenu.transform.position = Player.transform.position;
+            CurvedUIMenu.transform.rotation = Player.transform.rotation;
+        }
     }
 
     public GameObject IllusionWall;
@@ -59,11 +71,29 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         yield return new WaitForSeconds(1.4f);
         DOTween.To(() => color.colorFilter.value, x => color.colorFilter.value = x, new Color32(0,0,0,0), 3).SetEase(Ease.InOutQuad);
         yield return new WaitForSeconds(4f);
-
-        //var ao = SceneManager.LoadSceneAsync(0);
-        //while (!ao.isDone)
-        //{
-        //    yield return null;
-        //}
+    }
+    public void GoToScene(string name)
+    {
+        //40324B
+        //SH_Test 1
+        //KHJ_Test
+        if (name == "Quit")
+        {
+#if UNITY_EDITOR
+            EditorApplication.Exit(0);
+#elif UNITY_STANDALONE
+            Application.Quit();
+#endif
+            return;
+        }
+        StartCoroutine(LoadScene(name));
+    }
+    IEnumerator LoadScene(string name)
+    {
+        var ao = SceneManager.LoadSceneAsync(name);
+        while (!ao.isDone)
+        {
+            yield return null;
+        }
     }
 }
