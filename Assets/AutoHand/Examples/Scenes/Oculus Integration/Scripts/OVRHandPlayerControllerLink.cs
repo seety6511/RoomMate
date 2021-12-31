@@ -17,9 +17,11 @@ namespace Autohand.Demo{
 
         Vector2 moveInput;
         float turnInput;
+
+        public bool inGame;
         public void Update() 
         {
-            if (PhotonNetwork.IsConnected)
+            if (inGame)
             {
 
                 if (NSR_AutoHandManager.instance.bodyplayer)
