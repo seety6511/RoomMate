@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
-using Autohand;
-
-// 조건문 핸드인 경우 아닌경우 바디인 경우 아닌경우로 바꾸기
 public class NSR_AutoHandManager : MonoBehaviourPun
 {
     public static NSR_AutoHandManager instance;
@@ -66,6 +63,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     #endregion
     void Start()
     {
+
+
+
+
+
+
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.SendRate = 50;
@@ -74,15 +77,15 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             // 마스터는 HandPlayer 마스터가 아니면 BodyPlayer 생성
             if (PhotonNetwork.IsMasterClient)
             {
-                handPlayer = false;
-                bodyplayer = true;
-                PhotonNetwork.Instantiate("NSR_Auto_Body_Player", Vector3.zero, Quaternion.identity);
-            }
-            else
-            {
                 handPlayer = true;
                 bodyplayer = false;
                 PhotonNetwork.Instantiate("NSR_Auto_Hand_Player", Vector3.zero, Quaternion.identity);
+            }
+            else
+            {
+                handPlayer = false;
+                bodyplayer = true;
+                PhotonNetwork.Instantiate("NSR_Auto_Body_Player", Vector3.zero, Quaternion.identity);
             }
 
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
@@ -90,31 +93,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     }
 
-    //bool isMini;
-    //public Transform[] miniObjs;
     private void Update()
     {
-        //isMini = false;
-        //for (int i = 0; i < miniObjs.Length; i++)
-        //{
-        //    float dis = Vector3.Distance(miniObjs[i].position, hand_R.transform.position);
-
-        //    if (dis < 0.1f)
-        //    {
-        //        isMini = true;
-        //        break;
-        //    }
-        //}
-
-        //if (isMini)
-        //{
-        //    hand_R.GetComponent<Hand>().reachDistance = -1;
-        //}
-        //else
-        //{
-        //    hand_R.GetComponent<Hand>().reachDistance = 0.25f;
-        //}
-
         if (PhotonNetwork.IsConnected == false) return;
 
         for (int i = 0; i < cam.Length; i++)
@@ -144,16 +124,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 body_hand_L.SetActive(false);
                 body_hand_R.SetActive(false);
             }
-
-            //for (int i = 0; i < hand_zone_objects.Length; i++)
-            //{
-            //    Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
-            //    NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
-            //    if (grabbable != null)
-            //        grabbable.enabled = true;
-            //    if(nsr_grabbable != null)
-            //        nsr_grabbable.enabled = true;
-            //}
 
             // 핸드이고 바디인 경우
             if (bodyplayer)
@@ -237,22 +207,22 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 // Tracking 위치 받기
                 trackingContainer.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
                 trackingContainer.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
-                
+
                 // 손 위치 받기
                 body_hand_R.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_R_Pos;
                 body_hand_R.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_R_Rot;
                 body_hand_L.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_L_Pos;
                 body_hand_L.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_L_Rot;
-                
-                    //왼손 손가락 위치 받기
-                    for (int i = 0; i < 15; i++)
-                    {
-                        body_leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
-                        body_leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
-                        body_rightFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
-                        body_rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
-                    }
-        
+
+                //왼손 손가락 위치 받기
+                for (int i = 0; i < 15; i++)
+                {
+                    body_leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
+                    body_leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
+                    body_rightFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
+                    body_rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
+                }
+
 
                 //오브젝트 위치 받기
                 for (int i = 0; i < hand_zone_objects.Length; i++)
@@ -272,22 +242,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 // 화면 카메라 끄기
                 if (handZone.gameObject.activeSelf == true)
                     handZone.gameObject.SetActive(false);
-
-                //for (int i = 0; i < hand_zone_objects.Length; i++)
-                //{
-                //    Grabbable grabbable = hand_zone_objects[i].GetComponent<Grabbable>();
-                //    NSR_Grabbable nsr_grabbable = hand_zone_objects[i].GetComponent<NSR_Grabbable>();
-
-                //    if (grabbable != null)
-                //    {
-                //        grabbable.enabled = false;
-                //    }
-
-                //    if(nsr_grabbable != null)
-                //    {
-                //        nsr_grabbable.enabled = false;
-                //    }
-                //}
 
                 // 해드라이팅 켜고 끄기
                 if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))
