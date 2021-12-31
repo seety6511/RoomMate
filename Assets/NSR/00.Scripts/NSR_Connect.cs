@@ -1,15 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
-
-// 1. 서버에 접속
-// 2. 로비 진입
-// 3. 방 생성 or 방 입장
 public class NSR_Connect : MonoBehaviourPunCallbacks
 {
-    public void Connect()
+    public Text answer;
+
+    bool openCreateDoor;
+    bool openJoinDoor;
+
+    public GameObject joinFailText;
+    public GameObject createFailText;
+
+    public void OpenCreate()
+    {
+        openCreateDoor = true;
+    }
+
+    public void OpenJoin()
+    {
+        openJoinDoor = true;
+    }
+
+    public void OpenExit()
+    {
+        // 게임종료
+        Application.Quit();
+    }
+    private void Start()
+    {
+        if(joinFailText != null)
+        joinFailText.SetActive(false);
+        if (createFailText != null)
+        createFailText.SetActive(false);
+
+        Connect();
+    }
+    void Connect()
     {
         if (PhotonNetwork.IsConnected == false)
         {
@@ -37,7 +66,11 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         //인원수 제한
         roomOptions.MaxPlayers = 2;
 
-        PhotonNetwork.JoinOrCreateRoom("게임장", roomOptions, TypedLobby.Default);
+        if(openCreateDoor)
+            PhotonNetwork.CreateRoom("1234", roomOptions, TypedLobby.Default);
+        else if(openJoinDoor)
+            PhotonNetwork.JoinRoom(answer.text);
+
     }
     //방 입장 성공시
     public override void OnJoinedRoom()
@@ -47,4 +80,22 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
 
         PhotonNetwork.LoadLevel("NSR_main");
     }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        base.OnJoinRoomFailed(returnCode, message);
+
+        joinFailText.SetActive(true);
+        openJoinDoor = false;
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        base.OnCreateRoomFailed(returnCode, message);
+
+        createFailText.SetActive(true);
+        openCreateDoor = false;
+    }
 }
+
+

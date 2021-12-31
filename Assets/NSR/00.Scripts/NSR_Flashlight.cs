@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
+// 집은 상태에서 배터리 넣었을 때
 public class NSR_Flashlight : MonoBehaviourPun
 {
     public GameObject blacklight;

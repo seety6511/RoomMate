@@ -67,4 +67,24 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         //    yield return null;
         //}
     }
+    public void GoToScene(string name)
+    {
+        //40324B
+        //SH_Test 1
+        //KHJ_Test
+        if (name == "Quit")
+        {
+            Application.Quit();
+            return;
+        }
+        StartCoroutine(LoadScene(name));
+    }
+    IEnumerator LoadScene(string name)
+    {
+        var ao = SceneManager.LoadSceneAsync(name);
+        while (!ao.isDone)
+        {
+            yield return null;
+        }
+    }
 }

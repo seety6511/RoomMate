@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+
+// 게임오브젝트 찾아서 넣기
 public class NSR_AutoHandManager : MonoBehaviourPun
 {
     public static NSR_AutoHandManager instance;
@@ -12,61 +14,91 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
         //해상도 조정
         Screen.SetResolution(960, 640, false);
+
+        headCamera = transform.Find("CenterEyeAnchor").GetComponent<Camera>();
+        forwardFollow = transform.Find("CenterEyeAnchor").transform;
+        trackingContainer = transform.Find("OVRCameraRig").transform;
+        trackingSpace = transform.Find("TrackingSpace").transform;
+        autoHandPlayer = transform.Find("Auto Hand Player").transform;
+        recoderImageInTV = transform.Find("Recorder_Image").GetComponent<Image>();
+        speakerImageInTV = transform.Find("Speaker_Image").GetComponent<Image>();
+        hand_L = transform.Find("ClassicHand (L) (OVR)").gameObject;
+        hand_R = transform.Find("ClassicHand (R) (OVR)").gameObject;
+        auto_hand_player = transform.Find("Auto Hand Player").gameObject;
+        tv_camera = transform.Find("Camera").transform;
+        handZone = transform.Find("HandZone").gameObject;
+        head_light = transform.Find("Spot Light").gameObject;
+
+        body_hand_R = transform.Find("Hand_R").gameObject;
+        body_hand_L = transform.Find("Hand_L").gameObject;
+        tv_camera_pos = transform.Find("Tv_cameara_Pos").transform;
+        loadingText = transform.Find("LoadingText").gameObject;
     }
 
     #region 
+    [HideInInspector]
     public Camera headCamera;
+    [HideInInspector]
     public Transform forwardFollow;
+    [HideInInspector]
     public Transform trackingContainer;
-
+    [HideInInspector]
     public Transform trackingSpace;
-
+    [HideInInspector]
     public Transform autoHandPlayer;
-
-    // 보이스 관련 이미지
+    [HideInInspector]
     public Image recoderImageInTV;
+    [HideInInspector]
     public Image speakerImageInTV;
-
+    [HideInInspector]
     public GameObject hand_L;
+    [HideInInspector]
     public GameObject hand_R;
+    [HideInInspector]
     public GameObject auto_hand_player;
-
-    public Transform followHandL;
-    public Transform followHandR;
 
     public Transform[] leftFingers;
     public Transform[] rightFingers;
 
+    [HideInInspector]
     public Transform tv_camera;
+    [HideInInspector]
     public GameObject handZone;
+    [HideInInspector]
     public GameObject head_light;
 
+    [HideInInspector]
     public GameObject body_hand_R;
+    [HideInInspector]
     public GameObject body_hand_L;
 
     public Transform[] body_leftFingers;
     public Transform[] body_rightFingers;
 
     public Transform[] hand_zone_objects;
+    [HideInInspector]
     public Transform tv_camera_pos;
 
     [HideInInspector]
     public bool isMaster;
+    [HideInInspector]
     public bool handPlayer;
+    [HideInInspector]
     public bool bodyplayer;
 
-    public Camera[] cam;
+    public Camera[] cams;
+    [HideInInspector]
+    public GameObject loadingText;
     int layer;
 
+    [HideInInspector]
     public bool leftCatched;
+    [HideInInspector]
     public bool rightCatched;
     #endregion
+
     void Start()
     {
-
-
-
-
 
 
         if (PhotonNetwork.IsConnected)
@@ -97,9 +129,20 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     {
         if (PhotonNetwork.IsConnected == false) return;
 
-        for (int i = 0; i < cam.Length; i++)
+        if (NSR_BodyPlayer.instance == null)
         {
-            cam[i].cullingMask = layer;
+            tv_camera.gameObject.SetActive(false);
+            loadingText.SetActive(true);
+        }
+        else
+        {
+            tv_camera.gameObject.SetActive(true);
+            loadingText.SetActive(false);
+        }
+
+        for (int i = 0; i < cams.Length; i++)
+        {
+            cams[i].cullingMask = layer;
         }
 
         isMaster = handPlayer;
