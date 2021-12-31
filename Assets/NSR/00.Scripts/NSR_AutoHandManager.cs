@@ -111,17 +111,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     {
         if (PhotonNetwork.IsConnected == false) return;
 
-        if (NSR_BodyPlayer.instance == null)
-        {
-            tv_Canvas.gameObject.SetActive(false);
-            loadingText.SetActive(true);
-        }
-        else
-        {
-            tv_Canvas.gameObject.SetActive(true);
-            loadingText.SetActive(false);
-        }
-
         for (int i = 0; i < cams.Length; i++)
         {
             cams[i].cullingMask = layer;
@@ -131,6 +120,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // 핸드인 경우
         if (handPlayer)
         {
+           
+
             if (auto_hand_player.activeSelf == false)
             {
                 auto_hand_player.SetActive(true);
@@ -196,10 +187,17 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                     // 화면 카메라 위치 받기
                     tv_camera.position = NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos;
                     tv_camera.rotation = NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot;
+
+
+                    tv_Canvas.gameObject.SetActive(true);
+                    loadingText.SetActive(false);
                 }
                 else
                 {
                     head_light.gameObject.SetActive(false);
+
+                    tv_Canvas.gameObject.SetActive(false);
+                    loadingText.SetActive(true);
                 }
             }
 
