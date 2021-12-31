@@ -25,7 +25,7 @@ public class KHJ_DoorButton : MonoBehaviourPun
         //입력값 넣기
         door.ButtonInputList.Add(num);
         door.Inputs[door.ButtonInputList.Count - 1].text = num.ToString();
-
+        door.InputString += num;
         BtnInputEft();
         //비밀번호 길이만큼 입력이 끝났다면 확인
         if (door.ButtonInputList.Count == door.AnswerList.Count)

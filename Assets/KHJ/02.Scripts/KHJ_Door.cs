@@ -23,6 +23,7 @@ public class KHJ_Door : MonoBehaviour
     public List<int> AnswerList;
     public List<int> ButtonInputList;
     public Text under;
+    public string InputString = "";
     private void Awake()
     {
         if (instance == null)
@@ -61,6 +62,7 @@ public class KHJ_Door : MonoBehaviour
     }
     public void ClearBtn()
     {
+        InputString = "";
         ButtonInputList.Clear();
         foreach(var text in Inputs)
         {
