@@ -11,24 +11,30 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         if (instance == null) instance = this;
     }
     bool beforeHand;
+    bool giveBack = true;
+    bool change = false;
+    bool handPlayer = true;
+    bool bodyPlayer = false;
     void Update()
     {
         // 스페이스바 누르면 컨트롤 바꾸기
         if (Input.GetKeyDown(KeyCode.Space) /*|| OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch)*/)
         {
-            photonView.RPC("GetControl", RpcTarget.All, true, false);
-            photonView.RPC("GetControl", RpcTarget.All, false, false);
+            photonView.RPC("GetControl", RpcTarget.All, handPlayer, change);
+            photonView.RPC("GetControl", RpcTarget.All, bodyPlayer, change);
         }
 
         if (Input.GetKeyDown(KeyCode.K))
-            photonView.RPC("GetControl", RpcTarget.All, !NSR_AutoHandManager.instance.handPlayer, false);
+        {
+            photonView.RPC("GetControl", RpcTarget.All, !NSR_AutoHandManager.instance.handPlayer, change);
+        }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (NSR_AutoHandManager.instance.handPlayer == beforeHand)
-                photonView.RPC("GetControl", RpcTarget.All, false, true);
+                photonView.RPC("GetControl", RpcTarget.All, bodyPlayer, giveBack);
             else
-                photonView.RPC("GetControl", RpcTarget.All, true, true);
+                photonView.RPC("GetControl", RpcTarget.All, handPlayer, giveBack);
         }
     }
 
