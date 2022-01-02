@@ -19,29 +19,29 @@ namespace Autohand.Demo{
         float turnInput;
 
         public bool inGame;
+        public bool test;
         public void Update() 
         {
             if (inGame)
             {
-
                 if (NSR_AutoHandManager.instance.bodyplayer)
                 {
                     moveInput = OVRInput.Get(moveAxis, moveController);
                     turnInput = OVRInput.Get(turnAxis, turnController).x;
                 }
-                else
+                else if (NSR_AutoBodyPlayer.instance != null)
                 {
-                    if (NSR_AutoBodyPlayer.instance != null)
-                    {
-                        moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
-                        turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
-                    }
+                    moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
+                    turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
                 }
             }
             else
             {
-                moveInput = OVRInput.Get(moveAxis, moveController);
-                turnInput = OVRInput.Get(turnAxis, turnController).x;
+                if (test || PhotonNetwork.IsConnected)
+                {
+                    moveInput = OVRInput.Get(moveAxis, moveController);
+                    turnInput = OVRInput.Get(turnAxis, turnController).x;
+                }                
             }
 
             player.Move(moveInput);

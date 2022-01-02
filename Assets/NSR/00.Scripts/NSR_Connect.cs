@@ -1,41 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using Autohand.Demo;
 public class NSR_Connect : MonoBehaviourPunCallbacks
 {
-    public Text answer;
+    [HideInInspector]
+    public string answer;
 
-    bool openCreateDoor;
-    bool openJoinDoor;
+    public bool openJoinDoor;
+    public bool openCreateDoor;
+
+    [HideInInspector]
+    public bool enterBtn;
+    [HideInInspector]
+    public bool createBtn;
 
     public GameObject joinFailText;
     public GameObject createFailText;
+    public GameObject joinSuccessText;
 
-    public void OpenCreate()
-    {
-        openCreateDoor = true;
-    }
+    public GameObject threshold;
 
-    public void OpenJoin()
-    {
-        openJoinDoor = true;
-    }
-
-    public void OpenExit()
-    {
-        // 게임종료
-        Application.Quit();
-    }
     private void Start()
     {
-        if(joinFailText != null)
         joinFailText.SetActive(false);
-        if (createFailText != null)
         createFailText.SetActive(false);
+        joinSuccessText.SetActive(false);
 
+        if (PhotonNetwork.IsConnected) return;
         Connect();
     }
     void Connect()
@@ -65,22 +59,35 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
 
 
         roomOptions = new RoomOptions();
+        //roomOptions.PublishUserId = true;
         //인원수 제한
         roomOptions.MaxPlayers = 2;
     }
 
+    bool isMaster;
     private void Update()
     {
         if (PhotonNetwork.InLobby)
         {
             if (openCreateDoor)
             {
+                isMaster = true;
                 PhotonNetwork.CreateRoom("1234", roomOptions, TypedLobby.Default);
                 openCreateDoor = false;
             }
-            else if (openJoinDoor)
+            else if (enterBtn)
             {
-                PhotonNetwork.JoinRoom("1234");
+                print(answer);
+                PhotonNetwork.JoinRoom(answer);
+                enterBtn = false;
+            }
+        }
+
+        if (PhotonNetwork.InRoom)
+        {
+            if (openJoinDoor)
+            {
+                PhotonNetwork.LoadLevel("KHJ_Test");
                 openJoinDoor = false;
             }
         }
@@ -91,7 +98,16 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         print("방입장 완료");
 
-        PhotonNetwork.LoadLevel("KHJ_Test");
+        if (isMaster)
+        {
+            PhotonNetwork.LoadLevel("KHJ_Test");
+            isMaster = false;
+        }
+        else
+        {
+            threshold.SetActive(false);
+            joinSuccessText.SetActive(true);
+        }
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -99,6 +115,26 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinRoomFailed(returnCode, message);
 
         joinFailText.SetActive(true);
+        threshold.SetActive(true);
+
+        if (PhotonNetwork.IsConnected == false)
+        {
+            //게임 버전 설정
+            PhotonNetwork.GameVersion = "1";
+            //접속 시도 (name서버 -> master서버)
+            PhotonNetwork.ConnectUsingSettings();
+        }
+        else if (PhotonNetwork.InLobby == false)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+
+        if (enterBtn)
+        {
+            print(answer);
+            PhotonNetwork.JoinRoom(answer);
+            enterBtn = false;
+        }
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -106,6 +142,7 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnCreateRoomFailed(returnCode, message);
 
         createFailText.SetActive(true);
+        // 문 위치 원래대로
     }
 }
 
