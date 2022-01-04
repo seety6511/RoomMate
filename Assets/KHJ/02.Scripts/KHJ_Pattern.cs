@@ -48,13 +48,19 @@ public class KHJ_Pattern : MonoBehaviourPun
                 for (int i = 0; i < activeNodes.Count; i++)
                 {
                     //실시간으로 라인 그려주기
-                    drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
+                    photonView.RPC("DrawLine", RpcTarget.All, i, nodes[int.Parse(charArr[i].ToString()) - 1]);
                 }
                 Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;
                 WorldToLocal.z = -0.0001f;
                 drawer.SetPosition(activeNodes.Count, WorldToLocal);
             }
         }
+    }
+
+    [PunRPC]
+    void DrawLine(int i, Vector3 pos)
+    {
+        drawer.SetPosition(i, pos);
     }
     bool PasswordCheck()
     {
