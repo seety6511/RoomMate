@@ -14,25 +14,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
         //해상도 조정
         Screen.SetResolution(960, 640, false);
-
-        //headCamera = transform.Find("CenterEyeAnchor").GetComponent<Camera>();
-        //forwardFollow = transform.Find("CenterEyeAnchor").transform;
-        //trackingContainer = transform.Find("OVRCameraRig").transform;
-        //trackingSpace = transform.Find("TrackingSpace").transform;
-        //autoHandPlayer = transform.Find("Auto Hand Player").transform;
-        //recoderImageInTV = transform.Find("Recorder_Image").GetComponent<Image>();
-        //speakerImageInTV = transform.Find("Speaker_Image").GetComponent<Image>();
-        //hand_L = transform.Find("ClassicHand (L) (OVR)").gameObject;
-        //hand_R = transform.Find("ClassicHand (R) (OVR)").gameObject;
-        //auto_hand_player = transform.Find("Auto Hand Player").gameObject;
-        //tv_camera = transform.Find("Camera").transform;
-        //handZone = transform.Find("HandZone").gameObject;
-        //head_light = transform.Find("Spot Light").gameObject;
-
-        //body_hand_R = transform.Find("Hand_R").gameObject;
-        //body_hand_L = transform.Find("Hand_L").gameObject;
-        //tv_camera_pos = transform.Find("Tv_cameara_Pos").transform;
-        //loadingText = transform.Find("LoadingText").gameObject;
     }
 
     #region 
@@ -77,12 +58,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public bool rightCatched;
 
     public GameObject tv_Canvas;
+
+    public bool isChanging;
     #endregion
 
     void Start()
     {
-
-
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.SendRate = 50;
@@ -107,207 +88,171 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     }
 
+    float currTime;
     private void Update()
     {
-        if (PhotonNetwork.IsConnected == false) return;
+        if (isChanging)
+        {
+            currTime += Time.deltaTime;
+            if(currTime > 1f)
+            {
+                isChanging = false;
+                currTime = 0;
+            }
+        }
+
+        if (PhotonNetwork.IsConnected == false || isChanging) return;
+
 
         for (int i = 0; i < cams.Length; i++)
         {
             cams[i].cullingMask = layer;
+            tv_camera.GetComponent<Camera>().cullingMask = ~layer;
         }
 
         isMaster = handPlayer;
+
         // 핸드인 경우
         if (handPlayer)
         {
-           
+            SetHandPlayer();
 
-            if (auto_hand_player.activeSelf == false)
-            {
-                auto_hand_player.SetActive(true);
-            }
-
-            // 손이 켜기
-            if (hand_L.activeSelf == false)
-            {
-                hand_L.SetActive(true);
-                hand_R.SetActive(true);
-            }
-
-            // 바디 손 끄기
-            if (body_hand_L.activeSelf)
-            {
-                body_hand_L.SetActive(false);
-                body_hand_R.SetActive(false);
-            }
-
-            // 핸드이고 바디인 경우
             if (bodyplayer)
-            {
-                layer = ~(1 << 9);
-
-                // 화면 카메라 끄기
-                if (handZone.gameObject.activeSelf == true)
-                    handZone.gameObject.SetActive(false);
-
-                // 해드라이팅 켜고 끄기
-                if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))
-                {
-                    head_light.gameObject.SetActive(true);
-                }
-                else
-                {
-                    head_light.gameObject.SetActive(false);
-                }
-
-            }
-            //핸드만 인 경우
+                Set_Room_PlayZone();
             else
-            {
-                layer = 1 << 9;
-
-                // 화면 카메라 켜기
-                if (handZone.gameObject.activeSelf == false)
-                {
-                    handZone.gameObject.SetActive(true);
-                }
-
-                if (NSR_AutoBodyPlayer.instance != null)
-                {
-                    // 해드라이팅 인풋 받기
-                    if (NSR_AutoBodyPlayer.instance.recieve_lightInput)
-                    {
-                        head_light.gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                        head_light.gameObject.SetActive(false);
-                    }
-
-                    // 화면 카메라 위치 받기
-                    tv_camera.position = NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos;
-                    tv_camera.rotation = NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot;
-
-
-                    tv_Canvas.gameObject.SetActive(true);
-                    loadingText.SetActive(false);
-                }
-                else
-                {
-                    head_light.gameObject.SetActive(false);
-
-                    tv_Canvas.gameObject.SetActive(false);
-                    loadingText.SetActive(true);
-                }
-            }
+                Set_Tv_PlayZone();
 
         }
         //핸드가 아닌 경우
         else
         {
+            SetBodyPlayer();
 
-            // 손 이랑 오토핸드 켜져있으면 끄기
-            if (hand_L.activeSelf)
-            {
-                hand_L.SetActive(false);
-                hand_R.SetActive(false);
-            }
-
-            if (auto_hand_player.activeSelf)
-            {
-                auto_hand_player.SetActive(false);
-            }
-
-            // 바디 손 켜기
-            body_hand_L.SetActive(true);
-            body_hand_R.SetActive(true);
-
-            if (NSR_AutoHandPlayer.instance != null)
-            {
-                // 꺼져있는 오토핸드 위치 받기
-                autoHandPlayer.transform.position = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Pos;
-                autoHandPlayer.transform.rotation = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Rot;
-                // Tracking 위치 받기
-                trackingContainer.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
-                trackingContainer.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
-
-                // 손 위치 받기
-                body_hand_R.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_R_Pos;
-                body_hand_R.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_R_Rot;
-                body_hand_L.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_L_Pos;
-                body_hand_L.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_L_Rot;
-
-                //왼손 손가락 위치 받기
-                for (int i = 0; i < 15; i++)
-                {
-                    body_leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
-                    body_leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
-                    body_rightFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
-                    body_rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
-                }
-
-
-                //오브젝트 위치 받기
-                for (int i = 0; i < hand_zone_objects.Length; i++)
-                {
-                    if (hand_zone_objects[i] != null)
-                    {
-                        hand_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
-                        hand_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
-                        hand_zone_objects[i].transform.localScale = NSR_AutoHandPlayer.instance.recieve_objects_Scale[i];
-                    }
-                }
-            }
-            //바디만인 경우
             if (bodyplayer)
-            {
-                layer = ~(1 << 9);
-                // 화면 카메라 끄기
-                if (handZone.gameObject.activeSelf == true)
-                    handZone.gameObject.SetActive(false);
-
-                // 해드라이팅 켜고 끄기
-                if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))
-                {
-                    head_light.gameObject.SetActive(true);
-                }
-                else
-                {
-                    head_light.gameObject.SetActive(false);
-                }
-            }
-            // 핸드도 바디도 아닌 경우
+                Set_Room_PlayZone();
             else
+                Set_Tv_PlayZone();
+        }
+    }
+
+    void SetHandPlayer()
+    {
+        // 오토핸드 몸 켜기
+        auto_hand_player.SetActive(true);
+        // 오토핸드 손 켜기
+        hand_L.SetActive(true);
+        hand_R.SetActive(true);
+
+        // 바디 손 끄기
+        body_hand_L.SetActive(false);
+        body_hand_R.SetActive(false);
+    }
+
+    void SetBodyPlayer()
+    {
+        //오토핸드 몸 끄기
+        auto_hand_player.SetActive(false);
+        //오토핸드 손 끄기
+        hand_L.SetActive(false);
+        hand_R.SetActive(false);
+
+        // 바디 손 켜기
+        body_hand_L.SetActive(true);
+        body_hand_R.SetActive(true);
+
+        // Transform 받기(손, 몸, 오브젝트)
+        if (NSR_AutoHandPlayer.instance != null)
+        {
+            // 꺼져있는 오토핸드 위치 받기
+            autoHandPlayer.transform.position = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Pos;
+            autoHandPlayer.transform.rotation = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Rot;
+            // Tracking 위치 받기
+            trackingContainer.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
+            trackingContainer.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
+
+            // 손 위치 받기
+            body_hand_R.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_R_Pos;
+            body_hand_R.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_R_Rot;
+            body_hand_L.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_L_Pos;
+            body_hand_L.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_L_Rot;
+
+            //왼손 손가락 위치 받기
+            for (int i = 0; i < 15; i++)
             {
-                layer = 1 << 9;
+                body_leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
+                body_leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
+                body_rightFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
+                body_rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
+            }
 
-                // 화면 카메라 켜기
-                if (handZone.gameObject.activeSelf == false)
+           
+         
+            for (int i = 0; i < hand_zone_objects.Length; i++)
+            {
+                if (hand_zone_objects[i] != null)
                 {
-                    handZone.gameObject.SetActive(true);
-                }
-
-                if (NSR_AutoBodyPlayer.instance != null)
-                {
-                    // 해드라이팅 인풋 받기
-                    if (NSR_AutoBodyPlayer.instance.recieve_lightInput)
-                    {
-                        head_light.gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                        head_light.gameObject.SetActive(false);
-                    }
-
-                    // 화면 카메라 위치 받기
-                    tv_camera.position = NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos;
-                    tv_camera.rotation = NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot;
-                }
-                else
-                {
-                    head_light.gameObject.SetActive(false);
+                    hand_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
+                    hand_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
+                    //hand_zone_objects[i].transform.localScale = NSR_AutoHandPlayer.instance.recieve_objects_Scale[i];
                 }
             }
         }
     }
+
+    void Set_Tv_PlayZone()
+    {
+        // 카메라에 보여줄 레이어 설정
+        layer = 1 << 9;
+
+        // handZone(화면 카메라, 핸드플레이 공간, 카메라렌더러 등) 켜기
+        handZone.gameObject.SetActive(true);
+
+        if (NSR_AutoBodyPlayer.instance != null)
+        {
+            // 해드라이팅 인풋 받기
+            if (NSR_AutoBodyPlayer.instance.recieve_lightInput)
+            {
+                head_light.gameObject.SetActive(true);
+            }
+            else
+            {
+                head_light.gameObject.SetActive(false);
+            }
+
+            // 화면 카메라 위치 받기
+            tv_camera.position = NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos;
+            tv_camera.rotation = NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot;
+
+
+            tv_Canvas.gameObject.SetActive(true);
+            loadingText.SetActive(false);
+        }
+        else
+        {
+            head_light.gameObject.SetActive(false);
+
+            tv_Canvas.gameObject.SetActive(false);
+            loadingText.SetActive(true);
+        }
+    }
+
+    void Set_Room_PlayZone()
+    {
+        // 카메라에 보여줄 레이어 설정
+        layer = ~(1 << 9);
+
+        // 화면 카메라 끄기
+        handZone.gameObject.SetActive(false);
+
+        // 해드라이팅 켜고 끄기
+        if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))
+        {
+            head_light.gameObject.SetActive(true);
+        }
+        else
+        {
+            head_light.gameObject.SetActive(false);
+        }
+    }
 }
+
