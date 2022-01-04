@@ -20,9 +20,11 @@ public class SH_LampControl : MonoBehaviourPun
     {
         foreach (var light in lightObj)
         {
-            var l = light.GetComponentInChildren<Light>();
-            l.enabled = !l.enabled;
-
+            var l = light.GetComponentsInChildren<Light>();
+            for (int i = 0; i < l.Count(); ++i)
+            {
+                l[i].enabled = !l[i].enabled;
+            }
             var meshMaterials = light.GetComponent<MeshRenderer>().materials;
 
             Material result = null;
@@ -36,7 +38,7 @@ public class SH_LampControl : MonoBehaviourPun
                 }
             }
             var w = result.shader.FindPropertyIndex(proName);
-            if (l.enabled)
+            if (l[0].enabled)
             {
                 if (w != -1)
                     result.SetColor(proName, Color.white);
