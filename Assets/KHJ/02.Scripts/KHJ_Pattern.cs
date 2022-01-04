@@ -70,8 +70,10 @@ public class KHJ_Pattern : MonoBehaviourPun
     {
         StartCoroutine(Clear_());
     }
+    public GameObject FootPuzzle__1;
     IEnumerator Clear_()
     {
+        FootPuzzle__1.SetActive(true);
         yield return new WaitForSeconds(0.4f);
         gameObject.SetActive(false);
     }

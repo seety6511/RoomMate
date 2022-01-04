@@ -86,8 +86,8 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
             Catch(bodyPlayer.right_Hand, ref trCatched_Right, HandDown_R);
             Drop(true, ref trCatched_Left, HandUp_L);
             Drop(false, ref trCatched_Right, HandUp_R);
-            OpenDoor(bodyPlayer.left_Hand, HandDown_L);
-            OpenDoor(bodyPlayer.right_Hand, HandDown_R);
+            //OpenDoor(bodyPlayer.left_Hand, HandDown_L);
+            //OpenDoor(bodyPlayer.right_Hand, HandDown_R);
         }
     }
 
@@ -169,28 +169,28 @@ public class NSR_HandPlayer : MonoBehaviourPun, IPunObservable
     }
     #endregion
 
-    void OpenDoor(Transform hand, bool openInput)
-    {
-        int layer = 1 << LayerMask.NameToLayer("door");
-        Ray ray = new Ray(hand.position, hand.forward);
-        RaycastHit hit;
-        if (Physics.SphereCast(ray, 0.1f, out hit, 10, layer))
-        {
-            if (openInput)
-            {
-                NSR_Door door = hit.transform.GetComponent<NSR_Door>();
-                door.open = !door.open;
-                if (door.open)
-                {
-                    print("¹®¿­¸²");
-                }
-                else
-                {
-                    print("¹®´ÝÈû");
-                }
-            }
-        }
-    }
+    //void OpenDoor(Transform hand, bool openInput)
+    //{
+    //    int layer = 1 << LayerMask.NameToLayer("door");
+    //    Ray ray = new Ray(hand.position, hand.forward);
+    //    RaycastHit hit;
+    //    if (Physics.SphereCast(ray, 0.1f, out hit, 10, layer))
+    //    {
+    //        if (openInput)
+    //        {
+    //            NSR_Door door = hit.transform.GetComponent<NSR_Door>();
+    //            door.open = !door.open; 
+    //            if (door.open)
+    //            {
+    //                print("¹®¿­¸²");
+    //            }
+    //            else
+    //            {
+    //                print("¹®´ÝÈû");
+    //            }
+    //        }
+    //    }
+    //}
 
     // ================== OnPhotonSerializeView =============================
     bool receiveHandDown_L;

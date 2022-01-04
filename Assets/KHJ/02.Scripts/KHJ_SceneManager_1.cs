@@ -59,8 +59,9 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         gameObject.transform.rotation = PlayerCam.rotation;
         yield return new WaitForSeconds(1.4f);
         DOTween.To(() => color.colorFilter.value, x => color.colorFilter.value = x, new Color32(0,0,0,0), 3).SetEase(Ease.InOutQuad);
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(5f);
 
+        GoToScene("NSR_Start");
         //var ao = SceneManager.LoadSceneAsync(0);
         //while (!ao.isDone)
         //{

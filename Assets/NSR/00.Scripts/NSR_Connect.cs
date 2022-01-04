@@ -1,41 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using Autohand.Demo;
 public class NSR_Connect : MonoBehaviourPunCallbacks
 {
-    public Text answer;
+    [HideInInspector]
+    public string answer;
 
-    bool openCreateDoor;
-    bool openJoinDoor;
+    public bool openJoinDoor;
+    public bool openCreateDoor;
+
+    [HideInInspector]
+    public bool enterBtn;
+    [HideInInspector]
+    public bool createBtn;
 
     public GameObject joinFailText;
     public GameObject createFailText;
+    public GameObject joinSuccessText;
 
-    public void OpenCreate()
-    {
-        openCreateDoor = true;
-    }
+    public GameObject threshold;
 
-    public void OpenJoin()
-    {
-        openJoinDoor = true;
-    }
-
-    public void OpenExit()
-    {
-        // 게임종료
-        Application.Quit();
-    }
     private void Start()
     {
-        if(joinFailText != null)
         joinFailText.SetActive(false);
-        if (createFailText != null)
         createFailText.SetActive(false);
+        joinSuccessText.SetActive(false);
 
+        if (PhotonNetwork.IsConnected) return;
         Connect();
     }
     void Connect()
@@ -55,43 +49,66 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnConnectedToMaster();
         PhotonNetwork.JoinLobby();
     }
-
-    //로비진입 성공 시 방 입장 시도
-    RoomOptions roomOptions;
+    
     public override void OnJoinedLobby()
     {
         base.OnJoinedLobby();
         print("로비 진입 성공");
-
-
-        roomOptions = new RoomOptions();
-        //인원수 제한
-        roomOptions.MaxPlayers = 2;
     }
 
+    bool isMaster;
     private void Update()
     {
-        if (PhotonNetwork.InLobby)
+
+        if (openCreateDoor)
         {
-            if (openCreateDoor)
+            isMaster = true;
+
+            RoomOptions roomOptions = new RoomOptions();
+            //roomOptions.PublishUserId = true;
+            //인원수 제한
+            roomOptions.MaxPlayers = 2;
+            PhotonNetwork.CreateRoom("1234", roomOptions, TypedLobby.Default);
+            openCreateDoor = false;
+        }
+        else if (enterBtn)
+        {
+            print(answer);            
+            enterBtn = false;
+
+            for(int i = 0; i < rooms.Count; i++)
             {
-                PhotonNetwork.CreateRoom("1234", roomOptions, TypedLobby.Default);
-                openCreateDoor = false;
-            }
-            else if (openJoinDoor)
-            {
-                PhotonNetwork.JoinRoom("1234");
-                openJoinDoor = false;
+                if(rooms[i].Name==answer)
+                {
+                    threshold.SetActive(false);
+                    joinSuccessText.SetActive(true);
+                    break;
+                }
             }
         }
+
+        if (openJoinDoor)
+        {
+            PhotonNetwork.JoinRoom(answer);
+            openJoinDoor = false;
+        }
+
+        //if (PhotonNetwork.InRoom)
+        //{
+        //    if (openJoinDoor)
+        //    {
+        //        PhotonNetwork.LoadLevel("KHJ_Test");
+        //        openJoinDoor = false;
+        //    }
+        //}
     }
     //방 입장 성공시
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
         print("방입장 완료");
-
         PhotonNetwork.LoadLevel("KHJ_Test");
+        
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -99,6 +116,7 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnJoinRoomFailed(returnCode, message);
 
         joinFailText.SetActive(true);
+        threshold.SetActive(true);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -106,6 +124,14 @@ public class NSR_Connect : MonoBehaviourPunCallbacks
         base.OnCreateRoomFailed(returnCode, message);
 
         createFailText.SetActive(true);
+        // 문 위치 원래대로
+    }
+
+    List<RoomInfo> rooms = new List<RoomInfo>();
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        base.OnRoomListUpdate(roomList);
+        rooms = roomList;
     }
 }
 
