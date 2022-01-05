@@ -17,9 +17,9 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     }
 
     #region 
-    //[HideInInspector]
+    float speed = 100;
+
     public Camera headCamera;
-    //[HideInInspector]
     public Transform forwardFollow;
     public Transform trackingContainer;
     public Transform trackingSpace;
@@ -91,25 +91,27 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     float currTime;
     private void Update()
     {
+        // 역할 바뀌는 동안 작동 막기
         if (isChanging)
         {
             currTime += Time.deltaTime;
             if(currTime > 1f)
             {
                 isChanging = false;
+                NSR_AutoHandPlayer.instance.canChange = true;
                 currTime = 0;
             }
         }
-
         if (PhotonNetwork.IsConnected == false || isChanging) return;
 
-
+        // 카메라 보여지는 오브젝트 설정
         for (int i = 0; i < cams.Length; i++)
         {
             cams[i].cullingMask = layer;
             tv_camera.GetComponent<Camera>().cullingMask = ~layer;
         }
 
+        //  이거 사용하는 데 있으면 지우고 HandPlayer 변수로 사용
         isMaster = handPlayer;
 
         // 핸드인 경우
@@ -171,18 +173,18 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             trackingContainer.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
 
             // 손 위치 받기
-            body_hand_R.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_R_Pos;
-            body_hand_R.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_R_Rot;
-            body_hand_L.transform.position = NSR_AutoHandPlayer.instance.recieve_hand_L_Pos;
-            body_hand_L.transform.rotation = NSR_AutoHandPlayer.instance.recieve_hand_L_Rot;
+            body_hand_R.transform.position = Vector3.Lerp(body_hand_R.transform.position, NSR_AutoHandPlayer.instance.recieve_hand_R_Pos, speed * Time.deltaTime);
+            body_hand_R.transform.rotation = Quaternion.Lerp(body_hand_R.transform.rotation, NSR_AutoHandPlayer.instance.recieve_hand_R_Rot, speed * Time.deltaTime);
+            body_hand_L.transform.position = Vector3.Lerp(body_hand_L.transform.position, NSR_AutoHandPlayer.instance.recieve_hand_L_Pos, speed * Time.deltaTime);
+            body_hand_L.transform.rotation = Quaternion.Lerp(body_hand_L.transform.rotation, NSR_AutoHandPlayer.instance.recieve_hand_L_Rot, speed * Time.deltaTime);
 
             //왼손 손가락 위치 받기
             for (int i = 0; i < 15; i++)
             {
-                body_leftFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
-                body_leftFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
-                body_rightFingers[i].transform.position = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
-                body_rightFingers[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
+                body_leftFingers[i].transform.localPosition = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
+                body_leftFingers[i].transform.localRotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
+                body_rightFingers[i].transform.localPosition = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
+                body_rightFingers[i].transform.localRotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
             }
 
            

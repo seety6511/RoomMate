@@ -38,7 +38,8 @@ public class KHJ_Pattern : MonoBehaviourPun
         }
         if (!KHJ_SmartPhone.instance.IsTouching)
         {
-            Init();
+            photonView.RPC("Init", RpcTarget.All);
+            //Init();
         }
         else
         {
@@ -108,6 +109,8 @@ public class KHJ_Pattern : MonoBehaviourPun
         yield return new WaitForSeconds(0.4f);
         Init();
     }
+
+    [PunRPC]
     public void Init()
     {
         foreach(Image image in buttons)
