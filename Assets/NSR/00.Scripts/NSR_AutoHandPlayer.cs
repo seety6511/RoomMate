@@ -21,20 +21,10 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     bool bodyPlayer = false;
     public bool canChange;
     public Transform[] objTr;
-
-
-    Grabbable handL_grab;
-    Grabbable handR_grab;
-
-    void Start()
-    {
-        handL_grab = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>().holdingObj;
-        handR_grab = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>().holdingObj;
-    }
     void Update()
     {
         // 스페이스바 누르면 컨트롤 바꾸기
-        if (Input.GetKeyDown(KeyCode.Space) && handL_grab == null && handR_grab == null/*&& canChange*//*|| OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch)*/)
+        if (Input.GetKeyDown(KeyCode.Space) && !NSR_AutoHandManager.instance.isChanging /*|| OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch)*/)
         {
             //  화면 어두워졌다가 밝아지게 하기
             photonView.RPC("Set_ObjTrs", RpcTarget.All);
@@ -194,8 +184,6 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
     [HideInInspector]
     public bool[] receive_input_R;
-
-    public Vector3[] patternPos;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 
@@ -237,11 +225,6 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             stream.SendNext(OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
             stream.SendNext(OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
             stream.SendNext(OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
-
-            for(int i = 0; i < NSR_AutoHandManager.instance.pattern.GetComponent<KHJ_Pattern>().activeNodes.Count; i++)
-            {
-                stream.SendNext(NSR_AutoHandManager.instance.pattern.GetComponent<KHJ_Pattern>().activeNodes[i]);
-            }
         }
         if (stream.IsReading)
         {

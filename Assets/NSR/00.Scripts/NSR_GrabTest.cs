@@ -42,13 +42,13 @@ public class NSR_GrabTest : MonoBehaviour
         objR = handR.holdingObj;
 
         //¿Þ¼Õ
-        if (objL != null && objL.name == gameObject.name && book != null && book.getBookState() == 0)
+        if (objL != null && objL.gameObject.name == gameObject.name && (book == null || (book != null && book.getBookState() == 0)))
             setGrab(Pivot_L, false, true);
         else
             setGrab(Pivot_L, false, true);
 
         // ¿À¸¥¼Õ
-        if (objR != null && objR.name == gameObject.name && book != null && book.getBookState() == 0)
+        if (objR != null && objR.gameObject.name == gameObject.name && (book == null || (book != null && book.getBookState() == 0)))
             setGrab(Pivot_R, false, false);
         else
             setGrab(Pivot_R, false, false);

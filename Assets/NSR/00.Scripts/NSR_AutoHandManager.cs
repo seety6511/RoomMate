@@ -61,7 +61,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public GameObject tv_Canvas;
 
     public bool isChanging;
-    public GameObject pattern;
     #endregion
 
     void Start()
@@ -253,7 +252,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         {
             photonView.RPC("setHeight", RpcTarget.Others, true);
         }
-        else if(OVRInput.GetUp(OVRInput.Button.Three))
+        if(OVRInput.GetUp(OVRInput.Button.Three))
         {
             photonView.RPC("setHeight", RpcTarget.Others, false);
         }
