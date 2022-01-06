@@ -33,14 +33,18 @@ public class KHJ_Pattern : MonoBehaviourPun
             }
             else
             {
+                if(NSR_AutoHandManager.instance.handPlayer)
                 StartCoroutine(Initialize());
             }
         }
         if (!KHJ_SmartPhone.instance.IsTouching)
         {
             //photonView.RPC("Init", RpcTarget.All);
-            if(NSR_AutoHandManager.instance.handPlayer)
-            Init();
+            if (NSR_AutoHandManager.instance.handPlayer)
+            {
+                photonView.RPC("Init", RpcTarget.All);
+            }
+            //Init();
         }
         else
         {
@@ -111,8 +115,9 @@ public class KHJ_Pattern : MonoBehaviourPun
     IEnumerator Initialize()
     {
         yield return new WaitForSeconds(0.4f);
-        if(NSR_AutoHandManager.instance.handPlayer)
-        Init();
+        photonView.RPC("Init", RpcTarget.All);
+
+        //Init();
     }
 
     [PunRPC]

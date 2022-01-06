@@ -66,7 +66,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     void Start()
     {
-
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.SendRate = 200;
@@ -88,7 +87,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
         }
-
     }
 
     float currTime;
@@ -236,26 +234,38 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // 화면 카메라 끄기
         handZone.gameObject.SetActive(false);
 
+        tv_camera.position = Vector3.Lerp(tv_camera.position, tv_camera_pos.position, 200 * Time.deltaTime);
+        tv_camera.rotation = Quaternion.Lerp(tv_camera.rotation, tv_camera_pos.rotation, 200 * Time.deltaTime);
+
         // 해드라이팅 켜고 끄기
-        if (OVRInput.Get(OVRInput.Button.Four))
+        if (OVRInput.GetDown(OVRInput.Button.Four))
         {
             photonView.RPC("HeadLight", RpcTarget.All, true);
             //head_light.gameObject.SetActive(true);
         }
-        else
+        else if (OVRInput.GetUp(OVRInput.Button.Four))
         {
             photonView.RPC("HeadLight", RpcTarget.All, false);
             //head_light.gameObject.SetActive(false);
         }
 
-        if(OVRInput.Get(OVRInput.Button.Three))
+        if(OVRInput.GetDown(OVRInput.Button.Three))
         {
-            photonView.RPC("setHeight", RpcTarget.All, true);
+            photonView.RPC("setHeight", RpcTarget.Others, true);
         }
-        else
+        else if(OVRInput.GetUp(OVRInput.Button.Three))
         {
-            photonView.RPC("setHeight", RpcTarget.All, false);
+            photonView.RPC("setHeight", RpcTarget.Others, false);
         }
+    }
+
+    private void OnDisable()
+    {
+        if (OVRInput.GetDown(OVRInput.Button.Three))
+            photonView.RPC("setHeight", RpcTarget.Others, false);
+
+        if (OVRInput.GetDown(OVRInput.Button.Four))
+            photonView.RPC("HeadLight", RpcTarget.All, false);
     }
 
     [PunRPC]
@@ -264,13 +274,18 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         head_light.gameObject.SetActive(onOff);
     }
 
+
+    Vector3 h;
+
     [PunRPC]
     void setHeight(bool sit)
     {
-        if(sit)
-            autoHandPlayer.GetComponent<AutoHandPlayer>().minMaxHeight.y = 0.5f;
+        h = trackingContainer.position;
+        if (sit)
+            h.y = -1;
         else
-            autoHandPlayer.GetComponent<AutoHandPlayer>().minMaxHeight.y = 1.6f;
+            h.y = 0;
+        trackingContainer.position = h;
     }
 }
 
