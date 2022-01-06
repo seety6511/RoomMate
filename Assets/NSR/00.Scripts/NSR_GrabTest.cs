@@ -23,6 +23,8 @@ public class NSR_GrabTest : MonoBehaviour
         handR = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
 
         book = GetComponentInChildren<AnimatedBookController>();
+
+        coll = GetComponent<BoxCollider>();
     }
 
 
@@ -54,7 +56,7 @@ public class NSR_GrabTest : MonoBehaviour
         {
             if (objL.gameObject.name == gameObject.name)
             {
-                coll = GetComponent<BoxCollider>();
+                
                 if (book != null)
                 {
                     if (book.getBookState() == 0)
