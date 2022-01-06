@@ -6,6 +6,7 @@ using Autohand;
 public class NSR_Hand : MonoBehaviour
 {
     public GameObject Pivot;
+    public GameObject targetObj;
     public GameObject indexPivot;
 
     Grabbable grabObj;
@@ -21,24 +22,19 @@ public class NSR_Hand : MonoBehaviour
 
     private void Update()
     {
-        if (grabObj != null) return;
-
         grabObj = hand.holdingObj;
 
         float dis;
-        dis = Vector3.Distance(transform.position, grabObj.transform.position);
+        dis = Vector3.Distance(transform.position, targetObj.transform.position);
 
-        if(dis < distance)
+
+        if(grabObj == null && dis < distance)
         {
             indexPivot.SetActive(true);
-            Pivot.SetActive(false);
         }
         else
         {
             indexPivot.SetActive(false);
-            Pivot.SetActive(true);
         }
     }
-
-
 }

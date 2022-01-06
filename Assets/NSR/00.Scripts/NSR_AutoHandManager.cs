@@ -66,8 +66,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     {
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.SendRate = 50;
-            PhotonNetwork.SerializationRate = 50;
+            PhotonNetwork.SendRate = 200;
+            PhotonNetwork.SerializationRate = 200;
 
             // 마스터는 HandPlayer 마스터가 아니면 BodyPlayer 생성
             if (PhotonNetwork.IsMasterClient)
@@ -98,7 +98,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             if(currTime > 1f)
             {
                 isChanging = false;
-                NSR_AutoHandPlayer.instance.canChange = true;
+                //NSR_AutoHandPlayer.instance.canChange = true;
                 currTime = 0;
             }
         }
@@ -222,8 +222,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             }
 
             // 화면 카메라 위치 받기
-            tv_camera.position = NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos;
-            tv_camera.rotation = NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot;
+            tv_camera.position = Vector3.Lerp(tv_camera.position, NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos, 200 * Time.deltaTime);
+            tv_camera.rotation = Quaternion.Lerp(tv_camera.rotation, NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot, 200 * Time.deltaTime); ;
 
 
             tv_Canvas.gameObject.SetActive(true);
