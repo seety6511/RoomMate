@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using Autohand;
 
 // 게임오브젝트 찾아서 넣기
 public class NSR_AutoHandManager : MonoBehaviourPun
@@ -60,10 +61,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public GameObject tv_Canvas;
 
     public bool isChanging;
+    public GameObject pattern;
     #endregion
 
     void Start()
     {
+
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.SendRate = 200;
@@ -117,7 +120,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // 핸드인 경우
         if (handPlayer)
         {
-            SetHandPlayer();
+            SetRealHand();
 
             if (bodyplayer)
                 Set_Room_PlayZone();
@@ -128,7 +131,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         //핸드가 아닌 경우
         else
         {
-            SetBodyPlayer();
+            setFakeHand();
 
             if (bodyplayer)
                 Set_Room_PlayZone();
@@ -137,7 +140,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         }
     }
 
-    void SetHandPlayer()
+    void SetRealHand()
     {
         // 오토핸드 몸 켜기
         auto_hand_player.SetActive(true);
@@ -150,7 +153,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         body_hand_R.SetActive(false);
     }
 
-    void SetBodyPlayer()
+    void setFakeHand()
     {
         //오토핸드 몸 끄기
         auto_hand_player.SetActive(false);
@@ -211,28 +214,15 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
         if (NSR_AutoBodyPlayer.instance != null)
         {
-            // 해드라이팅 인풋 받기
-            if (NSR_AutoBodyPlayer.instance.recieve_lightInput)
-            {
-                head_light.gameObject.SetActive(true);
-            }
-            else
-            {
-                head_light.gameObject.SetActive(false);
-            }
-
-            // 화면 카메라 위치 받기
+          // 화면 카메라 위치 받기
             tv_camera.position = Vector3.Lerp(tv_camera.position, NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos, 200 * Time.deltaTime);
-            tv_camera.rotation = Quaternion.Lerp(tv_camera.rotation, NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot, 200 * Time.deltaTime); ;
-
+            tv_camera.rotation = Quaternion.Lerp(tv_camera.rotation, NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot, 200 * Time.deltaTime);
 
             tv_Canvas.gameObject.SetActive(true);
             loadingText.SetActive(false);
         }
         else
         {
-            head_light.gameObject.SetActive(false);
-
             tv_Canvas.gameObject.SetActive(false);
             loadingText.SetActive(true);
         }
@@ -247,14 +237,40 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         handZone.gameObject.SetActive(false);
 
         // 해드라이팅 켜고 끄기
-        if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch))
+        if (OVRInput.Get(OVRInput.Button.Four))
         {
-            head_light.gameObject.SetActive(true);
+            photonView.RPC("HeadLight", RpcTarget.All, true);
+            //head_light.gameObject.SetActive(true);
         }
         else
         {
-            head_light.gameObject.SetActive(false);
+            photonView.RPC("HeadLight", RpcTarget.All, false);
+            //head_light.gameObject.SetActive(false);
         }
+
+        if(OVRInput.Get(OVRInput.Button.Three))
+        {
+            photonView.RPC("setHeight", RpcTarget.All, true);
+        }
+        else
+        {
+            photonView.RPC("setHeight", RpcTarget.All, false);
+        }
+    }
+
+    [PunRPC]
+    void HeadLight(bool onOff)
+    {
+        head_light.gameObject.SetActive(onOff);
+    }
+
+    [PunRPC]
+    void setHeight(bool sit)
+    {
+        if(sit)
+            autoHandPlayer.GetComponent<AutoHandPlayer>().minMaxHeight.y = 0.5f;
+        else
+            autoHandPlayer.GetComponent<AutoHandPlayer>().minMaxHeight.y = 1.6f;
     }
 }
 

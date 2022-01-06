@@ -16,7 +16,7 @@ public class NSR_GrabTest : MonoBehaviour
 
     AnimatedBookController book;
 
-    //public Collider coll;
+    Collider coll;
     void Start()
     {
         handL = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
@@ -30,16 +30,18 @@ public class NSR_GrabTest : MonoBehaviour
     {
         if (objL != null)
         {
-            if (Pivot_L.activeSelf)
-                Pivot_L.SetActive(false);
-            gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
+            setGrab(Pivot_L, false);
+            //if (Pivot_L.activeSelf)
+            //    Pivot_L.SetActive(false);
+            //gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
         }
 
         if (objR != null)
         {
-            if (Pivot_R.activeSelf)
-                Pivot_R.SetActive(false);
-            gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
+            setGrab(Pivot_R, false);
+            //if (Pivot_R.activeSelf)
+            //    Pivot_R.SetActive(false);
+            //gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
         }
     }
     void Update()
@@ -52,55 +54,61 @@ public class NSR_GrabTest : MonoBehaviour
         {
             if (objL.gameObject.name == gameObject.name)
             {
+                coll = GetComponent<BoxCollider>();
                 if (book != null)
                 {
                     if (book.getBookState() == 0)
                     {
-                        if(Pivot_L.activeSelf)
-                            Pivot_L.SetActive(false);
-                        gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-                        //coll.enabled = true;
+                        //if(Pivot_L.activeSelf)
+                        //    Pivot_L.SetActive(false);
+                        //gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
+                        //coll.isTrigger = true;
+                        setGrab(Pivot_L, false);
                     }
                     else
                     {
-                        if (Pivot_L.activeSelf == false)
-                            Pivot_L.SetActive(true);
-                        //coll.enabled = false;
-                        NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-                        if (child.isLeft == false)
-                        {
-                            child.isLeft = true;
-                        }
+                        setGrab(Pivot_L, true);
+                        //if (Pivot_L.activeSelf == false)
+                        //    Pivot_L.SetActive(true);
+                        //coll.isTrigger = false;
+                        //NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
+                        //if (child.isLeft == false)
+                        //{
+                        //    child.isLeft = true;
+                        //}
                     }
                 }
                 else
                 {
-                    //coll.enabled = false;
-                    if (Pivot_L.activeSelf == false)
-                        Pivot_L.SetActive(true);
-                    NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-                    if (child.isLeft == false)
-                    {
-                        child.isLeft = true;
-                    }
+                    setGrab(Pivot_L, true);
+                    //coll.isTrigger = false;
+                    //if (Pivot_L.activeSelf == false)
+                    //    Pivot_L.SetActive(true);
+                    //NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
+                    //if (child.isLeft == false)
+                    //{
+                    //    child.isLeft = true;
+                    //}
                 } 
             }
             else
             {
-                if (Pivot_L.activeSelf)
-
-                    Pivot_L.SetActive(false);
-                gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-                //coll.enabled = true;
+                setGrab(Pivot_L, false);
+                //if (Pivot_L.activeSelf)
+                //    Pivot_L.SetActive(false);
+                //gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
+                ////coll.enabled = true;
+                //coll.isTrigger = true;
             }
         }
         else
         {
-            if (Pivot_L.activeSelf)
-
-                Pivot_L.SetActive(false);
-            gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-            //coll.enabled = true;
+            setGrab(Pivot_L, false);
+            //if (Pivot_L.activeSelf)
+            //    Pivot_L.SetActive(false);
+            //gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
+            ////coll.enabled = true;
+            //coll.isTrigger = true;
         }
 
         // ¿À¸¥¼Õ
@@ -112,55 +120,76 @@ public class NSR_GrabTest : MonoBehaviour
                 {
                     if (book.getBookState() == 0)
                     {
-                        if (Pivot_R.activeSelf)
+                        setGrab(Pivot_R, false);
+                        //if (Pivot_R.activeSelf)
 
-                            Pivot_R.SetActive(false);
-                        gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
-                        //coll.enabled = true;
+                        //    Pivot_R.SetActive(false);
+                        //gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
+                        ////coll.enabled = true;
+                        //coll.isTrigger = true;
                     }
                     else
                     {
-                        //coll.enabled = false;
-                        if (Pivot_R.activeSelf == false)
+                        setGrab(Pivot_R, true);
+                        ////coll.enabled = false;
+                        //coll.isTrigger = false;
+                        //if (Pivot_R.activeSelf == false)
 
-                            Pivot_R.SetActive(true);
-                        NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-                        if (child.isRight == false)
-                        {
-                            child.isRight = true;
-                        }
+                        //    Pivot_R.SetActive(true);
+                        //NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
+                        //if (child.isRight == false)
+                        //{
+                        //    child.isRight = true;
+                        //}
                     }
                 }
                 else
                 {
-                    //coll.enabled = false;
-                    if (Pivot_R.activeSelf == false)
+                    setGrab(Pivot_R, true);
+                    ////coll.enabled = false;
+                    //coll.isTrigger = false;
+                    //if (Pivot_R.activeSelf == false)
 
-                        Pivot_R.SetActive(true);
-                    NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-                    if (child.isRight == false)
-                    {
-                        child.isRight = true;
-                    }
+                    //    Pivot_R.SetActive(true);
+                    //NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
+                    //if (child.isRight == false)
+                    //{
+                    //    child.isRight = true;
+                    //}
                 }
                    
             }
             else
             {
-                //coll.enabled = true;
-                if (Pivot_R.activeSelf)
+                setGrab(Pivot_R, false);
+                //coll.isTrigger = true;
+                //if (Pivot_R.activeSelf)
 
-                    Pivot_R.SetActive(false);
-                gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
+                //    Pivot_R.SetActive(false);
+                //gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
             }
         }
         else
         {
-            //coll.enabled = true;
-            if (Pivot_R.activeSelf)
+            setGrab(Pivot_R, false);
+            ////coll.enabled = true;
+            //coll.isTrigger = true;
+            //if (Pivot_R.activeSelf)
 
-                Pivot_R.SetActive(false);
-            gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
+            //    Pivot_R.SetActive(false);
+            //gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
+        }
+    }
+
+    void setGrab(GameObject pivot, bool grab)
+    {
+        if (pivot.activeSelf == !grab)
+            pivot.SetActive(grab);
+        coll.isTrigger = !grab;
+        NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
+        if (child.isLeft == !grab)
+        {
+            child.isLeft = grab;
         }
     }
 }

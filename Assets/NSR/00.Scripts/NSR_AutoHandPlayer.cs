@@ -194,6 +194,8 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
     [HideInInspector]
     public bool[] receive_input_R;
+
+    public Vector3[] patternPos;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 
@@ -235,6 +237,11 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             stream.SendNext(OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
             stream.SendNext(OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
             stream.SendNext(OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch));
+
+            for(int i = 0; i < NSR_AutoHandManager.instance.pattern.GetComponent<KHJ_Pattern>().activeNodes.Count; i++)
+            {
+                stream.SendNext(NSR_AutoHandManager.instance.pattern.GetComponent<KHJ_Pattern>().activeNodes[i]);
+            }
         }
         if (stream.IsReading)
         {

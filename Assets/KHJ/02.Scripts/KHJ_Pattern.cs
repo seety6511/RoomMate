@@ -38,14 +38,16 @@ public class KHJ_Pattern : MonoBehaviourPun
         }
         if (!KHJ_SmartPhone.instance.IsTouching)
         {
-            photonView.RPC("Init", RpcTarget.All);
-            //Init();
+            //photonView.RPC("Init", RpcTarget.All);
+            if(NSR_AutoHandManager.instance.handPlayer)
+            Init();
         }
         else
         {
             if (activeNodes.Count != 0)
             {
                 charArr = Inputanswer.ToCharArray();
+              
                 for (int i = 0; i < activeNodes.Count; i++)
                 {
                     //실시간으로 라인 그려주기
@@ -53,7 +55,7 @@ public class KHJ_Pattern : MonoBehaviourPun
                 }
                 Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;
                 WorldToLocal.z = -0.0001f;
-                drawer.SetPosition(activeNodes.Count, WorldToLocal);
+                photonView.RPC("DrawLine", RpcTarget.All, activeNodes.Count, WorldToLocal);
             }
         }
     }
@@ -63,6 +65,8 @@ public class KHJ_Pattern : MonoBehaviourPun
     {
         drawer.SetPosition(i, pos);
     }
+
+    
     bool PasswordCheck()
     {
         if (Inputanswer == answer1)
@@ -107,6 +111,7 @@ public class KHJ_Pattern : MonoBehaviourPun
     IEnumerator Initialize()
     {
         yield return new WaitForSeconds(0.4f);
+        if(NSR_AutoHandManager.instance.handPlayer)
         Init();
     }
 
