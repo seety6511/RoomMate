@@ -27,15 +27,15 @@ public class KHJ_ScreenFade : MonoBehaviour
     }
 	IEnumerator Fade()
 	{
-        yield return new WaitForSeconds(2f);
-        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0.6f, 1.8f).SetEase(Ease.OutQuart);
-        yield return new WaitForSeconds(1.8f);
-        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 1f, 1.3f).SetEase(Ease.InQuart);
-        yield return new WaitForSeconds(1.3f);
-        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0.4f, 2f).SetEase(Ease.OutQuart);
-        yield return new WaitForSeconds(2f);
-        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 1f, 1f).SetEase(Ease.InQuart);
         yield return new WaitForSeconds(1f);
-        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0f, 1.3f).SetEase(Ease.OutQuart);
+        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0.4f, 1.8f).SetEase(Ease.OutQuart);
+        DOTween.To(() => depth.gaussianEnd.value, x => depth.gaussianEnd.value = x, 120f, 8f).SetEase(Ease.InExpo);
+        yield return new WaitForSeconds(1.8f);
+        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 1f, 0.5f).SetEase(Ease.InQuart);
+        yield return new WaitForSeconds(0.5f);
+        DOTween.To(() => depth.gaussianStart.value, x => depth.gaussianStart.value = x, 2f, 4f).SetEase(Ease.InExpo);
+        DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0f, 2f).SetEase(Ease.OutQuart);
+        yield return new WaitForSeconds(4f);
+        depth.active = false;
     }
 }
