@@ -35,7 +35,7 @@ public class KHJ_ScreenFade : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         DOTween.To(() => depth.gaussianStart.value, x => depth.gaussianStart.value = x, 2f, 4f).SetEase(Ease.InExpo);
         DOTween.To(() => vignette.intensity.value, x => vignette.intensity.value = x, 0f, 2f).SetEase(Ease.OutQuart);
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(6f);
         depth.active = false;
     }
 }
