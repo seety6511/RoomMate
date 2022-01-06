@@ -31,20 +31,10 @@ public class NSR_GrabTest : MonoBehaviour
     private void OnDisable()
     {
         if (objL != null)
-        {
-            setGrab(Pivot_L, false);
-            //if (Pivot_L.activeSelf)
-            //    Pivot_L.SetActive(false);
-            //gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-        }
+            setGrab(Pivot_L, false, true);
 
         if (objR != null)
-        {
-            setGrab(Pivot_R, false);
-            //if (Pivot_R.activeSelf)
-            //    Pivot_R.SetActive(false);
-            //gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
-        }
+            setGrab(Pivot_R, false, false);
     }
     void Update()
     {
@@ -52,146 +42,27 @@ public class NSR_GrabTest : MonoBehaviour
         objR = handR.holdingObj;
 
         //¿Þ¼Õ
-        if (objL != null)
-        {
-            if (objL.gameObject.name == gameObject.name)
-            {
-                
-                if (book != null)
-                {
-                    if (book.getBookState() == 0)
-                    {
-                        //if(Pivot_L.activeSelf)
-                        //    Pivot_L.SetActive(false);
-                        //gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-                        //coll.isTrigger = true;
-                        setGrab(Pivot_L, false);
-                    }
-                    else
-                    {
-                        setGrab(Pivot_L, true);
-                        //if (Pivot_L.activeSelf == false)
-                        //    Pivot_L.SetActive(true);
-                        //coll.isTrigger = false;
-                        //NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-                        //if (child.isLeft == false)
-                        //{
-                        //    child.isLeft = true;
-                        //}
-                    }
-                }
-                else
-                {
-                    setGrab(Pivot_L, true);
-                    //coll.isTrigger = false;
-                    //if (Pivot_L.activeSelf == false)
-                    //    Pivot_L.SetActive(true);
-                    //NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-                    //if (child.isLeft == false)
-                    //{
-                    //    child.isLeft = true;
-                    //}
-                } 
-            }
-            else
-            {
-                setGrab(Pivot_L, false);
-                //if (Pivot_L.activeSelf)
-                //    Pivot_L.SetActive(false);
-                //gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-                ////coll.enabled = true;
-                //coll.isTrigger = true;
-            }
-        }
+        if (objL != null && objL.name == gameObject.name && book != null && book.getBookState() == 0)
+            setGrab(Pivot_L, false, true);
         else
-        {
-            setGrab(Pivot_L, false);
-            //if (Pivot_L.activeSelf)
-            //    Pivot_L.SetActive(false);
-            //gameObject.GetComponentInChildren<NSR_Grabbable>().isLeft = false;
-            ////coll.enabled = true;
-            //coll.isTrigger = true;
-        }
+            setGrab(Pivot_L, false, true);
 
         // ¿À¸¥¼Õ
-        if (objR != null)
-        {
-            if (objR.name == gameObject.name)
-            {
-                if (book != null)
-                {
-                    if (book.getBookState() == 0)
-                    {
-                        setGrab(Pivot_R, false);
-                        //if (Pivot_R.activeSelf)
-
-                        //    Pivot_R.SetActive(false);
-                        //gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
-                        ////coll.enabled = true;
-                        //coll.isTrigger = true;
-                    }
-                    else
-                    {
-                        setGrab(Pivot_R, true);
-                        ////coll.enabled = false;
-                        //coll.isTrigger = false;
-                        //if (Pivot_R.activeSelf == false)
-
-                        //    Pivot_R.SetActive(true);
-                        //NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-                        //if (child.isRight == false)
-                        //{
-                        //    child.isRight = true;
-                        //}
-                    }
-                }
-                else
-                {
-                    setGrab(Pivot_R, true);
-                    ////coll.enabled = false;
-                    //coll.isTrigger = false;
-                    //if (Pivot_R.activeSelf == false)
-
-                    //    Pivot_R.SetActive(true);
-                    //NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-                    //if (child.isRight == false)
-                    //{
-                    //    child.isRight = true;
-                    //}
-                }
-                   
-            }
-            else
-            {
-                setGrab(Pivot_R, false);
-                //coll.isTrigger = true;
-                //if (Pivot_R.activeSelf)
-
-                //    Pivot_R.SetActive(false);
-                //gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
-            }
-        }
+        if (objR != null && objR.name == gameObject.name && book != null && book.getBookState() == 0)
+            setGrab(Pivot_R, false, false);
         else
-        {
-            setGrab(Pivot_R, false);
-            ////coll.enabled = true;
-            //coll.isTrigger = true;
-            //if (Pivot_R.activeSelf)
-
-            //    Pivot_R.SetActive(false);
-            //gameObject.GetComponentInChildren<NSR_Grabbable>().isRight = false;
-        }
+            setGrab(Pivot_R, false, false);
     }
 
-    void setGrab(GameObject pivot, bool grab)
+    void setGrab(GameObject pivot, bool grab, bool left)
     {
         if (pivot.activeSelf == !grab)
             pivot.SetActive(grab);
-        coll.isTrigger = !grab;
+        coll.isTrigger = grab;
         NSR_Grabbable child = gameObject.GetComponentInChildren<NSR_Grabbable>();
-        if (child.isLeft == !grab)
+        if (child.isLeft == !left)
         {
-            child.isLeft = grab;
+            child.isLeft = left;
         }
     }
 }

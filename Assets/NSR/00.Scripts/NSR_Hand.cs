@@ -6,41 +6,33 @@ using Autohand;
 public class NSR_Hand : MonoBehaviour
 {
     public GameObject Pivot;
-    public GameObject[] targetObj;
+    public GameObject[] targetColl;
     public GameObject indexPivot;
 
     Grabbable grabObj;
 
-    public float distance;
-
     bool isTargetObj;
     private void Update()
     {
-        grabObj = GetComponent<Hand>().holdingObj;
-
-        float[] dis = new float[targetObj.Length];
-        for(int i = 0; i < targetObj.Length; i++)
+       
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        for(int i = 0; i< targetObj.Length; i++)
         {
-            dis[i] = Vector3.Distance(transform.position, targetObj[i].transform.position);
-            if(dis[i] < distance)
+            if(other.gameObject == targetObj[i].gameObject)
             {
-                isTargetObj = true;
-                break;
-            }
-            else
-            {
-                isTargetObj = false;
-            }
-        }
+                grabObj = GetComponent<Hand>().holdingObj;
 
-
-        if(grabObj == null && isTargetObj)
-        {
-            indexPivot.SetActive(true);
-        }
-        else
-        {
-            indexPivot.SetActive(false);
+                if (grabObj == null)
+                {
+                    indexPivot.SetActive(true);
+                }
+                else
+                {
+                    indexPivot.SetActive(false);
+                }
+            }
         }
     }
 }

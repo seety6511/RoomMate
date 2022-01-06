@@ -14,7 +14,6 @@ public class NSR_Grabbable : MonoBehaviour
     {
         if (NSR_AutoHandManager.instance.bodyplayer) return;
 
-
         if (isLeft)
         {
             print("¿Ãµø");

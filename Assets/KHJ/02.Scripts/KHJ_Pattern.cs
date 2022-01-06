@@ -23,6 +23,8 @@ public class KHJ_Pattern : MonoBehaviourPun
     public char[] charArr;
     void Update()
     {
+        if (NSR_AutoHandManager.instance.bodyplayer) return;
+
         if (activeNodes.Count == nodes.Length)
         {
             if (PasswordCheck())
@@ -33,17 +35,12 @@ public class KHJ_Pattern : MonoBehaviourPun
             }
             else
             {
-                if(NSR_AutoHandManager.instance.handPlayer)
                 StartCoroutine(Initialize());
             }
         }
         if (!KHJ_SmartPhone.instance.IsTouching)
         {
-            //photonView.RPC("Init", RpcTarget.All);
-            if (NSR_AutoHandManager.instance.handPlayer)
-            {
-                photonView.RPC("Init", RpcTarget.All);
-            }
+            photonView.RPC("Init", RpcTarget.All);
             //Init();
         }
         else

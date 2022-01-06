@@ -282,7 +282,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     {
         h = trackingContainer.position;
         if (sit)
-            h.y = -1;
+            h.y = -0.5f;
         else
             h.y = 0;
         trackingContainer.position = h;
