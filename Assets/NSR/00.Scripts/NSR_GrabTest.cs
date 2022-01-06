@@ -43,13 +43,13 @@ public class NSR_GrabTest : MonoBehaviour
 
         //¿Þ¼Õ
         if (objL != null && objL.gameObject.name == gameObject.name && (book == null || (book != null && book.getBookState() == 0)))
-            setGrab(Pivot_L, false, true);
+            setGrab(Pivot_L, true, true);
         else
             setGrab(Pivot_L, false, true);
 
         // ¿À¸¥¼Õ
         if (objR != null && objR.gameObject.name == gameObject.name && (book == null || (book != null && book.getBookState() == 0)))
-            setGrab(Pivot_R, false, false);
+            setGrab(Pivot_R, true, false);
         else
             setGrab(Pivot_R, false, false);
     }

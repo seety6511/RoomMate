@@ -5,7 +5,6 @@ using Autohand;
 
 public class NSR_Hand : MonoBehaviour
 {
-    public GameObject Pivot;
     public GameObject[] targetColl;
     public GameObject indexPivot;
 
@@ -15,7 +14,7 @@ public class NSR_Hand : MonoBehaviour
         for (int i = 0; i < targetColl.Length; i++)
         {
             grabObj = GetComponent<Hand>().holdingObj;
-            if (other.gameObject == targetColl[i].gameObject && grabObj == null)
+            if (other.transform == targetColl[i].transform && grabObj == null && targetColl[i] != null)
             {
                 indexPivot.SetActive(true);
             }

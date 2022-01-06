@@ -242,7 +242,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             photonView.RPC("HeadLight", RpcTarget.All, true);
             //head_light.gameObject.SetActive(true);
         }
-        else if (OVRInput.GetUp(OVRInput.Button.Four))
+        if (OVRInput.GetUp(OVRInput.Button.Four))
         {
             photonView.RPC("HeadLight", RpcTarget.All, false);
             //head_light.gameObject.SetActive(false);
