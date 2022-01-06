@@ -1,9 +1,19 @@
 fileFormatVersion: 2
-guid: 97ed84405c74b834ebb87639a40272b6
+guid: aee31e9cd2c8acb4a94bb5f90fdd4fa2
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: JarAndBrushs_wire_061135006
+    second: {fileID: 2100000, guid: f7340eebc4051eb40840f59e22560af9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: JarAndBrushs_wire_143225087
+    second: {fileID: 2100000, guid: ab90fa51833250b4c9bdcf962d21c61e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

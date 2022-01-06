@@ -1,9 +1,29 @@
 fileFormatVersion: 2
-guid: 97ed84405c74b834ebb87639a40272b6
+guid: a62ab750492913c459f0b0bf2aac652a
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: prs009_black__Vr
+    second: {fileID: 2100000, guid: c2dd9373d57e7204c8f0bf8162391882, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: prs009_center__V
+    second: {fileID: 2100000, guid: 816b4674c9af9f648a06d644483e4b44, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: prs009_metall__V
+    second: {fileID: 2100000, guid: cff2941473d166d4db2c2df86c400e02, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: prs009_white__Vr
+    second: {fileID: 2100000, guid: 885d8f8ef34b74945a18721f010e7d9a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
