@@ -18,9 +18,9 @@ public class NSR_Hand : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        for(int i = 0; i< targetObj.Length; i++)
+        for(int i = 0; i< targetColl.Length; i++)
         {
-            if(other.gameObject == targetObj[i].gameObject)
+            if(other.gameObject == targetColl[i].gameObject)
             {
                 grabObj = GetComponent<Hand>().holdingObj;
 
