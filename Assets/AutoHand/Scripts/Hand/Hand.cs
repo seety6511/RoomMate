@@ -221,7 +221,7 @@ namespace Autohand {
             Grab(grabType);
         }
 
-
+        public Transform diaryTr;
         /// <summary>Function for controller trigger fully pressed -> Grabs whatever is directly in front of and closest to the hands palm</summary>
         public virtual void Grab(GrabType grabType) {
             OnTriggerGrab?.Invoke(this, null);
@@ -901,6 +901,7 @@ namespace Autohand {
 
                             SetMoveTo();
                             SetHandLocation(moveTo.position, moveTo.rotation);
+                            
                             holdingObj.transform.position = Vector3.Lerp(startGrabbablePosition, holdingObj.transform.position, grabCurve.Evaluate(point));
                             holdingObj.transform.rotation = Quaternion.Lerp(startGrabbableRotation, holdingObj.transform.rotation, grabCurve.Evaluate(point));
                             yield return new WaitForEndOfFrame();

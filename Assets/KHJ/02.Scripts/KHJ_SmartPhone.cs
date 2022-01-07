@@ -68,7 +68,6 @@ public class KHJ_SmartPhone : MonoBehaviour
             return;
         IsTouching = true;
         TouchPos = other.transform;
-        
     }
     private void OnTriggerExit(Collider other)
     {

@@ -12,7 +12,7 @@ public class NSR_Grabbable : MonoBehaviour
     public bool isKey;
     void Update()
     {
-        if (NSR_AutoHandManager.instance.bodyplayer) return;
+        if (!NSR_AutoHandManager.instance.handPlayer) return;
 
         if (isLeft)
         {

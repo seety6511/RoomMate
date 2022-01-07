@@ -148,6 +148,13 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // ¹Ùµð ¼Õ ²ô±â
         body_hand_L.SetActive(false);
         body_hand_R.SetActive(false);
+
+        h = trackingContainer.position;
+        if (sit)
+            h.y = -0.5f;
+        else
+            h.y = 0;
+        trackingContainer.position = Vector3.Lerp(trackingContainer.position, h, 50 * Time.deltaTime);
     }
 
     void setFakeHand()
@@ -275,16 +282,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
 
     Vector3 h;
+    bool sit;
 
     [PunRPC]
-    void setHeight(bool sit)
+    void setHeight(bool down)
     {
-        h = trackingContainer.position;
-        if (sit)
-            h.y = -0.5f;
-        else
-            h.y = 0;
-        trackingContainer.position = h;
+        sit = down;
     }
 }
 

@@ -5,8 +5,8 @@ using Autohand;
 
 public class NSR_GrabTest : MonoBehaviour
 {
-    Hand handL;
-    Hand handR;
+    public Hand handL;
+    public Hand handR;
 
     public GameObject Pivot_L;
     public GameObject Pivot_R;
@@ -15,26 +15,46 @@ public class NSR_GrabTest : MonoBehaviour
     Grabbable objR;
 
     AnimatedBookController book;
+    NSR_Grabbable grabbable;
 
     Collider coll;
+
+
+
+     public Transform leftPos;
+     public Transform rightPos;
+    public bool isLeft;
+     public bool isRight;
     void Start()
     {
+        if(handL == null)
         handL = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
+        if(handR == null)
         handR = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
 
         book = GetComponentInChildren<AnimatedBookController>();
 
         coll = GetComponent<Collider>();
+        grabbable = GetComponentInChildren<NSR_Grabbable>();
     }
 
 
     private void OnDisable()
     {
-        if (objL.gameObject == gameObject)
-            setGrab(Pivot_L, false, true);
+        objL = handL.holdingObj;
+        objR = handR.holdingObj;
+        if(objL != null)
+        {
+            if (objL.gameObject == gameObject)
+                setGrab(Pivot_L, false, true);
+        }
 
-        if (objR.gameObject == gameObject)
-            setGrab(Pivot_R, false, false);
+        if(objR != null)
+        {
+            if (objR.gameObject == gameObject)
+                setGrab(Pivot_R, false, false);
+        }
+
     }
     void Update()
     {
@@ -58,22 +78,33 @@ public class NSR_GrabTest : MonoBehaviour
     {
         if (pivot.activeSelf == !grab)
             pivot.SetActive(grab);
-        coll.isTrigger = grab;
 
-        NSR_Grabbable pos = gameObject.GetComponentInChildren<NSR_Grabbable>();
+        //coll.isTrigger = grab;
+
         if (left)
         {
-            SetGrabbable(pos.isLeft, grab);
-        }
-        else
-        {
-            SetGrabbable(pos.isRight, grab);
+            if (grabbable.isLeft == !grab)
+                grabbable.isLeft = grab;
+        }       
+        else    
+        {       
+            if (grabbable.isRight == !grab)
+                grabbable.isRight = grab;
         }
     }
 
-    void SetGrabbable(bool grabbable, bool set)
+    private void LateUpdate()
     {
-        if (grabbable == !set)
-            grabbable = set;
+        if (isLeft)
+        {
+            print("¿Ãµø");
+            transform.position = Vector3.Lerp(transform.position, leftPos.position, 0.2f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, leftPos.rotation, 0.2f);
+        }
+        else if (isRight)
+        {
+            transform.position = Vector3.Lerp(transform.position, rightPos.position, 0.2f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rightPos.rotation, 0.2f);
+        }
     }
 }
