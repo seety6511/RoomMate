@@ -5,7 +5,7 @@ using Autohand;
 
 public class NSR_Hand : MonoBehaviour
 {
-    public GameObject[] targetColl;
+    public Collider[] targetColl;
     public GameObject indexPivot;
 
     Grabbable grabObj;
@@ -18,14 +18,14 @@ public class NSR_Hand : MonoBehaviour
 
         for (int i = 0; i < targetColl.Length; i++)
         {
-            if (other.transform == targetColl[i].transform && grabObj == null && targetColl[i] != null)
+            if (other == targetColl[i])
             {
                 isTarget = true;
                 break;
             }
         }
 
-        if (isTarget)
+        if (isTarget && grabObj == null)
             indexPivot.SetActive(true);
         else
             indexPivot.SetActive(false);

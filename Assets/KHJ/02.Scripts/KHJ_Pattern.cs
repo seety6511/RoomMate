@@ -23,7 +23,7 @@ public class KHJ_Pattern : MonoBehaviourPun
     public char[] charArr;
     void Update()
     {
-        if (NSR_AutoHandManager.instance.bodyplayer) return;
+        if (!NSR_AutoHandManager.instance.handPlayer) return;
 
         if (activeNodes.Count == nodes.Length)
         {
@@ -91,6 +91,8 @@ public class KHJ_Pattern : MonoBehaviourPun
     }
     public void NodeActive(int nodeNum)
     {
+        if (!KHJ_SmartPhone.instance.IsAlarmEnd)
+            return;
         Vector3 node = nodes[nodeNum];
         drawing = true;
         if (activeNodes.Count == 0)
