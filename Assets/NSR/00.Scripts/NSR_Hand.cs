@@ -9,19 +9,25 @@ public class NSR_Hand : MonoBehaviour
     public GameObject indexPivot;
 
     Grabbable grabObj;
+
+    bool isTarget;
     private void OnTriggerStay(Collider other)
     {
+        isTarget = false;
+        grabObj = GetComponent<Hand>().holdingObj;
+
         for (int i = 0; i < targetColl.Length; i++)
         {
-            grabObj = GetComponent<Hand>().holdingObj;
             if (other.transform == targetColl[i].transform && grabObj == null && targetColl[i] != null)
             {
-                indexPivot.SetActive(true);
-            }
-            else
-            {
-                indexPivot.SetActive(false);
+                isTarget = true;
+                break;
             }
         }
+
+        if (isTarget)
+            indexPivot.SetActive(true);
+        else
+            indexPivot.SetActive(false);
     }
 }
