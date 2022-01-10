@@ -365,10 +365,12 @@ public class AutoHandSetupWizard : EditorWindow {
 
         }
         writer.Close();
+#if UNITY_EDITOR
         AssetDatabase.Refresh();
 #if UNITY_2020
 #if !UNITY_2020_1
         AssetDatabase.RefreshSettings();
+#endif
 #endif
 #endif
     }
