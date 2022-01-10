@@ -3,7 +3,127 @@ guid: 3b4100cfe988d2a40871ff246dfd53d0
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup
+    second: {fileID: 2100000, guid: 668d04b9264715b4f8daa310fe730ff9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup1
+    second: {fileID: 2100000, guid: cbf3cbc9f3d91474da36ea2764c68e12, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup10
+    second: {fileID: 2100000, guid: 503c60dabb71eb942a3aefdbe9674194, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup11
+    second: {fileID: 2100000, guid: 02046240de87c7541af0cdedc03c0e01, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup2
+    second: {fileID: 2100000, guid: 1db63d82931c64149ac53efd845f11a1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup3
+    second: {fileID: 2100000, guid: aad9b2d4456beae43a8836d9f14efecb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup4
+    second: {fileID: 2100000, guid: fbce54af94ba8fb439ee405d6bed15c8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup5
+    second: {fileID: 2100000, guid: 3a29b431cf4af2d49a237cb273c1af64, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup6
+    second: {fileID: 2100000, guid: e129639d0f0e3c549ad998fae98ed7d5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup7
+    second: {fileID: 2100000, guid: 75f304ba4763f444195b738f214a643b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup8
+    second: {fileID: 2100000, guid: 9828d4804a13a8248bb801a293ec9ada, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cup9
+    second: {fileID: 2100000, guid: 264284cb3f46f1043a450d23a20ba339, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cut
+    second: {fileID: 2100000, guid: 62aa85faf34c38f41ab14a0130f11b36, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cut1
+    second: {fileID: 2100000, guid: 83400d487a48c3f44ac0f7f89db649e0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cut2
+    second: {fileID: 2100000, guid: d54b3bd50de29d84c8fc405ef3e4b8e9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette
+    second: {fileID: 2100000, guid: 38ddf98cbc693604aa8ec04ac1e2d955, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette1
+    second: {fileID: 2100000, guid: 04abd3052648b6545b8fa412178643cd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette2
+    second: {fileID: 2100000, guid: 20dac15f4833cb040a3e8c94e71add3f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette3
+    second: {fileID: 2100000, guid: d05a382dc7d6a394184d397e9a9a4cac, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette4
+    second: {fileID: 2100000, guid: d3606ff716399424a95715d34c13ea39, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette5
+    second: {fileID: 2100000, guid: 9e146ef3f4b81b64f8d399409d7d4674, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette6
+    second: {fileID: 2100000, guid: 15d4bcd07881e7f4ca5145a0d55a11c1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette7
+    second: {fileID: 2100000, guid: ac6f060cf5f4ff04d9ffbe525653eba6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette8
+    second: {fileID: 2100000, guid: de780430914646d41b84821e7a837a9b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
