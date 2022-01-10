@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Autohand;
 
+
+// 초기 콜라이더 사이즈 가져오기
 public class NSR_GrabTest : MonoBehaviour
 {
     Hand handL;
@@ -17,7 +19,7 @@ public class NSR_GrabTest : MonoBehaviour
     AnimatedBookController book;
     NSR_Grabbable grabbable;
     Vector3 startScale;
-
+    BoxCollider box;
     public enum PIVOT
     {
         key,
@@ -37,6 +39,8 @@ public class NSR_GrabTest : MonoBehaviour
 
         Pivot_L = NSR_AutoHandManager.instance.hand_L.GetComponent<NSR_Hand>().pivots[(int)pivot];
         Pivot_R = NSR_AutoHandManager.instance.hand_R.GetComponent<NSR_Hand>().pivots[(int)pivot];
+
+        box = GetComponent<BoxCollider>();
     }
 
 
@@ -73,6 +77,15 @@ public class NSR_GrabTest : MonoBehaviour
             setGrab(Pivot_R, true, false);
         else
             setGrab(Pivot_R, false, false);
+
+        if(isGrab == true && book.getBookState() != 0)
+        {
+            box.size = Vector3.zero;
+        }
+        else if(isGrab == false)
+        {
+            box.size = Vector3.one;
+        }
     }
 
     void setGrab(GameObject pivot, bool grab, bool left)
@@ -92,9 +105,20 @@ public class NSR_GrabTest : MonoBehaviour
         }
 
         //if (grab)
-        //    transform.localScale = new Vector3(0.1f,0.1f,0.1f);
+        //    box.size = new Vector3(0, 0, 0);
         //else
-        //    transform.localScale = startScale;
+        //    box.size = Vector3.one;
+    }
+
+    bool isGrab;
+    public void OnGrab()
+    {
+        isGrab = true;
+    }
+
+    public void OnReleaseGrab()
+    {
+        isGrab = false;
     }
 
 }

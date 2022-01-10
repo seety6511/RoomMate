@@ -945,6 +945,7 @@ namespace Autohand {
 
             grabPoint.transform.position = transform.position;
             grabPoint.transform.rotation = transform.rotation;
+           
             CreateJoint(holdingObj, holdingObj.jointBreakForce * ((1f / Time.fixedUnscaledDeltaTime) / 60f), float.PositiveInfinity);
 
             OnGrabbed?.Invoke(this, holdingObj);

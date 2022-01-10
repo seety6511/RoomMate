@@ -6,6 +6,8 @@ public class NSR_Pivot : MonoBehaviour
 {
     public GameObject mainPivot;
     public bool active;
+
+    public GameObject[] Pivots;
     private void OnEnable()
     {
         active = true;
@@ -16,6 +18,18 @@ public class NSR_Pivot : MonoBehaviour
     {
         active = true;
         mainPivot.SetActive(true);
+    }
+
+    private void Update()
+    {
+        for(int i = 0; i < Pivots.Length; i++)
+        {
+            if (Pivots[i].activeSelf)
+            {
+                gameObject.SetActive(false);
+                break;
+            }
+        }
     }
 
 }
