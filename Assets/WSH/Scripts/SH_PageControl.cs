@@ -26,17 +26,23 @@ public class SH_PageControl : MonoBehaviourPun
         switch (dir)
         {
             case PageDir.Next:
-                photonView.RPC("RPC_TurnToNextPage", RpcTarget.All);
-                //abc.TurnToNextPage();
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("RPC_TurnToNextPage", RpcTarget.All);
+                else
+                    abc.TurnToNextPage();
                 break;
 
             case PageDir.Prev:
-                photonView.RPC("RPC_TurnToPreviousPage", RpcTarget.All);
-                //abc.TurnToPreviousPage();
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("RPC_TurnToPreviousPage", RpcTarget.All);
+                else
+                    abc.TurnToPreviousPage();
                 break;
             case PageDir.Close:
-                photonView.RPC("RPC_CloseBook", RpcTarget.All);
-                //abc.CloseBook();
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("RPC_CloseBook", RpcTarget.All);
+                else
+                    abc.CloseBook();
                 break;
         }
     }

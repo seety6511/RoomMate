@@ -5,37 +5,38 @@ using Autohand;
 
 public class NSR_GrabTest : MonoBehaviour
 {
-    public Hand handL;
-    public Hand handR;
+    Hand handL;
+    Hand handR;
 
-    public GameObject Pivot_L;
-    public GameObject Pivot_R;
+    GameObject Pivot_L;
+    GameObject Pivot_R;
 
     Grabbable objL;
     Grabbable objR;
 
     AnimatedBookController book;
     NSR_Grabbable grabbable;
+    Vector3 startScale;
 
-    Collider coll;
+    public enum PIVOT
+    {
+        key,
+        battery,
+        diary
+    }
 
-
-
-     public Transform leftPos;
-     public Transform rightPos;
-    public bool isLeft;
-     public bool isRight;
+    public PIVOT pivot;
     void Start()
     {
-        if(handL == null)
         handL = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
-        if(handR == null)
         handR = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
 
         book = GetComponentInChildren<AnimatedBookController>();
-
-        coll = GetComponent<Collider>();
         grabbable = GetComponentInChildren<NSR_Grabbable>();
+        startScale = transform.localScale;
+
+        Pivot_L = NSR_AutoHandManager.instance.hand_L.GetComponent<NSR_Hand>().pivots[(int)pivot];
+        Pivot_R = NSR_AutoHandManager.instance.hand_R.GetComponent<NSR_Hand>().pivots[(int)pivot];
     }
 
 
@@ -79,32 +80,21 @@ public class NSR_GrabTest : MonoBehaviour
         if (pivot.activeSelf == !grab)
             pivot.SetActive(grab);
 
-        //coll.isTrigger = grab;
-
         if (left)
         {
             if (grabbable.isLeft == !grab)
                 grabbable.isLeft = grab;
-        }       
-        else    
-        {       
+        }
+        else
+        {
             if (grabbable.isRight == !grab)
                 grabbable.isRight = grab;
         }
+
+        //if (grab)
+        //    transform.localScale = new Vector3(0.1f,0.1f,0.1f);
+        //else
+        //    transform.localScale = startScale;
     }
 
-    private void LateUpdate()
-    {
-        if (isLeft)
-        {
-            print("¿Ãµø");
-            transform.position = Vector3.Lerp(transform.position, leftPos.position, 0.2f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, leftPos.rotation, 0.2f);
-        }
-        else if (isRight)
-        {
-            transform.position = Vector3.Lerp(transform.position, rightPos.position, 0.2f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, rightPos.rotation, 0.2f);
-        }
-    }
 }

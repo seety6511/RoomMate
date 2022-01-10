@@ -68,8 +68,10 @@ public class KHJ_DiaryButton : MonoBehaviourPun
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
         Debug.Log("A");
-        photonView.RPC("DiaryInput", RpcTarget.All);
-        
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("DiaryInput", RpcTarget.All);
+        else
+            DiaryInput();
     }
 
     [PunRPC]

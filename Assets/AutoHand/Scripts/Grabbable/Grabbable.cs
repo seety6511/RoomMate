@@ -17,6 +17,7 @@ namespace Autohand {
 
     [HelpURL("https://earnestrobot.notion.site/Grabbables-9308c564e60848a882eb23e9778ee2b6")]
     public class Grabbable : GrabbableBase {
+        public bool diary;
 
         [Tooltip("This will copy the given grabbables settings to this grabbable when applied"), OnValueChanged("EditorCopyGrabbable")]
         public Grabbable CopySettings;

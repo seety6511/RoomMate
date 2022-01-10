@@ -10,8 +10,10 @@ public class KHJ_ButtonUI : MonoBehaviourPun
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
 
-        photonView.RPC("OnClick", RpcTarget.All);
-        //OnClick();
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("OnClick", RpcTarget.All);
+        else
+            OnClick();
 
     }
     [PunRPC]

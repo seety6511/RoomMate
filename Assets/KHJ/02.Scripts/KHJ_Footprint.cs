@@ -28,7 +28,10 @@ public class KHJ_Footprint : MonoBehaviourPun
             return;
         if (InputCheck())
         {
-            photonView.RPC("SolveEffect", RpcTarget.All);
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("SolveEffect", RpcTarget.All);
+            else
+                SolveEffect();
             isSolved = true;
         }
     }

@@ -11,6 +11,8 @@ namespace Autohand {
     [HelpURL("https://earnestrobot.notion.site/Hand-967e36c2ab2945b2b0f75cea84624b2f")]
     public class Hand : HandBase {
 
+        public bool diary;
+        public Transform diaryPos;
 
         [AutoToggleHeader("Enable Highlight", 0, 0, tooltip = "Raycasting for grabbables to highlight is expensive, you can disable it here if you aren't using it")]
         public bool usingHighlight = true;
@@ -221,7 +223,6 @@ namespace Autohand {
             Grab(grabType);
         }
 
-        public Transform diaryTr;
         /// <summary>Function for controller trigger fully pressed -> Grabs whatever is directly in front of and closest to the hands palm</summary>
         public virtual void Grab(GrabType grabType) {
             OnTriggerGrab?.Invoke(this, null);
@@ -250,6 +251,7 @@ namespace Autohand {
                 var estimatedRadius = Vector3.Distance(hit.point, hit.transform.position);
                 var difference = (grab.transform.position - hit.point) + (palmTransform.forward * estimatedRadius * 2f);
                 var startPos = grab.transform.position;
+
                 grab.transform.position = palmTransform.position + difference;
                 grab.body.position = grab.transform.position;
 

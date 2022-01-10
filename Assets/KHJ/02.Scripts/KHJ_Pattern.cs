@@ -30,8 +30,10 @@ public class KHJ_Pattern : MonoBehaviourPun
             if (PasswordCheck())
             {
                 drawing = false;
-                photonView.RPC("Clear", RpcTarget.All);
-                //Clear();
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("Clear", RpcTarget.All);
+                else
+                    Clear();
             }
             else
             {
@@ -40,8 +42,10 @@ public class KHJ_Pattern : MonoBehaviourPun
         }
         if (!KHJ_SmartPhone.instance.IsTouching)
         {
-            photonView.RPC("Init", RpcTarget.All);
-            //Init();
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("Init", RpcTarget.All);
+            else
+                Init();
         }
         else
         {
@@ -53,12 +57,18 @@ public class KHJ_Pattern : MonoBehaviourPun
                 {
                     //실시간으로 라인 그려주기
                     //drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
-                    photonView.RPC("DrawLine", RpcTarget.All, i, nodes[int.Parse(charArr[i].ToString()) - 1]);
+                    if (PhotonNetwork.IsConnected)
+                        photonView.RPC("DrawLine", RpcTarget.All, i, nodes[int.Parse(charArr[i].ToString()) - 1]);
+                    else
+                        DrawLine(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
                 }
                 Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;
                 WorldToLocal.z = -0.0001f;
                 //drawer.SetPosition(activeNodes.Count, WorldToLocal);
-                photonView.RPC("DrawLine", RpcTarget.All, activeNodes.Count, WorldToLocal);
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("DrawLine", RpcTarget.All, activeNodes.Count, WorldToLocal);
+                else
+                    DrawLine(activeNodes.Count, WorldToLocal);
             }
         }
     }
@@ -116,9 +126,11 @@ public class KHJ_Pattern : MonoBehaviourPun
     IEnumerator Initialize()
     {
         yield return new WaitForSeconds(0.4f);
-        photonView.RPC("Init", RpcTarget.All);
 
-        //Init();
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("Init", RpcTarget.All);
+        else
+            Init();
     }
 
     [PunRPC]

@@ -5,12 +5,13 @@ using Autohand;
 
 public class NSR_Hand : MonoBehaviour
 {
-    public BoxCollider[] targetColl;
     public GameObject indexPivot;
 
     Grabbable grabObj;
 
     bool isTarget;
+
+    public GameObject[] pivots;
 
     private void Update()
     {
@@ -23,49 +24,34 @@ public class NSR_Hand : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        for (int i = 0; i < targetColl.Length; i++)
-        {
-            if (other == targetColl[i])
-            {
-                isTarget = true;
-                break;
-            }
-        }
+        //for (int i = 0; i < targetColl.Length; i++)
+        //{
+        //    if (other == targetColl[i])
+        //    {
+        //        isTarget = true;
+        //        break;
+        //    }
+        //}
+
+        if(other.gameObject.name == "Smartphone" || other.gameObject.name == "Locker")
+            isTarget = true;
     }
     
     private void OnCollisionEnter(Collision collision)
     {
-        for (int i = 0; i < targetColl.Length; i++)
-        {
-            if (collision.collider == targetColl[i])
-            {
-                isTarget = true;
-                break;
-            }
-        }
+        if (collision.gameObject.name == "Smartphone" || collision.gameObject.name == "Locker")
+            isTarget = true;
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        for (int i = 0; i < targetColl.Length; i++)
-        {
-            if (collision.collider == targetColl[i])
-            {
-                isTarget = false;
-                break;
-            }
-        }
+        if (collision.gameObject.name == "Smartphone" || collision.gameObject.name == "Locker")
+            isTarget = false;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        for (int i = 0; i < targetColl.Length; i++)
-        {
-            if (other == targetColl[i])
-            {
-                isTarget = false;
-                break;
-            }
-        }
+        if (other.gameObject.name == "Smartphone" || other.gameObject.name == "Locker")
+            isTarget = false;
     }
 }

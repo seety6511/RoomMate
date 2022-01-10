@@ -18,8 +18,10 @@ public class KHJ_Toggle : MonoBehaviourPun
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
 
-        photonView.RPC("OnTrigger", RpcTarget.All);
-        //OnTrigger();
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("OnTrigger", RpcTarget.All);
+        else
+            OnTrigger();
     }
 
     [PunRPC]

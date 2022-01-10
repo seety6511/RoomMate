@@ -22,7 +22,12 @@ namespace Autohand.Demo{
         public bool test;
         public void Update() 
         {
-            if (inGame)
+            if (test || (PhotonNetwork.IsConnected && !inGame))
+            {
+                moveInput = OVRInput.Get(moveAxis, moveController);
+                turnInput = OVRInput.Get(turnAxis, turnController).x;
+            }
+            else if (inGame)
             {
                 if (NSR_AutoHandManager.instance.bodyplayer)
                 {
@@ -34,14 +39,6 @@ namespace Autohand.Demo{
                     moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
                     turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
                 }
-            }
-            else
-            {
-                if (test || PhotonNetwork.IsConnected)
-                {
-                    moveInput = OVRInput.Get(moveAxis, moveController);
-                    turnInput = OVRInput.Get(turnAxis, turnController).x;
-                }                
             }
 
             player.Move(moveInput);

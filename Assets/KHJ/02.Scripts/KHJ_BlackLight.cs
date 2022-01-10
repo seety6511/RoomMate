@@ -24,16 +24,21 @@ public class KHJ_BlackLight : MonoBehaviourPun
         isBattery = true;
         obj.GetComponent<Grabbable>().HandsRelease();
         obj.gameObject.SetActive(false);
-        if(GetComponent<Grabbable>().IsHeld())
-            photonView.RPC("setLight", RpcTarget.All);
-            //Light.SetActive(!Light.activeSelf);
+        if (GetComponent<Grabbable>().IsHeld())
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("setLight", RpcTarget.All);
+            else
+                Light.SetActive(!Light.activeSelf);
     }
     public void Activate()
     {
         if (!isBattery)
             return;
-        photonView.RPC("setLight", RpcTarget.All);
-        //Light.SetActive(!Light.activeSelf);
+
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("setLight", RpcTarget.All);
+        else
+            Light.SetActive(!Light.activeSelf);
     }
 
     [PunRPC]
