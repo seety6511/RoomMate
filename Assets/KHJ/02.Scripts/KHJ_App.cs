@@ -13,8 +13,10 @@ public class KHJ_App : MonoBehaviourPun
         if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
             return;
 
-        photonView.RPC("Run_App_Trigger", RpcTarget.All);
-        //Run_App_Trigger();
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("Run_App_Trigger", RpcTarget.All);
+        else
+            Run_App_Trigger();
     }
     [PunRPC]
     public void Run_App_Trigger()

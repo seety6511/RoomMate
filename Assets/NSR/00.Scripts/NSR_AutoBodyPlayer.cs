@@ -28,7 +28,7 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
     [HideInInspector]
     public Quaternion recieve_tv_camera_Rot;
 
-    public bool recieve_lightInput;
+    //public bool recieve_lightInput;
    
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -48,7 +48,7 @@ public class NSR_AutoBodyPlayer : MonoBehaviourPun, IPunObservable
             recieve_tv_camera_pos = (Vector3)stream.ReceiveNext();
             recieve_tv_camera_Rot = (Quaternion)stream.ReceiveNext();
 
-            recieve_lightInput = (bool)stream.ReceiveNext();
+            //recieve_lightInput = (bool)stream.ReceiveNext();
         }
     }
 }

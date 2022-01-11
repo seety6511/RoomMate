@@ -23,13 +23,17 @@ public class KHJ_Pattern : MonoBehaviourPun
     public char[] charArr;
     void Update()
     {
+        if (!NSR_AutoHandManager.instance.handPlayer) return;
+
         if (activeNodes.Count == nodes.Length)
         {
             if (PasswordCheck())
             {
                 drawing = false;
-                photonView.RPC("Clear", RpcTarget.All);
-                //Clear();
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("Clear", RpcTarget.All);
+                else
+                    Clear();
             }
             else
             {
@@ -38,24 +42,44 @@ public class KHJ_Pattern : MonoBehaviourPun
         }
         if (!KHJ_SmartPhone.instance.IsTouching)
         {
-            Init();
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("Init", RpcTarget.All);
+            else
+                Init();
         }
         else
         {
             if (activeNodes.Count != 0)
             {
                 charArr = Inputanswer.ToCharArray();
+
                 for (int i = 0; i < activeNodes.Count; i++)
                 {
                     //실시간으로 라인 그려주기
-                    drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
+                    //drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
+                    if (PhotonNetwork.IsConnected)
+                        photonView.RPC("DrawLine", RpcTarget.All, i, nodes[int.Parse(charArr[i].ToString()) - 1]);
+                    else
+                        DrawLine(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
                 }
                 Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;
                 WorldToLocal.z = -0.0001f;
-                drawer.SetPosition(activeNodes.Count, WorldToLocal);
+                //drawer.SetPosition(activeNodes.Count, WorldToLocal);
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("DrawLine", RpcTarget.All, activeNodes.Count, WorldToLocal);
+                else
+                    DrawLine(activeNodes.Count, WorldToLocal);
             }
         }
     }
+
+    [PunRPC]
+    void DrawLine(int i, Vector3 pos)
+    {
+        drawer.SetPosition(i, pos);
+    }
+
+    
     bool PasswordCheck()
     {
         if (Inputanswer == answer1)
@@ -79,6 +103,8 @@ public class KHJ_Pattern : MonoBehaviourPun
     }
     public void NodeActive(int nodeNum)
     {
+        if (!KHJ_SmartPhone.instance.IsAlarmEnd)
+            return;
         Vector3 node = nodes[nodeNum];
         drawing = true;
         if (activeNodes.Count == 0)
@@ -100,8 +126,14 @@ public class KHJ_Pattern : MonoBehaviourPun
     IEnumerator Initialize()
     {
         yield return new WaitForSeconds(0.4f);
-        Init();
+
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("Init", RpcTarget.All);
+        else
+            Init();
     }
+
+    [PunRPC]
     public void Init()
     {
         foreach(Image image in buttons)

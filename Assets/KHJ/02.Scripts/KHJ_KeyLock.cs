@@ -33,8 +33,8 @@ public class KHJ_KeyLock : MonoBehaviour
         key.GetComponent<Grabbable>().HandsRelease();
         key.GetComponent<Grabbable>().isGrabbable = false;
         key.GetComponent<Rigidbody>().isKinematic = true;
-        key.GetComponent<MeshCollider>().isTrigger = true;
-        key.GetComponent<InvenItem>().enabled = false;
+        key.GetComponent<BoxCollider>().isTrigger = true;
+        //key.GetComponent<InvenItem>().enabled = false;
         key.transform.parent = keyPos.transform;
         //key.transform.parent = transform;
         key.transform.localPosition = Vector3.zero;

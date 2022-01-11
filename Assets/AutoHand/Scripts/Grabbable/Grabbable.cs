@@ -17,7 +17,7 @@ namespace Autohand {
 
     [HelpURL("https://earnestrobot.notion.site/Grabbables-9308c564e60848a882eb23e9778ee2b6")]
     public class Grabbable : GrabbableBase {
-
+        public bool diary;
 
         [Tooltip("This will copy the given grabbables settings to this grabbable when applied"), OnValueChanged("EditorCopyGrabbable")]
         public Grabbable CopySettings;
@@ -182,14 +182,16 @@ namespace Autohand {
                 jointedParents.Add(jointedBodies[i].transform.parent ?? null);
         }
 
-        protected new virtual void FixedUpdate(){
+        protected new virtual void FixedUpdate()
+        {
             base.FixedUpdate();
-            if(wasIsGrabbable && !(isGrabbable || enabled)) {
+            if (wasIsGrabbable && !(isGrabbable || enabled))
+            {
                 ForceHandsRelease();
             }
             wasIsGrabbable = isGrabbable || enabled;
         }
-        
+
         public virtual void OnTriggerEnter(Collider other) {
             if(other.CanGetComponent(out PlacePoint otherPoint)) {
                 if (placePoint == null && otherPoint.CanPlace(this)){

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using Autohand;
 
 
 //  역할 바뀔때 화면 어두워졌다가 밝아지게 하기
@@ -18,14 +19,12 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     bool change = false;
     bool handPlayer = true;
     bool bodyPlayer = false;
-    bool canChange;
+    public bool canChange;
     public Transform[] objTr;
-
-
     void Update()
     {
         // 스페이스바 누르면 컨트롤 바꾸기
-        if (Input.GetKeyDown(KeyCode.Space) /*|| OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch)*/)
+        if (Input.GetKeyDown(KeyCode.Space) && !NSR_AutoHandManager.instance.isChanging /*|| OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch)*/)
         {
             //  화면 어두워졌다가 밝아지게 하기
             photonView.RPC("Set_ObjTrs", RpcTarget.All);
@@ -52,6 +51,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     void Set_ObjTrs()
     {
         NSR_AutoHandManager.instance.isChanging = true;
+        //canChange = false;
 
         for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
         {
@@ -205,10 +205,10 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             // 손가락 위치 보내기
             for (int i = 0; i < 15; i++)
             {
-                stream.SendNext(NSR_AutoHandManager.instance.leftFingers[i].transform.position);
-                stream.SendNext(NSR_AutoHandManager.instance.leftFingers[i].transform.rotation);
-                stream.SendNext(NSR_AutoHandManager.instance.rightFingers[i].transform.position);
-                stream.SendNext(NSR_AutoHandManager.instance.rightFingers[i].transform.rotation);
+                stream.SendNext(NSR_AutoHandManager.instance.leftFingers[i].transform.localPosition);
+                stream.SendNext(NSR_AutoHandManager.instance.leftFingers[i].transform.localRotation);
+                stream.SendNext(NSR_AutoHandManager.instance.rightFingers[i].transform.localPosition);
+                stream.SendNext(NSR_AutoHandManager.instance.rightFingers[i].transform.localRotation);
             }
 
             // 오브젝트 위치 보내기

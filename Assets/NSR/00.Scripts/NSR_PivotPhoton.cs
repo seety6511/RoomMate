@@ -10,6 +10,8 @@ public class NSR_PivotPhoton : MonoBehaviourPun
 
     private void Update()
     {
+        if (!NSR_AutoHandManager.instance.handPlayer) return;
+
         for (int i = 0; i < handPivot.Length; i++)
         {
             if (handPivot[i].GetComponent<NSR_Pivot>().active)

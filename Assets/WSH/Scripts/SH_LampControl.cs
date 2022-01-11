@@ -12,7 +12,10 @@ public class SH_LampControl : MonoBehaviourPun
 
     public void Grab()
     {
-        photonView.RPC("OnOff", RpcTarget.All);
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("OnOff", RpcTarget.All);
+        else
+            OnOff();
     }
 
     [PunRPC]

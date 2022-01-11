@@ -11,6 +11,7 @@ public class KHJ_SmartPhone : MonoBehaviour
     public GameObject[] Apps;
     public bool IsRunningApp;
     public bool IsSolved;
+    public bool IsAlarmEnd = false;
     public bool IsTouching;
     public KHJ_App RunningApp;
     AudioSource source;
@@ -67,7 +68,6 @@ public class KHJ_SmartPhone : MonoBehaviour
             return;
         IsTouching = true;
         TouchPos = other.transform;
-        
     }
     private void OnTriggerExit(Collider other)
     {
@@ -86,6 +86,8 @@ public class KHJ_SmartPhone : MonoBehaviour
         Set_smartphone();
         if (IsTouching)
         {
+            if (!IsAlarmEnd)
+                return;
             tmp.SetActive(true);
             tmp.transform.position = TouchPos.position;
         }
@@ -187,5 +189,6 @@ public class KHJ_SmartPhone : MonoBehaviour
     {
         yield return new WaitForSeconds(0.4f);
         AlarmObj.SetActive(false);
+        IsAlarmEnd = true;
     }
 }
