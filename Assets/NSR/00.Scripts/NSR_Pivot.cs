@@ -4,32 +4,20 @@ using UnityEngine;
 
 public class NSR_Pivot : MonoBehaviour
 {
-    public GameObject mainPivot;
+    //public GameObject mainPivot;
+    [HideInInspector]
     public bool active;
 
     public GameObject[] Pivots;
+
+    //public bool isMainPivot;
     private void OnEnable()
     {
         active = true;
-        mainPivot.SetActive(false);
     }
 
     private void OnDisable()
     {
         active = true;
-        mainPivot.SetActive(true);
     }
-
-    private void Update()
-    {
-        for(int i = 0; i < Pivots.Length; i++)
-        {
-            if (Pivots[i].activeSelf)
-            {
-                gameObject.SetActive(false);
-                break;
-            }
-        }
-    }
-
 }

@@ -11,9 +11,6 @@ namespace Autohand {
     [HelpURL("https://earnestrobot.notion.site/Hand-967e36c2ab2945b2b0f75cea84624b2f")]
     public class Hand : HandBase {
 
-        public bool diary;
-        public Transform diaryPos;
-
         [AutoToggleHeader("Enable Highlight", 0, 0, tooltip = "Raycasting for grabbables to highlight is expensive, you can disable it here if you aren't using it")]
         public bool usingHighlight = true;
 

@@ -18,7 +18,7 @@ public class NSR_GrabTest : MonoBehaviour
 
     AnimatedBookController book;
     NSR_Grabbable grabbable;
-    Vector3 startScale;
+    Vector3 initCollSize;
     BoxCollider box;
     public enum PIVOT
     {
@@ -35,12 +35,12 @@ public class NSR_GrabTest : MonoBehaviour
 
         book = GetComponentInChildren<AnimatedBookController>();
         grabbable = GetComponentInChildren<NSR_Grabbable>();
-        startScale = transform.localScale;
 
         Pivot_L = NSR_AutoHandManager.instance.hand_L.GetComponent<NSR_Hand>().pivots[(int)pivot];
         Pivot_R = NSR_AutoHandManager.instance.hand_R.GetComponent<NSR_Hand>().pivots[(int)pivot];
 
         box = GetComponent<BoxCollider>();
+        initCollSize = box.size;
     }
 
 
@@ -48,18 +48,19 @@ public class NSR_GrabTest : MonoBehaviour
     {
         objL = handL.holdingObj;
         objR = handR.holdingObj;
-        if(objL != null)
+        if (objL != null)
         {
             if (objL.gameObject == gameObject)
                 setGrab(Pivot_L, false, true);
         }
 
-        if(objR != null)
+        if (objR != null)
         {
             if (objR.gameObject == gameObject)
                 setGrab(Pivot_R, false, false);
         }
 
+        isGrab = false;
     }
     void Update()
     {
@@ -78,14 +79,10 @@ public class NSR_GrabTest : MonoBehaviour
         else
             setGrab(Pivot_R, false, false);
 
-        if(isGrab == true && book.getBookState() != 0)
-        {
+        if(isGrab == true && (book == null || book.getBookState() != 0) && box != null)
             box.size = Vector3.zero;
-        }
         else if(isGrab == false)
-        {
-            box.size = Vector3.one;
-        }
+            box.size = initCollSize;
     }
 
     void setGrab(GameObject pivot, bool grab, bool left)
@@ -103,11 +100,6 @@ public class NSR_GrabTest : MonoBehaviour
             if (grabbable.isRight == !grab)
                 grabbable.isRight = grab;
         }
-
-        //if (grab)
-        //    box.size = new Vector3(0, 0, 0);
-        //else
-        //    box.size = Vector3.one;
     }
 
     bool isGrab;

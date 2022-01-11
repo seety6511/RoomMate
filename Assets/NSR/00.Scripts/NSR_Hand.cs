@@ -5,34 +5,43 @@ using Autohand;
 
 public class NSR_Hand : MonoBehaviour
 {
-    public GameObject indexPivot;
+    public GameObject mainPivot;
+    //public GameObject indexPivot;
 
     Grabbable grabObj;
 
     bool isTarget;
 
     public GameObject[] pivots;
+    public Transform[] pos;
 
     private void Update()
     {
         grabObj = GetComponent<Hand>().holdingObj;
 
         if (isTarget && grabObj == null)
-            indexPivot.SetActive(true);
+            pivots[pivots.Length - 1].SetActive(true);
         else
-            indexPivot.SetActive(false);
+            pivots[pivots.Length -1].SetActive(false);
+
+        bool off = false;
+        for(int i = 0; i < pivots.Length; i++)
+        {
+            if (pivots[i].activeSelf)
+            {
+                mainPivot.SetActive(false);
+                off = true;
+                break;
+            }
+        }
+
+        if (off == false)
+        {
+            mainPivot.SetActive(true);
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
-        //for (int i = 0; i < targetColl.Length; i++)
-        //{
-        //    if (other == targetColl[i])
-        //    {
-        //        isTarget = true;
-        //        break;
-        //    }
-        //}
-
         if(other.gameObject.name == "Smartphone" || other.gameObject.name == "Locker")
             isTarget = true;
     }
