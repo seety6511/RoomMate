@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// dontuse
 public class NSR_Pivot : MonoBehaviour
 {
     //public GameObject mainPivot;
@@ -11,13 +12,13 @@ public class NSR_Pivot : MonoBehaviour
     public GameObject[] Pivots;
 
     //public bool isMainPivot;
-    private void OnEnable()
-    {
-        active = true;
-    }
+    //private void OnEnable()
+    //{
+    //    active = true;
+    //}
 
-    private void OnDisable()
-    {
-        active = true;
-    }
+    //private void OnDisable()
+    //{
+    //    active = true;
+    //}
 }

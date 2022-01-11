@@ -7,7 +7,7 @@ public class KHJ_ButtonUI : MonoBehaviourPun
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip")
+        if (other.gameObject.layer != LayerMask.NameToLayer("Hand") || other.gameObject.name != "Tip" || (PhotonNetwork.IsConnected && NSR_AutoHandManager.instance.handPlayer == false))
             return;
 
         if (PhotonNetwork.IsConnected)

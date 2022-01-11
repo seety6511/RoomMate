@@ -7,8 +7,8 @@ public class NSR_Grabbable : MonoBehaviourPun
     public bool isLeft;
     public bool isRight;
 
-    public Transform leftPos;
-    public Transform rightPos;
+    Transform leftPos;
+    Transform rightPos;
     public float lerpSpeed = 10;
     NSR_GrabTest grab;
     private void Start()
@@ -19,8 +19,8 @@ public class NSR_Grabbable : MonoBehaviourPun
     {
         if (!NSR_AutoHandManager.instance.handPlayer && PhotonNetwork.IsConnected) return;
 
-        //leftPos = NSR_AutoHandManager.instance.hand_L.GetComponent<NSR_Hand>().pos[(int)grab.pivot];
-        //rightPos = NSR_AutoHandManager.instance.hand_R.GetComponent<NSR_Hand>().pos[(int)grab.pivot];
+        leftPos = NSR_AutoHandManager.instance.hand_L.GetComponent<NSR_Hand>().pos[(int)grab.pivot];
+        rightPos = NSR_AutoHandManager.instance.hand_R.GetComponent<NSR_Hand>().pos[(int)grab.pivot];
 
         if (isLeft)
         {
