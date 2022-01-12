@@ -7,9 +7,9 @@ public class KHJ_GhostMove : MonoBehaviour
 {
 	public PathType pathType = PathType.CatmullRom;
 	public Vector3[] waypoints = new[] {
-		new Vector3(0, 0, 0),
-		new Vector3(-0.01f, 0.012f, 0.015f),
-		new Vector3(0, -0.007f, 0.012f),
+		new Vector3(-0.03f, 0.012f, -0.015f),
+		new Vector3(0, 0.022f, 0.015f),
+		new Vector3(0.04f, -0.007f, 0.012f),
 	};
 	void Start()
 	{
