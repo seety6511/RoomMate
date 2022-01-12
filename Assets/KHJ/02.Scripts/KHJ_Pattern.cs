@@ -58,22 +58,17 @@ public class KHJ_Pattern : MonoBehaviourPun
                 
                 Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;
                 WorldToLocal.z = -0.0001f;
-                //if (PhotonNetwork.IsConnected)
-                //{
-                //    photonView.RPC("DrawLine", RpcTarget.Others, activeNodes.Count, WorldToLocal);
-                //}
                 drawer.SetPosition(activeNodes.Count, WorldToLocal);
                 p[activeNodes.Count] = WorldToLocal;
 
-                photonView.RPC("Test", RpcTarget.Others, p);
+                photonView.RPC("RPC_DrawLine", RpcTarget.Others, p);
             }
         }
     }
 
     [PunRPC]
-    void Test(Vector3 [] points)
+    void RPC_DrawLine(Vector3 [] points)
     {
-        //    print(points.Length);
         drawer.positionCount = points.Length;
         for(int i = 0; i < points.Length; i++)
         {
@@ -83,11 +78,6 @@ public class KHJ_Pattern : MonoBehaviourPun
         
     }
 
-    [PunRPC]
-    void DrawLine(int i, Vector3 pos)
-    {
-        drawer.SetPosition(i, pos);
-    }
     bool PasswordCheck()
     {
         if (Inputanswer == answer1)
@@ -108,26 +98,17 @@ public class KHJ_Pattern : MonoBehaviourPun
         gameObject.SetActive(false);
     }
     [PunRPC]
-    void SetPositionCount(int n)
+    void RPC_Init(int n)
     {
         Init();
     }
 
-    [PunRPC]
-    void PositionCountPlus()
-    {
-        drawer.positionCount++;
-    }
     public void NodeActive(int nodeNum)
     {
         Vector3 node = nodes[nodeNum];
         drawing = true;
         if (activeNodes.Count == 0)
         {
-            //if (PhotonNetwork.IsConnected)
-            //{
-            //    photonView.RPC("SetPositionCount", RpcTarget.Others, 2);
-            //}
             drawer.positionCount = 2;
             Inputanswer += (nodeNum + 1);
             activeNodes.Add(node);
@@ -139,10 +120,6 @@ public class KHJ_Pattern : MonoBehaviourPun
             return;
         Inputanswer += (nodeNum + 1);
         buttons[nodeNum].color = new Color32(0, 0, 0, 0);
-        //if (PhotonNetwork.IsConnected)
-        //{
-        //    photonView.RPC("PositionCountPlus", RpcTarget.Others);
-        //}
         drawer.positionCount++;
         activeNodes.Add(node);
     }
@@ -168,7 +145,7 @@ public class KHJ_Pattern : MonoBehaviourPun
 
         if (PhotonNetwork.IsConnected && NSR_AutoHandManager.instance.handPlayer)
         {
-            photonView.RPC("SetPositionCount", RpcTarget.Others, 0);
+            photonView.RPC("RPC_Init", RpcTarget.Others, 0);
         }
 
     }
