@@ -61,6 +61,9 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public GameObject tv_Canvas;
 
     public bool isChanging;
+    public bool changeEnd;
+
+    public KHJ_ScreenFade fade;
     #endregion
 
     void Start()
@@ -89,20 +92,35 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     }
 
     float currTime;
+    float fadeTime;
+    public bool openEye;
     private void Update()
     {
-        // 역할 바뀌는 동안 작동 막기
+        // 역할 바뀌는 동안 동기화 막기
         if (isChanging)
         {
             currTime += Time.deltaTime;
-            if(currTime > 1f)
+            if(currTime > 10)
             {
                 isChanging = false;
-                //NSR_AutoHandPlayer.instance.canChange = true;
                 currTime = 0;
+                fadeTime = 0;
             }
         }
-        if (PhotonNetwork.IsConnected == false || isChanging) return;
+
+        if (openEye)
+        {
+            fadeTime += Time.deltaTime;
+            if (fadeTime > 0.3f)
+            {
+                fade.EyeOpen_();
+                fadeTime = 0;
+                openEye = false;
+            }
+        }
+
+
+        if (PhotonNetwork.IsConnected == false) return;
 
         // 카메라 보여지는 오브젝트 설정
         for (int i = 0; i < cams.Length; i++)
@@ -169,6 +187,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         body_hand_L.SetActive(true);
         body_hand_R.SetActive(true);
 
+        if (isChanging) return;
+
         // Transform 받기(손, 몸, 오브젝트)
         if (NSR_AutoHandPlayer.instance != null)
         {
@@ -215,6 +235,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
         // handZone(화면 카메라, 핸드플레이 공간, 카메라렌더러 등) 켜기
         handZone.gameObject.SetActive(true);
+
+        if (isChanging) return;
 
         if (NSR_AutoBodyPlayer.instance != null)
         {
