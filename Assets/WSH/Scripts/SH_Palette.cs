@@ -26,19 +26,19 @@ public class SH_Palette : MonoBehaviour
         Transform cup = null;
         switch (tube.GetColor())
         {
-            case SH_PaintTube.PaintColor.Red:
+            case PaintColor.Red:
                 cup = redPaint.transform;
                 break;
-            case SH_PaintTube.PaintColor.Green:
+            case PaintColor.Green:
                 cup = greenPaint.transform;
                 break;
-            case SH_PaintTube.PaintColor.Blue:
+            case PaintColor.Blue:
                 cup = bluePaint.transform;
                 break;
-            case SH_PaintTube.PaintColor.White:
+            case PaintColor.White:
                 cup = whitePaint.transform;
                 break;
-            case SH_PaintTube.PaintColor.Black:
+            case PaintColor.Black:
                 cup = blackPaint.transform;
                 break;
         }

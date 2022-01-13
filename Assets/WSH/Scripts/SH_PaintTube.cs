@@ -1,17 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum PaintColor
+{
+    Red,
+    Green,
+    Blue,
+    White,
+    Black
+}
 public class SH_PaintTube : MonoBehaviour
 {
-    public enum PaintColor
-    {
-        Red,
-        Green,
-        Blue,
-        White,
-        Black
-    }
     [SerializeField]
     PaintColor color;
     [SerializeField]
