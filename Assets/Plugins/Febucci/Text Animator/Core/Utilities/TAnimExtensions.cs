@@ -6,9 +6,9 @@ namespace Febucci.UI.Core
     internal static class TAnimExtensions
     {
 
-        internal static int GetIndexOfEffect<T>(this List<T> effects, string tag) where T : EffectsBase
+        internal static int GetIndexOfEffectNamed<T>(this List<T> effects, string tag) where T : EffectsBase
         {
-            for (int a = 0; a < effects.Count; a++)
+            for (int a = effects.Count-1; a >=0; a--) //closes the last recurring region, leaving eventual fallback/default effects unaltered
             {
                 if (!effects[a].regionManager.IsLastRegionClosed())
                 {
@@ -34,7 +34,7 @@ namespace Febucci.UI.Core
 
         internal static bool CloseRegionNamed<T>(this List<T> effects, string endTag, int realTextIndex) where T : EffectsBase
         {
-            return effects.CloseElement(effects.GetIndexOfEffect(endTag), realTextIndex);
+            return effects.CloseElement(effects.GetIndexOfEffectNamed(endTag), realTextIndex);
         }
 
 

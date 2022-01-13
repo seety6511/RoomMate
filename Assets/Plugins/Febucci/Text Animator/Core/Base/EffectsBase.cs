@@ -83,9 +83,26 @@
                 return false;
             }
 
+            public override string ToString()
+            {
+                string text = $"{entireRichTextTag} - {textRegions.Count} region(s): ";
+                for (int i = 0; i < textRegions.Count; i++)
+                {
+                    if(textRegions[i].endIndex == int.MaxValue)
+                    {
+                        text += $"[{textRegions[i].startIndex}; Infinity] ";
+                    }
+                    else
+                    {
+                        text += $"[{textRegions[i].startIndex}; {textRegions[i].endIndex}] ";
+                    }
+                }
+
+                return text;
+            }
         }
 
-        internal RegionManager regionManager = new RegionManager();
+        internal RegionManager regionManager;
 
         /// <summary>
         /// For internal use only. Sets the effect settings such as tags, instead of a constructor.
@@ -94,6 +111,7 @@
         internal void _Initialize(string effectTag, string entireRichTextTag)
         {
             this.effectTag = effectTag;
+            this.regionManager = new RegionManager();
             this.regionManager.entireRichTextTag = entireRichTextTag;
         }
         #endregion
@@ -146,6 +164,54 @@
         /// <param name="charIndex">Letter index/position in the text.</param>
         public abstract void ApplyEffect(ref CharacterData data, int charIndex);
 
+
+        /// <summary>
+        /// Invoked when there is a modifier in your rich text tag, eg. &#60;shake a=3&#62;
+        /// </summary>
+        /// <remarks>You can also use the following helper methods:
+        /// - <see cref="EffectsBase.ApplyModifierTo"/>
+        /// - <see cref="FormatUtils.ParseFloat"/>
+        /// </remarks>
+        /// <param name="modifierName">modifier name. eg. in &#60;shake a=3&#62; this string is "a"</param>
+        /// <param name="modifierValue">modifier value. eg. in &#60;shake a=3&#62; this string is "3"</param>
+        /// <example>
+        /// <code>
+        /// float amplitude = 2;
+        /// //[...]
+        /// public override void SetModifier(string modifierName, string modifierValue){
+        ///     switch(modifierName){
+        ///         //changes the 'amplitude' variable based on the modifier written in the tag
+        ///         //eg. when you write a tag like &#60;shake a=3&#62;
+        ///         case "a": ApplyModifierTo(ref amplitude, modifierValue); return;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        public abstract void SetModifier(string modifierName, string modifierValue);
+
+
+#if UNITY_EDITOR
+        //Used only in the editor to set again modifiers if we change values in the inspector
+
+        System.Collections.Generic.List<Modifier> modifiers { get; set; } = new System.Collections.Generic.List<Modifier>();
+
+        internal void EDITOR_RecordModifier(string name, string value)
+        {
+            modifiers.Add(new Modifier
+            {
+                name = name,
+                value = value,
+            });
+        }
+
+        internal void EDITOR_ApplyModifiers()
+        {
+            for (int i = 0; i < modifiers.Count; i++)
+            {
+                SetModifier(modifiers[i].name, modifiers[i].value);
+            }
+        }
+#endif
         #endregion
     }
 }

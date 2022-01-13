@@ -22,6 +22,15 @@ namespace Febucci.UI.Core
             //Moves all towards a direction
             data.vertices.MoveChar(direction * amount * Tween.EaseIn(1 - data.passedTime / effectDuration));
         }
+
+        public override void SetModifier(string modifierName, string modifierValue)
+        {
+            base.SetModifier(modifierName, modifierValue);
+            switch (modifierName)
+            {
+                case "a": ApplyModifierTo(ref amount, modifierValue); break;
+            }
+        }
     }
 
 }

@@ -22,17 +22,18 @@ public class Draw : MonoBehaviour
     GameObject now;
     Vector3 pos;
 
+    public Transform trRight;
     private void Start()
     {
         SetMarketWhite();
     }
     void Update()
     {
-        //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        if (Input.GetButtonDown("Fire1"))
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        //if (Input.GetButtonDown("Fire1"))
         {
-            //Ray ray = new Ray(trRight.position, trRight.forward);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = new Ray(trRight.position, trRight.forward);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             int layer = 1 << LayerMask.NameToLayer("Board");
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
@@ -66,11 +67,11 @@ public class Draw : MonoBehaviour
                 }
             }
         }
-        //if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        if (Input.GetButton("Fire1"))
+        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        //if (Input.GetButton("Fire1"))
         {
-            //Ray ray = new Ray(trRight.position, trRight.forward);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = new Ray(trRight.position, trRight.forward);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
             int layer = 1 << LayerMask.NameToLayer("Board");
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
@@ -95,7 +96,7 @@ public class Draw : MonoBehaviour
 
                         now = dot;
                     }
-                    if (Vector3.Distance(pos, hitInfo.point) > 0.001f)
+                    if (Vector3.Distance(pos, hitInfo.point) > 0.0001f)
                     {
                         //라인 그리기
                         LineRenderer tmp = now.GetComponent<LineRenderer>();

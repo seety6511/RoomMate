@@ -55,7 +55,12 @@ namespace Febucci.UI.Core
         static Dictionary<string, Type> behaviorsData = new Dictionary<string, Type>();
         static Dictionary<string, Type> appearancesData = new Dictionary<string, Type>();
 
-        internal static string[] GetAllBehaviorsTags()
+        static HashSet<string> globalDefaultActions = new HashSet<string>();
+        static HashSet<string> globalCustomActions = new HashSet<string>();
+
+        static bool globalDatabaseInitialized;
+
+        public static string[] GetAllBehaviorsTags()
         {
             List<string> tags = new List<string>();
             for (int i = 0; i < behaviorsData.Count; i++)
@@ -66,7 +71,7 @@ namespace Febucci.UI.Core
             return tags.ToArray();
         }
 
-        internal static string[] GetAllApppearancesTags()
+        public static string[] GetAllApppearancesTags()
         {
             List<string> tags = new List<string>();
             for (int i = 0; i < appearancesData.Count; i++)
@@ -76,11 +81,6 @@ namespace Febucci.UI.Core
 
             return tags.ToArray();
         }
-
-        static HashSet<string> globalDefaultActions = new HashSet<string>();
-        static HashSet<string> globalCustomActions = new HashSet<string>();
-
-        static bool globalDatabaseInitialized;
 
         /// <summary>
         /// Initializes and Load TextAnimator's effects and global settings, in case it has not been loaded already.

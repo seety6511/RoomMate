@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// Contains all the tags for built-in effects.<br/>
-    /// - Manual: <seealso href="https://www.textanimator.febucci.com/docs/built-in-effects-list/">Built-in Effects</seealso>
+    /// - Manual: <seealso href="https://www.febucci.com/text-animator-unity/docs/built-in-effects-list/">Built-in Effects</seealso>
     /// </summary>
     public static class TAnimTags
     {

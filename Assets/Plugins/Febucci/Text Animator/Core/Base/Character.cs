@@ -12,8 +12,15 @@ namespace Febucci.UI.Core
         internal bool initialized;
 #pragma warning restore 0649
 
+        public float disappearancesMaxDuration;
+        public bool isDisappearing;
+        public bool wantsToDisappear;
+
+        public float appearancesMaxDuration;
+
         public int[] indexBehaviorEffects;
         public int[] indexAppearanceEffects;
+        public int[] indexDisappearanceEffects;
 
         public CharacterSourceData sources;
         public CharacterData data;
@@ -67,6 +74,7 @@ namespace Febucci.UI.Core
         /// The array size is usually <see cref="TextUtilities.verticesPerChar"/>
         /// </remarks>
         public Color32[] colors;
+        
         /// <summary>
         /// A character's vertices positions.
         /// </summary>

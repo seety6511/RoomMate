@@ -26,6 +26,15 @@ namespace Febucci.UI.Core
                 );
         }
 
+        public override void SetModifier(string modifierName, string modifierValue)
+        {
+            base.SetModifier(modifierName, modifierValue);
+            switch (modifierName)
+            {
+                case "a": ApplyModifierTo(ref targetAngle, modifierValue); break;
+            }
+        }
+
     }
 
 }

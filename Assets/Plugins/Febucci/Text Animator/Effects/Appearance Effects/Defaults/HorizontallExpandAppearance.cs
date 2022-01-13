@@ -73,6 +73,22 @@ namespace Febucci.UI.Core
 
         }
 
+        public override void SetModifier(string modifierName, string modifierValue)
+        {
+            base.SetModifier(modifierName, modifierValue);
+            switch (modifierName)
+            {
+                case "x":
+                    switch (modifierValue)
+                    {
+                        case "-1": type = ExpType.Left; break;
+                        case "0": type = ExpType.Middle; break;
+                        case "1": type = ExpType.Right; break;
+                        default: Debug.LogError($"Text Animator: you set an '{modifierName}' modifier with value '{modifierValue}' for the HorizontalExpandAppearance effect, but it can only be '-1', '0', or '1'"); break;
+                    }
+                    break;
+            }
+        }
     }
 
 }

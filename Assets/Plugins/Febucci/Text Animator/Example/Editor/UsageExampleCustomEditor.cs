@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Febucci.UI.Examples.Editors
 {
-    [CustomEditor(typeof(UsageExample))]
+    //[CustomEditor(typeof(UsageExample))]
     class UsageExampleCustomEditor : Editor
     {
         public override void OnInspectorGUI()
@@ -28,7 +28,7 @@ namespace Febucci.UI.Examples.Editors
         {
             if (GUILayout.Button("Set Text again"))
             {
-                ((UsageExample)target)?.ShowText();
+                //((UsageExample)target)?.ShowText();
             }
         }
     }

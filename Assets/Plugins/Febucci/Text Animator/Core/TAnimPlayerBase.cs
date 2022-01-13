@@ -10,13 +10,13 @@ namespace Febucci.UI.Core
 
     /// <summary>
     /// Base class for all TextAnimatorPlayers (typewriters). <br/>
-    /// - Manual: <see href="https://www.textanimator.febucci.com/docs/text-animator-players/">TextAnimatorPlayers</see>.<br/>
+    /// - Manual: <see href="https://www.febucci.com/text-animator-unity/docs/text-animator-players/">TextAnimatorPlayers</see>.<br/>
     /// </summary>
     /// <remarks>
     /// If you want to use the default TextAnimatorPlayer, see: <see cref="TextAnimatorPlayer"/><br/>
     /// <br/>
     /// You can also create custom typewriters by inheriting from this class. <br/>
-    /// Manual: <see href="https://www.textanimator.febucci.com/docs/writing-custom-tanimplayers-c-sharp/">Writing Custom TextAnimatorPlayers (C#)</see>
+    /// Manual: <see href="https://www.febucci.com/text-animator-unity/docs/writing-custom-tanimplayers-c-sharp/">Writing Custom TextAnimatorPlayers (C#)</see>
     /// </remarks>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(TextAnimator))]
@@ -80,6 +80,7 @@ namespace Febucci.UI.Core
         /// </summary>
         protected bool isBaseInsideRoutine => isInsideRoutine;
         bool isInsideRoutine = false;
+        bool isDisappearing = false;
 
         /// <summary>
         /// <c>true</c> if the player wants to skip the typewriter.<br/>
@@ -122,6 +123,14 @@ namespace Febucci.UI.Core
         protected float typewriterPlayerSpeed = 1;
 
 
+        public enum DisappearanceOrientation
+        {
+            SameAsTypewriter,
+            Inverted
+        }
+
+        [SerializeField] public DisappearanceOrientation disappearanceOrientation;
+
         #endregion
 
         #endregion
@@ -138,6 +147,11 @@ namespace Febucci.UI.Core
         /// It is only invoked when the typewriter is enabled.
         /// </summary>
         public UnityEvent onTypewriterStart;
+
+        /// <summary>
+        /// Callend once the typewriter has completed hiding all the letters.
+        /// </summary>
+        public UnityEvent onTextDisappeared;
 
         /// <summary>
         /// Called once a character has been shown by the typewriter.<br/>
@@ -157,6 +171,8 @@ namespace Febucci.UI.Core
             if (!textAnimator.allLettersShown)
             {
                 isInsideRoutine = true;
+                isDisappearing = false;
+
                 wantsToSkip = false;
 
                 onTypewriterStart?.Invoke();
@@ -239,9 +255,11 @@ namespace Febucci.UI.Core
                         }
                     }
 
+                    //increases the visible chars count
+                    textAnimator.maxVisibleCharacters++;
+                    textAnimator.TriggerVisibleEvents();
+                    characterShown = textAnimator.latestCharacterShown.character;
 
-                    //increases the visible chars count and stores the new one
-                    characterShown = textAnimator.IncreaseVisibleChars();
                     UpdateDeltaTime();
 
                     //triggers event unless it's a space
@@ -251,7 +269,7 @@ namespace Febucci.UI.Core
                     }
 
                     //gets the time to wait based on the newly character showed
-                    timeToWait = WaitTimeOf(characterShown);
+                    timeToWait = GetWaitAppearanceTimeOf(characterShown);
 
                     //waiting less time than a frame, we don't wait yet
                     if (timeToWait < deltaTime)
@@ -314,7 +332,7 @@ namespace Febucci.UI.Core
 
         /// <summary>
         /// Sets the TextAnimator text. If enabled, it also starts showing letters dynamically. <br/>
-        /// - Manual: <see href="https://www.textanimator.febucci.com/docs/text-animator-players/">Text Animator Players</see>
+        /// - Manual: <see href="https://www.febucci.com/text-animator-unity/docs/text-animator-players/">Text Animator Players</see>
         /// </summary>
         /// <param name="text"></param>
         /// <remarks>
@@ -336,6 +354,9 @@ namespace Febucci.UI.Core
             wantsToSkip = false;
 
             textAnimator.SetText(textToShow, useTypeWriter);
+            textAnimator.firstVisibleCharacter = 0;
+
+            isDisappearing = false;
 
             if (!useTypeWriter)
             {
@@ -351,27 +372,45 @@ namespace Febucci.UI.Core
         }
 
         #region Typewriter
-        /// <summary>
-        /// Starts showing letters dynamically (if there text is not already entirely shown)
-        /// </summary>
-        [ContextMenu("Start Showing Text")]
-        public void StartShowingText()
+
+        bool CanStartAnyCoroutine()
         {
+
 #if UNITY_EDITOR
             if (!Application.isPlaying) //prevents from firing in edit mode from the context menu
-                return;
+                return false;
 #endif
-
-            if (!useTypeWriter)
-            {
-                Debug.LogWarning("TextAnimator: couldn't start typewriter because 'useTypewriter' is disabled");
-                return;
-            }
 
             if (!gameObject.activeInHierarchy)
             {
-                Debug.LogWarning("TextAnimator: couldn't start typewriter because the gameobject is not active");
+                Debug.LogWarning("TextAnimator: couldn't start coroutine because the gameobject is not active");
+                return false;
+            }
+
+            return true;
+        }
+
+        #region Appearing
+        /// <summary>
+        /// Starts showing letters dynamically
+        /// </summary>
+        /// <param name="resetVisibleCharacters"><code>false</code> if you want the typewriter to resume where it was left. <code>true</code> if the typewriter should restart from character 0</param>
+        public void StartShowingText(bool resetVisibleCharacters = false)
+        {
+
+            if (!useTypeWriter)
+            {
+                Debug.LogWarning("TextAnimator: couldn't start coroutine because 'useTypewriter' is disabled");
                 return;
+            }
+
+
+            if (!CanStartAnyCoroutine()) return;
+
+            if (resetVisibleCharacters)
+            {
+                textAnimator.firstVisibleCharacter = 0;
+                textAnimator.maxVisibleCharacters = 0;
             }
 
             if (!isInsideRoutine) //starts only if it is not already typing
@@ -415,6 +454,84 @@ namespace Febucci.UI.Core
             textToShow = string.Empty;
         }
 
+        #endregion
+
+        #region Disappearing
+
+        /// <summary>
+        /// Starts disappearing the text dynamically
+        /// </summary>
+        [ContextMenu("Start Disappearing Text")]
+        public void StartDisappearingText()
+        {
+            if (!CanStartAnyCoroutine()) return;
+
+            if (disappearanceOrientation == DisappearanceOrientation.Inverted && isInsideRoutine)
+            {
+                Debug.LogWarning("TextAnimatorPlayer: Can't start disappearance routine in the opposite direction of the typewriter, because you're still showing the text! (the typewriter might get stuck trying to show and override letters that keep disappearing)");
+                return;
+            }
+
+            StartCoroutine(DisappearRoutine());
+        }
+
+
+        IEnumerator DisappearRoutine()
+        {
+            isDisappearing = true;
+            float t;
+
+            IEnumerator WaitFor(float duration)
+            {
+                t = 0;
+                while (isDisappearing && t < duration)
+                {
+                    t += textAnimator.time.deltaTime * typewriterPlayerSpeed;
+                    yield return null;
+                }
+            }
+
+            bool CanDisappear() => isDisappearing && textAnimator.firstVisibleCharacter <= textAnimator.maxVisibleCharacters && textAnimator.maxVisibleCharacters > 0;
+
+            if (disappearanceOrientation == DisappearanceOrientation.SameAsTypewriter)
+            {
+                var charInfo = textAnimator.tmproText.textInfo.characterInfo;
+                while (CanDisappear())
+                {
+                    textAnimator.firstVisibleCharacter++;
+                    yield return WaitFor(GetWaitDisappearanceTimeOf(charInfo[textAnimator.firstVisibleCharacter - 1].character));
+                }
+
+            }
+            else
+            {
+                while (CanDisappear())
+                {
+                    textAnimator.maxVisibleCharacters--;
+                    yield return WaitFor(GetWaitDisappearanceTimeOf(textAnimator.latestCharacterShown.character));
+                }
+            }
+
+            //Fires the event if the entire text has been hidden (so, this method has not been interrupted)
+            if (textAnimator.firstVisibleCharacter > textAnimator.maxVisibleCharacters && textAnimator.allLettersShown)
+            {
+                onTextDisappeared.Invoke();
+            }
+
+            isDisappearing = false;
+        }
+
+        /// <summary>
+        /// Stops the typewriter's from disappearing the text dynamically, leaving the text at its current state
+        /// </summary>
+        [ContextMenu("Stop Disappearing Text")]
+        public void StopDisappearingText()
+        {
+            isDisappearing = false;
+        }
+
+        #endregion
+
         /// <summary>
         /// Makes the typewriter slower/faster, by setting its internal speed multiplier.
         /// </summary>
@@ -429,6 +546,7 @@ namespace Febucci.UI.Core
         {
             typewriterPlayerSpeed = Mathf.Clamp(value, .001f, value);
         }
+
         #endregion
 
         #endregion
@@ -444,7 +562,7 @@ namespace Febucci.UI.Core
         protected abstract IEnumerator WaitInput();
 
         /// <summary>
-        /// Returns the typewriter's waiting time based on a given character/letter.
+        /// Returns the typewriter's appearance waiting time based on a given character/letter.
         /// </summary>
         /// <param name="character"></param>
         /// <returns></returns>
@@ -466,11 +584,27 @@ namespace Febucci.UI.Core
         /// }
         /// </code>
         /// </example>
-        protected abstract float WaitTimeOf(char character);
+        protected abstract float GetWaitAppearanceTimeOf(char character);
+
+
+        ///from previous versions
+        [System.Obsolete("'WaitTimeOf' is obsolete and will be removed from the next versions. Pleaase use 'GetWaitAppearanceTimeOf' instead.")]
+        protected virtual void WaitTimeOf(char character) => GetWaitAppearanceTimeOf(character);
+
+
+        /// <summary>
+        /// Returns the typewriter's disappearance waiting time based on a given character/letter.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// You can customize this in your custom typewriter for your game.<br/>
+        /// </remarks>
+        protected virtual float GetWaitDisappearanceTimeOf(char character) => GetWaitAppearanceTimeOf(character);
 
         /// <summary>
         /// Override this method in order to implement custom actions in your typewriter.<br/>
-        /// - Manual: <see href="https://www.textanimator.febucci.com/docs/writing-custom-actions-c-sharp/">Writing Custom Actions C#</see>
+        /// - Manual: <see href="https://www.febucci.com/text-animator-unity/docs/writing-custom-actions-c-sharp/">Writing Custom Actions C#</see>
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>

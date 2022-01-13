@@ -18,5 +18,14 @@
                 Tween.EaseIn(1 - (data.passedTime / effectDuration)) * amplitude
                 );
         }
+
+        public override void SetModifier(string modifierName, string modifierValue)
+        {
+            base.SetModifier(modifierName, modifierValue);
+            switch (modifierName)
+            {
+                case "a": ApplyModifierTo(ref amplitude, modifierValue); break;
+            }
+        }
     }
 }

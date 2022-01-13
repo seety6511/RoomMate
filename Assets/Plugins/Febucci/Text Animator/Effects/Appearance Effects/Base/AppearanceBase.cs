@@ -7,7 +7,7 @@
     public abstract class AppearanceBase : EffectsBase
     {
         public float effectDuration = .3f;
-        
+
         [System.Obsolete("This variable will be removed from next versions. Please use 'effectDuration' instead")]
         protected float showDuration => effectDuration;
 
@@ -29,6 +29,15 @@
         public virtual bool CanShowAppearanceOn(float timePassed)
         {
             return timePassed <= effectDuration;
+        }
+
+        public override void SetModifier(string modifierName, string modifierValue)
+        {
+            switch (modifierName)
+            {
+                //duration
+                case "d": ApplyModifierTo(ref effectDuration, modifierValue); break;
+            }
         }
     }
 }

@@ -542,6 +542,7 @@ MonoBehaviour:
   hideAppearancesOnSkip: 0
   triggerEventsOnSkip: 0
   resetTypingSpeedAtStartup: 1
+  disappearanceOrientation: 0
   onTextShowed:
     m_PersistentCalls:
       m_Calls: []
@@ -552,10 +553,15 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  onTextDisappeared:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onCharacterVisible:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Febucci.UI.Core.CharacterEvent, Assembly-CSharp-firstpass, Version=0.0.0.0,
+    m_TypeName: Febucci.UI.Core.CharacterEvent, Febucci.TextAnimator.Runtime, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   waitForNormalChars: 0.03
   waitLong: 0.6
@@ -563,6 +569,9 @@ MonoBehaviour:
   avoidMultiplePunctuactionWait: 0
   waitForNewLines: 1
   waitForLastCharacter: 1
+  useTypewriterWaitForDisappearances: 1
+  disappearanceWaitTime: 0.015
+  disappearanceSpeedMultiplier: 1
 --- !u!114 &1911804842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,8 +587,10 @@ MonoBehaviour:
   triggerAnimPlayerOnChange: 1
   effectIntensityMultiplier: 25
   appearancesContainer:
-    tags:
+    tagsFallback_Appearances:
     - helloo
+    tagsFallback_Disappearances:
+    - size
     values:
       defaults:
         sizeDuration: 0.36
@@ -903,6 +914,10 @@ MonoBehaviour:
       dangleFrequency: 2.41
       dangleWaveSize: 0.18
       dangleAnchorBottom: 0
+      pendAmplitude: 25
+      pendFrequency: 3
+      pendWaveSize: 0.2
+      pendInverted: 0
     presets:
     - effectTag: custom1
       movementX:

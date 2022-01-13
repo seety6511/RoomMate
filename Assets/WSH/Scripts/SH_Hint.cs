@@ -36,7 +36,8 @@ public class SH_Hint : MonoBehaviour
             return;
         if ((1 << collision.gameObject.layer) != interactorLayer)
             return;
-        Hint();
+        if(!hintManager.alreadyInfo)
+            Hint();
     }
 
     public void Hint()

@@ -31,7 +31,7 @@ public class SH_HintPanel : MonoBehaviour
         hintList.Add(hint);
 
         var his = Instantiate(hintHistoryPrefab, hintHistory);
-        his.SetHint(hint);
+        his.SetHint(hint,hintHistoryList.Count + 1);
         hintHistoryList.Add(his);
     }
 

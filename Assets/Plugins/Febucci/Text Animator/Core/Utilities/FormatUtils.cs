@@ -11,7 +11,7 @@ namespace Febucci.UI.Core
         /// Tries to parse a rich text tag parameter.
         /// </summary>
         /// <remarks>
-        /// Mostly used in combination with custom typewriter actions. (Manual: <see href="https://www.textanimator.febucci.com/docs/writing-custom-actions-c-sharp/">Writing Custom actions C#</see>)
+        /// Mostly used in combination with custom typewriter actions. (Manual: <see href="https://www.febucci.com/text-animator-unity/docs/writing-custom-actions-c-sharp/">Writing Custom actions C#</see>)
         /// </remarks>
         /// <param name="attributes">list of all the attributesi in the rich text tag</param>
         /// <param name="index">the parameter's index in the list</param>

@@ -16,8 +16,12 @@ namespace Febucci.UI.Core
         public override void SetDefaultValues(AppearanceDefaultValues data)
         {
             effectDuration = data.defaults.verticalExpandDuration;
+            SetOrientation(data.defaults.verticalFromBottom);
+        }
 
-            if (data.defaults.verticalFromBottom) //From bottom to top 
+        void SetOrientation(bool fromBottom)
+        {
+            if (fromBottom) //From bottom to top 
             {
 
                 //top left copies bottom left
@@ -38,7 +42,6 @@ namespace Febucci.UI.Core
                 //bottom right copies top right
                 startB = 2;
                 targetB = 3;
-
             }
         }
 
@@ -50,6 +53,14 @@ namespace Febucci.UI.Core
             data.vertices[targetB] = Vector3.LerpUnclamped(data.vertices[startB], data.vertices[targetB], pct);
         }
 
+        public override void SetModifier(string modifierName, string modifierValue)
+        {
+            base.SetModifier(modifierName, modifierValue);
+            switch (modifierName)
+            {
+                case "bot": SetOrientation(modifierValue == "1"); break;
+            }
+        }
     }
 
 }

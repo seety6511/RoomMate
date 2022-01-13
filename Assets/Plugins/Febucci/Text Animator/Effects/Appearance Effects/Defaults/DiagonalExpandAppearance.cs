@@ -17,7 +17,12 @@ namespace Febucci.UI.Core
         {
             effectDuration = data.defaults.diagonalExpandDuration;
 
-            if (data.defaults.diagonalFromBttmLeft) //expands bottom left and top right
+            SetOrientation(data.defaults.diagonalFromBttmLeft);
+        }
+
+        void SetOrientation(bool btmLeft)
+        {
+            if (btmLeft) //expands bottom left and top right
             {
                 targetA = 0;
                 targetB = 2;
@@ -39,6 +44,14 @@ namespace Febucci.UI.Core
             data.vertices[targetB] = Vector3.LerpUnclamped(middlePos, data.vertices[targetB], pct);
         }
 
+        public override void SetModifier(string modifierName, string modifierValue)
+        {
+            base.SetModifier(modifierName, modifierValue);
+            switch (modifierName)
+            {
+                case "bot": SetOrientation(modifierValue == "1"); break;
+            }
+        }
     }
 
 }

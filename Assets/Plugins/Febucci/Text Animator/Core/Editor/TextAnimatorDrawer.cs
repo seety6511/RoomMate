@@ -31,25 +31,25 @@ namespace Febucci.UI.Core.Editors
         [MenuItem(menuParent + linksCategory + "📄 Documentation", false, 0)]
         static void Documentation()
         {
-            Application.OpenURL("https://www.textanimator.febucci.com/docs/");
+            Application.OpenURL("https://www.febucci.com/text-animator-unity/docs/");
         }
 
         [MenuItem(menuParent + linksCategory + "📅 Roadmap", false, 50)]
         static void Roadmap()
         {
-            Application.OpenURL("https://www.textanimator.febucci.com/roadmap/");
+            Application.OpenURL("https://www.febucci.com/text-animator-unity/roadmap/");
         }
 
         [MenuItem(menuParent + linksCategory + "📝 Changelog", false, 51)]
         static void Changelog()
         {
-            Application.OpenURL("https://www.textanimator.febucci.com/changelog/");
+            Application.OpenURL("https://www.febucci.com/text-animator-unity/changelog/");
         }
 
         [MenuItem(menuParent + linksCategory + "🆘 Support", false, 52)]
         static void Support()
         {
-            Application.OpenURL("https://www.textanimator.febucci.com/support/");
+            Application.OpenURL("https://www.febucci.com/text-animator-unity/support/");
         }
 
 
@@ -138,8 +138,8 @@ namespace Febucci.UI.Core.Editors
             }
         }
 
-        const string docs_builtinEffects = "https://www.textanimator.febucci.com/docs/built-in-effects-list/";
-        const string docs_customInspectorPage = "https://www.textanimator.febucci.com/docs/creating-effects-in-the-inspector/";
+        const string docs_builtinEffects = "https://www.febucci.com/text-animator-unity/docs/built-in-effects-list/";
+        const string docs_customInspectorPage = "https://www.febucci.com/text-animator-unity/docs/creating-effects-in-the-inspector/";
 
         internal abstract class BuiltinVariablesDrawer
         {
@@ -200,7 +200,7 @@ namespace Febucci.UI.Core.Editors
             Effect appOffset;
             Effect appRot;
 
-            public AppearanceDefaultEffects(SerializedProperty defaults) : base("Built-in appearances", docs_builtinEffects + "#appearance-effects")
+            public AppearanceDefaultEffects(SerializedProperty defaults) : base("Built-in appearances/disappearances", docs_builtinEffects + "#appearances-and-disappearances")
             {
                 appSize = new Effect(
                     "Size",
@@ -911,6 +911,7 @@ namespace Febucci.UI.Core.Editors
         SerializedProperty timeScale;
         SerializedProperty tags_fallbackBehaviors;
         SerializedProperty tags_fallbackAppearances;
+        SerializedProperty tags_fallbackDisappearances;
 
         SerializedProperty behaviorValues;
         SerializedProperty behavDef;
@@ -945,7 +946,15 @@ namespace Febucci.UI.Core.Editors
         bool panel_editBehaviors;
         bool panel_editDefaultAppearances;
         bool panel_editDefaultBehaviors;
+        bool panel_editDefaultDisappearances;
         bool panel_editAppearances;
+
+
+#if TA_DEBUG
+        int propDebug_firstVisibleChar;
+        int propDebug_maxVisibleChars;
+#endif
+
         #endregion
 
         public enum Show
@@ -979,10 +988,7 @@ namespace Febucci.UI.Core.Editors
 
             GUI.enabled = false;
 
-            if (isAppearance)
-                EditorGUILayout.LabelField("How many Appearance effects will be applied to a letter if there are no other Appearance effects already?", EditorStyles.wordWrappedMiniLabel);
-            else
-                EditorGUILayout.LabelField("How many Behavior effects will be applied to a letter, if there are no other Behavior effects already?", EditorStyles.wordWrappedMiniLabel);
+            EditorGUILayout.LabelField("How many of these effects will be applied to a letter if there aren't any of the same category already?", EditorStyles.wordWrappedMiniLabel);
 
             GUI.enabled = true;
 
@@ -996,11 +1002,15 @@ namespace Febucci.UI.Core.Editors
             if (tagsContainer.arraySize > 0)
             {
                 GUI.enabled = false;
-                EditorGUILayout.LabelField($"Write one {(isAppearance ? "Appearance" : "Behavior")} tag per array element. (built-in or custom effects tags are both accepted, eg. 'fade')", EditorStyles.wordWrappedMiniLabel);
+                EditorGUILayout.LabelField($"Write one {(isAppearance ? "Appearance/Disappearance" : "Behavior")} tag per array element. (built-in or custom effects tags are both accepted, eg. 'fade')", EditorStyles.wordWrappedMiniLabel);
                 GUI.enabled = true;
                 EditorGUI.indentLevel++;
 
                 SerializedProperty temp;
+
+                if (Application.isPlaying)
+                    GUI.enabled = false;
+
                 for (int i = 0; i < tagsContainer.arraySize; i++)
                 {
                     temp = tagsContainer.GetArrayElementAtIndex(i);
@@ -1010,9 +1020,10 @@ namespace Febucci.UI.Core.Editors
 
                     if (EditorGUI.EndChangeCheck() && temp.stringValue.Length > 0)
                     {
-                        temp.stringValue = temp.stringValue.Replace("{", "").Replace("}", "").Replace(" ", "");
+                        temp.stringValue = temp.stringValue.Replace("{", "").Replace("}", "");
                     }
                 }
+                GUI.enabled = true;
 
                 EditorGUI.indentLevel--;
             }
@@ -1054,7 +1065,8 @@ namespace Febucci.UI.Core.Editors
 
             #region Default Appearances
             appearanceValues = serializedObject.FindProperty("appearancesContainer");
-            tags_fallbackAppearances = appearanceValues.FindPropertyRelative("tags");
+            tags_fallbackAppearances = appearanceValues.FindPropertyRelative("tagsFallback_Appearances");
+            tags_fallbackDisappearances = appearanceValues.FindPropertyRelative("tagsFallback_Disappearances");
             appDefaultPreset = new AppearanceDefaultEffects(appearanceValues.FindPropertyRelative("values").FindPropertyRelative("defaults"));
 
             #endregion
@@ -1072,7 +1084,7 @@ namespace Febucci.UI.Core.Editors
         {
             void ShowButtonFor(ref Show panel, Show target)
             {
-                string name = target == Show.Appearances ? "Edit Appearances" : "Edit Behaviors";
+                string name = target == Show.Appearances ? "Edit Appearances/Disappearances" : "Edit Behaviors";
                 if (panel == target)
                     GUI.backgroundColor = selectedShowColor;
 
@@ -1349,18 +1361,30 @@ namespace Febucci.UI.Core.Editors
                     }
 
                     EndToggleGroup(panel_editDefaultAppearances);
-                }
 
-                //Fallback Behaviors
-                {
-                    StartToggleGroup(ref panel_editDefaultBehaviors, $"Default Behaviors [{tags_fallbackBehaviors.arraySize} enabled]", boldFoldout);
-                    if (panel_editDefaultBehaviors)
+                    //Fallback Behaviors
                     {
-                        EditFallbackEffects(ref tags_fallbackBehaviors, false);
+                        StartToggleGroup(ref panel_editDefaultBehaviors, $"Default Behaviors [{tags_fallbackBehaviors.arraySize} enabled]", boldFoldout);
+                        if (panel_editDefaultBehaviors)
+                        {
+                            EditFallbackEffects(ref tags_fallbackBehaviors, false);
+                            EditorGUILayout.Space();
+                        }
+
+                        EndToggleGroup(panel_editDefaultBehaviors);
+                    }
+
+                }
+                //Fallback Disappearances
+                {
+                    StartToggleGroup(ref panel_editDefaultDisappearances, $"Default Disappearances [{tags_fallbackDisappearances.arraySize} enabled]", boldFoldout);
+                    if (panel_editDefaultDisappearances)
+                    {
+                        EditFallbackEffects(ref tags_fallbackDisappearances, true);
                         EditorGUILayout.Space();
                     }
 
-                    EndToggleGroup(panel_editDefaultBehaviors);
+                    EndToggleGroup(panel_editDefaultDisappearances);
                 }
                 EditorGUI.indentLevel--;
             }
@@ -1412,7 +1436,7 @@ namespace Febucci.UI.Core.Editors
 
                 //Appearance effects
                 {
-                    StartToggleGroup(ref panel_editAppearances, "Edit Appearances Effects", boldFoldout);
+                    StartToggleGroup(ref panel_editAppearances, "Edit Appearances/Disappearances", boldFoldout);
 
                     if (panel_editAppearances)
                     {
@@ -1426,7 +1450,7 @@ namespace Febucci.UI.Core.Editors
 
                 //Behavior effects
                 {
-                    StartToggleGroup(ref panel_editBehaviors, "Edit Behavior Effects", boldFoldout);
+                    StartToggleGroup(ref panel_editBehaviors, "Edit Behaviors", boldFoldout);
 
                     if (panel_editBehaviors)
                     {
@@ -1449,6 +1473,45 @@ namespace Febucci.UI.Core.Editors
 
             EditorGUILayout.Space();
 
+
+
+#if TA_DEBUG
+            //Debugs
+            {
+                EditorGUILayout.LabelField("Debug", EditorStyles.boldLabel);
+                EditorGUI.indentLevel++;
+                if (Application.isPlaying)
+                {
+                    TextAnimator script = (TextAnimator)target;
+
+                    propDebug_firstVisibleChar = script.firstVisibleCharacter;
+                    EditorGUI.BeginChangeCheck();
+                    propDebug_firstVisibleChar = EditorGUILayout.IntField("First visible character:", propDebug_firstVisibleChar);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        script.firstVisibleCharacter = propDebug_firstVisibleChar;
+                    }
+
+
+                    propDebug_maxVisibleChars = script.maxVisibleCharacters;
+                    EditorGUI.BeginChangeCheck();
+                    propDebug_maxVisibleChars = EditorGUILayout.IntField("Max visible characters:", propDebug_maxVisibleChars);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        script.maxVisibleCharacters = propDebug_maxVisibleChars;
+                    }
+                }
+                else
+                {
+                    GUI.enabled = false;
+                    EditorGUILayout.LabelField("The debug is only enabled at runtime");
+                    GUI.enabled = true;
+                }
+
+                EditorGUI.indentLevel--;
+            }
+#endif
+
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
 
@@ -1465,26 +1528,14 @@ namespace Febucci.UI.Core.Editors
                     ResetEffects();
             }
 
-            /*
-            //Editor Helpers
-            {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Editor Helper Buttons ->", GUILayout.MaxWidth(150));
-
-                if (GUILayout.Button("Locate Global Data", EditorStyles.miniButton))
-                {
-                    TAnimGlobalDataScriptableDrawer.LocateGlobalData();
-                }
-                GUI.enabled = Application.isPlaying;
-                if (GUILayout.Button("Reset Behaviors", EditorStyles.miniButton))
-                {
-                    ResetEffects();
-                }
-                GUI.enabled = true;
-                EditorGUILayout.EndHorizontal();
-            }
-            */
         }
+
+#if TA_DEBUG
+        public override bool RequiresConstantRepaint()
+        {
+            return true; //constantly repaints debugs first index etc.
+        }
+#endif
     }
 
 }
