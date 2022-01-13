@@ -19,7 +19,6 @@ public class SH_Hint : MonoBehaviour
     public List<string> info = new List<string>();
     public int infoIndex;
     public bool hasOn; //한번이라도 발동되었나?
-
     void Awake()
     {
         hintManager = FindObjectOfType<SH_HintManager>();
@@ -35,14 +34,15 @@ public class SH_Hint : MonoBehaviour
     {
         if (hasOn)
             return;
-
-        if (collision.gameObject.layer != interactorLayer)
+        if ((1 << collision.gameObject.layer) != interactorLayer)
             return;
-        Hint();
+        if(!hintManager.alreadyInfo)
+            Hint();
     }
 
     public void Hint()
     {
+        print("Hint");
         hasOn = true;
         hintManager.EnableHint(this);
     }

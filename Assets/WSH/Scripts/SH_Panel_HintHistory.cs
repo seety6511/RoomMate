@@ -9,12 +9,15 @@ public class SH_Panel_HintHistory : MonoBehaviour
     Image portrait;
     [SerializeField]
     Text hintHistory;
+    [SerializeField]
+    Text hintNum;
     public SH_Hint hint;
-    public void SetHint(SH_Hint hint)
+    public void SetHint(SH_Hint hint, int num)
     {
         this.hint = hint;
         portrait.sprite = hint.portrait;
         hintHistory.text = hint.info[hint.infoIndex];
+        hintNum.text += num;
     }
 
     public void InfoUpdate(SH_Hint hint)
