@@ -15,6 +15,7 @@ public class NSR_UIPos : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
+            print(hit.transform.name);
             //3. 부딪힌 위치에 Crosshair (나) 를 놓는다.
             transform.position = hit.point;
             //4. Crosshair 의 크기를 카메라 - 부딪힌위치의 거리만큼 곱한다.

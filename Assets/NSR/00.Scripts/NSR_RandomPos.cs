@@ -17,12 +17,12 @@ public class NSR_RandomPos : MonoBehaviour
         if (currTime > posChangeTime)
         {
 
-            transform.position = new Vector3(Random.Range(0.92f, 0.99f), Random.Range(-0.022f, 0.0239f), Random.Range(-1.1355f, -1.1318f));
+            transform.localPosition = new Vector3(Random.Range(0.92f, 0.99f), Random.Range(-0.022f, 0.0239f), Random.Range(-1.1355f, -1.1318f));
             currTime = 0;
         }
 
-        //print("x : " + transform.position.x);
-        //print("y : " + transform.position.y);
-        //print("z : " + transform.position.z);
+        print("x : " + transform.localPosition.x);
+        print("y : " + transform.localPosition.y);
+        print("z : " + transform.localPosition.z);
     }
 }
