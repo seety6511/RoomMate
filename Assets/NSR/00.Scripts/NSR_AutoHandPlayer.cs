@@ -17,26 +17,64 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     bool beforeHand;
     bool giveBack = true;
     bool change = false;
-    bool handPlayer = true;
-    bool bodyPlayer = false;
+    bool handCntl = true;
+    bool bodyCntl = false;
     public bool canChange;
     public Transform[] objTr;
 
     KHJ_ScreenFade fade;
+    GameObject ChaneText;
 
+    bool bodyPlayerCall;
+    bool handPlayerCall;
     void Start()
     {
         fade = NSR_AutoHandManager.instance.fade;
+        ChaneText = NSR_AutoHandManager.instance.ChaneText;
     }
     void Update()
     {
-        // 스페이스바 누르면 컨트롤 바꾸기
-        if (Input.GetKeyDown(KeyCode.Space) && !NSR_AutoHandManager.instance.isChanging /*|| OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch)*/)
+        if (NSR_AutoHandManager.instance.isChanging || PhotonNetwork.IsConnected == false) return;
+
+        if ((Input.GetKeyDown(KeyCode.Space) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch)))
         {
-            photonView.RPC("SetBool", RpcTarget.All);
+            if (NSR_AutoHandManager.instance.handPlayer && handPlayerCall == false)
+            {
+                photonView.RPC("SetHandCall", RpcTarget.All);
+            }
+
+            if (NSR_AutoHandManager.instance.bodyplayer && bodyPlayerCall == false)
+            {
+                photonView.RPC("SetBodyCall", RpcTarget.All);
+            }
+        }
+
+        if (OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.RTouch) || Input.GetKeyDown(KeyCode.X))
+        {
+            if (NSR_AutoHandManager.instance.handPlayer && handPlayerCall)
+            {
+                photonView.RPC("CancelHandCall", RpcTarget.All);
+            }
+
+            if (NSR_AutoHandManager.instance.bodyplayer && bodyPlayerCall)
+            {
+                photonView.RPC("CancelBodyCall", RpcTarget.All);
+            }
+        }
+
+        //교환
+        if (handPlayerCall && bodyPlayerCall)
+        {
+            SetBool();
+            ChaneText.SetActive(false);
+            //화면 어두워졌다가 밝아지게 하기
+            fade.EyeClose_();
+
+            if (NSR_AutoHandManager.instance.handPlayer) return;
             StartCoroutine(ChangeContrl());
         }
 
+        // 강탈
         if (Input.GetKeyDown(KeyCode.K) && !NSR_AutoHandManager.instance.isChanging)
         {
             photonView.RPC("SetBool", RpcTarget.All);
@@ -50,18 +88,53 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         }
     }
 
+    [PunRPC]
+    void SetHandCall()
+    {
+        handPlayerCall = true;
+        if (bodyPlayerCall == false)
+        {
+            ChaneText.SetActive(true);
+            print("핸드가 교환 요청");
+        }
+    }
+
+    [PunRPC]
+    void SetBodyCall()
+    {
+        bodyPlayerCall = true;
+        if (handPlayerCall == false)
+        {
+            ChaneText.SetActive(true);
+            print("바디가 교환 요청");
+        }
+    }
+
+    [PunRPC]
+    void CancelHandCall()
+    {
+        print("교환 취소");
+        ChaneText.SetActive(false);
+        handPlayerCall = false;
+    }
+
+    [PunRPC]
+    void CancelBodyCall()
+    {
+        print("교환 취소");
+        ChaneText.SetActive(false);
+        bodyPlayerCall = false;
+    }
     IEnumerator ChangeContrl()
     {
-        //화면 어두워졌다가 밝아지게 하기
-        fade.EyeClose_();
-
         yield return new WaitForSeconds(0.4f);
+
         photonView.RPC("Set_ObjTrs", RpcTarget.All);
 
         //핸드플레이어 컨트롤 바꾸기
-        photonView.RPC("GetControl", RpcTarget.All, handPlayer, change);
+        photonView.RPC("GetControl", RpcTarget.All, handCntl, change);
         //바디플레이어 컨트롤 바꾸기
-        photonView.RPC("GetControl", RpcTarget.All, bodyPlayer, change);
+        photonView.RPC("GetControl", RpcTarget.All, bodyCntl, change);
 
         photonView.RPC("Set_handzone_obj_Trs", RpcTarget.All);
     }
@@ -81,14 +154,16 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         yield return new WaitForSeconds(0.4f);
 
         if (NSR_AutoHandManager.instance.handPlayer == beforeHand)
-            photonView.RPC("GetControl", RpcTarget.All, bodyPlayer, giveBack);
+            photonView.RPC("GetControl", RpcTarget.All, bodyCntl, giveBack);
         else
-            photonView.RPC("GetControl", RpcTarget.All, handPlayer, giveBack);
+            photonView.RPC("GetControl", RpcTarget.All, handCntl, giveBack);
     }
 
     [PunRPC]
     void SetBool()
     {
+        handPlayerCall = false;
+        bodyPlayerCall = false;
         NSR_AutoHandManager.instance.isChanging = true;
         NSR_AutoHandManager.instance.openEye = true;
     }
@@ -125,7 +200,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
     // 제어건 가져오기
     [PunRPC]
-    void GetControl(bool handPlayer, bool re)
+    void GetControl(bool handCtrl, bool re)
     {
         if (re)
         {
@@ -136,7 +211,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         {
             beforeHand = NSR_AutoHandManager.instance.handPlayer;
 
-            if (handPlayer)
+            if (handCtrl)
                 NSR_AutoHandManager.instance.handPlayer = !NSR_AutoHandManager.instance.handPlayer;
             else
                 NSR_AutoHandManager.instance.bodyplayer = !NSR_AutoHandManager.instance.bodyplayer;
@@ -176,14 +251,14 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         {
             if (me == NSR_AutoBodyPlayer.instance.photonView.Owner)
             {
-                if (handPlayer)
+                if (handCtrl)
                     NSR_AutoHandPlayer.instance.photonView.TransferOwnership(me);
                 else
                     NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(you);
             }
             else
             {
-                if (handPlayer)
+                if (handCtrl)
                     NSR_AutoHandPlayer.instance.photonView.TransferOwnership(you);
                 else
                     NSR_AutoBodyPlayer.instance.photonView.TransferOwnership(me);
