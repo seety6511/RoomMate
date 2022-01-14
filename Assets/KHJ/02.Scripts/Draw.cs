@@ -23,19 +23,35 @@ public class Draw : MonoBehaviour
     Vector3 pos;
 
     public Transform trRight;
+    public LineRenderer line;
+
     private void Start()
     {
         SetMarketWhite();
     }
+    private void OnEnable()
+    {
+        resetPos();
+    }
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        //if (Input.GetButtonDown("Fire1"))
+        Ray ray = new Ray(trRight.position, trRight.forward);
+        RaycastHit hitInfo;
+        int layer = 1 << LayerMask.NameToLayer("Board");
+        if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
         {
-            Ray ray = new Ray(trRight.position, trRight.forward);
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitInfo;
-            int layer = 1 << LayerMask.NameToLayer("Board");
+            line.SetPosition(0, trRight.position);
+            line.SetPosition(1, hitInfo.point);
+        }
+        else
+        {
+            //그림판 밖으로 나가면
+            line.SetPosition(0, Vector3.zero);
+            line.SetPosition(1, Vector3.zero);
+        }
+
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        {
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
             {
                 //그리는 중
@@ -68,12 +84,7 @@ public class Draw : MonoBehaviour
             }
         }
         if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-        //if (Input.GetButton("Fire1"))
         {
-            Ray ray = new Ray(trRight.position, trRight.forward);
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitInfo;
-            int layer = 1 << LayerMask.NameToLayer("Board");
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
             {
                 //그리는 중

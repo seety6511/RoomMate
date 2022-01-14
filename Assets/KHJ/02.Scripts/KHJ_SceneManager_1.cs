@@ -31,7 +31,17 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         volume.profile.TryGet<ChromaticAberration>(out chromatic);
         volume.profile.TryGet<ColorAdjustments>(out color);
     }
-
+    public GameObject MenuUI;
+    private void Update()
+    {
+        if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Four, OVRInput.Controller.LTouch))
+        {
+            print("Menu");
+            MenuUI.SetActive(!MenuUI.activeSelf);
+            MenuUI.transform.position = Player.transform.position;
+            MenuUI.transform.rotation = PlayerCam.rotation;
+        }
+    }
     public GameObject IllusionWall;
     public void disappearWall()
     {
