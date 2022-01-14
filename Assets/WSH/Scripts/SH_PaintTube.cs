@@ -32,6 +32,5 @@ public class SH_PaintTube : MonoBehaviour
         GetComponent<Rigidbody>().isKinematic = false;
         particle.SetActive(true);
         particle.transform.LookAt(cup);
-        Destroy(gameObject, 1f);
     }
 }

@@ -801,12 +801,12 @@ namespace Autohand {
             while(grab.beingGrabbed)
                 yield return new WaitForEndOfFrame();
 
-            if (InvenManager.instance.Items.Contains(grab.gameObject))
-            {
-                InvenManager.instance.Items.Remove(grab.gameObject);
-                grab.gameObject.transform.parent = null;
-                grab.body.isKinematic = false;
-            }
+            //if (InvenManager.instance.Items.Contains(grab.gameObject))
+            //{
+            //    InvenManager.instance.Items.Remove(grab.gameObject);
+            //    grab.gameObject.transform.parent = null;
+            //    grab.body.isKinematic = false;
+            //}
             
             CancelPose();
             ClearPoseArea();

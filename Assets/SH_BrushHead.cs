@@ -23,19 +23,19 @@ public class SH_BrushHead : MonoBehaviour
         switch (paint.GetColor)
         {
             case PaintColor.Red:
-                fur.SetColor("Color",Color.red);
+                fur.SetColor("_BaseColor",Color.red);
                 break;
             case PaintColor.Green:
-                fur.SetColor("Color",Color.green);
+                fur.SetColor("_BaseColor", Color.green);
                 break;
             case PaintColor.Blue:
-                fur.SetColor("Color",Color.blue);
+                fur.SetColor("_BaseColor", Color.blue);
                 break;
             case PaintColor.Black:
-                fur.SetColor("Color",Color.black);
+                fur.SetColor("_BaseColor", Color.black);
                 break;
             case PaintColor.White:
-                fur.SetColor("Color",Color.white);
+                fur.SetColor("_BaseColor", Color.white);
                 break;
         }
     }
