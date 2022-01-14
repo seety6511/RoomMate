@@ -12,14 +12,14 @@ using UnityEngine.UI;
 /// </summary>
 public class SH_Hint : MonoBehaviour
 {
-    SH_HintManager hintManager;
+    protected SH_HintManager hintManager;
     public Sprite portrait;
     [SerializeField]
     LayerMask interactorLayer;
     public List<string> info = new List<string>();
     public int infoIndex;
     public bool hasOn; //한번이라도 발동되었나?
-    void Awake()
+    void Start()
     {
         hintManager = FindObjectOfType<SH_HintManager>();
 
