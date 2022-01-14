@@ -10,12 +10,14 @@ public class NSR_PivotPhoton : MonoBehaviourPun
 
     private void Update()
     {
+        if (!NSR_AutoHandManager.instance.handPlayer || PhotonNetwork.IsConnected == false) return;
+
         for (int i = 0; i < handPivot.Length; i++)
         {
-            if (handPivot[i].GetComponent<NSR_Pivot>().active)
+            //if (handPivot[i].GetComponent<NSR_Pivot>().active)
             {
                 photonView.RPC("SetActivePivot", RpcTarget.All, i, handPivot[i].activeSelf);
-                handPivot[i].GetComponent<NSR_Pivot>().active = false;
+                //handPivot[i].GetComponent<NSR_Pivot>().active = false;
             }
         }
     }

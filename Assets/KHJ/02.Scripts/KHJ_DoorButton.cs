@@ -26,7 +26,10 @@ public class KHJ_DoorButton : MonoBehaviourPun
         else
         {
             if (KHJ_Door.instance.able)
-                photonView.RPC("ClickButton", RpcTarget.All);
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("ClickButton", RpcTarget.All);
+                else
+                    ClickButton();
         }
     }
     [PunRPC]

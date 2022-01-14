@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using Febucci.UI;
 
 /// <summary>
 /// 1. ÈùÆ® ¹ßµ¿
@@ -16,10 +18,13 @@ public class SH_HintManager : MonoBehaviour
     SH_HintPanel hintPanel;
 
     [SerializeField]
-    Text infoText;
+    TextAnimatorPlayer infoText;
+    [SerializeField]
+    TextAnimatorPlayer infoText_back;
     [SerializeField]
     float textFadeTime;
-
+    [SerializeField]
+    float textShowTime;
     private void Awake()
     {
         hints = FindObjectsOfType<SH_Hint>();
@@ -36,7 +41,7 @@ public class SH_HintManager : MonoBehaviour
     }
 
     [SerializeField]
-    bool alreadyInfo;
+    public bool alreadyInfo;
     public void EnableHint(SH_Hint hint)
     {
         if (hint.infoIndex == hint.info.Count)
@@ -44,18 +49,22 @@ public class SH_HintManager : MonoBehaviour
 
         StartCoroutine("InfoFade", hint);
     }
-
     IEnumerator InfoFade(SH_Hint hint)
     {
         if (alreadyInfo)
             yield break;
 
         alreadyInfo = true;
-        infoText.text = hint.info[hint.infoIndex];
-
         infoText.gameObject.SetActive(true);
+        infoText_back.gameObject.SetActive(true);
+        infoText.ShowText(hint.info[hint.infoIndex]);
+        infoText_back.ShowText(hint.info[hint.infoIndex]);
+        yield return new WaitForSeconds(textShowTime);
+        infoText.StartDisappearingText();
+        infoText_back.StartDisappearingText();
         yield return new WaitForSeconds(textFadeTime);
         infoText.gameObject.SetActive(false);
+        infoText_back.gameObject.SetActive(false);
         hintPanel.Add(hint);
 
         hint.infoIndex++;

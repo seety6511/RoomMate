@@ -11,7 +11,6 @@ namespace Autohand {
     [HelpURL("https://earnestrobot.notion.site/Hand-967e36c2ab2945b2b0f75cea84624b2f")]
     public class Hand : HandBase {
 
-
         [AutoToggleHeader("Enable Highlight", 0, 0, tooltip = "Raycasting for grabbables to highlight is expensive, you can disable it here if you aren't using it")]
         public bool usingHighlight = true;
 
@@ -221,7 +220,6 @@ namespace Autohand {
             Grab(grabType);
         }
 
-
         /// <summary>Function for controller trigger fully pressed -> Grabs whatever is directly in front of and closest to the hands palm</summary>
         public virtual void Grab(GrabType grabType) {
             OnTriggerGrab?.Invoke(this, null);
@@ -250,6 +248,7 @@ namespace Autohand {
                 var estimatedRadius = Vector3.Distance(hit.point, hit.transform.position);
                 var difference = (grab.transform.position - hit.point) + (palmTransform.forward * estimatedRadius * 2f);
                 var startPos = grab.transform.position;
+
                 grab.transform.position = palmTransform.position + difference;
                 grab.body.position = grab.transform.position;
 
@@ -901,6 +900,7 @@ namespace Autohand {
 
                             SetMoveTo();
                             SetHandLocation(moveTo.position, moveTo.rotation);
+                            
                             holdingObj.transform.position = Vector3.Lerp(startGrabbablePosition, holdingObj.transform.position, grabCurve.Evaluate(point));
                             holdingObj.transform.rotation = Quaternion.Lerp(startGrabbableRotation, holdingObj.transform.rotation, grabCurve.Evaluate(point));
                             yield return new WaitForEndOfFrame();
@@ -942,6 +942,7 @@ namespace Autohand {
 
             grabPoint.transform.position = transform.position;
             grabPoint.transform.rotation = transform.rotation;
+           
             CreateJoint(holdingObj, holdingObj.jointBreakForce * ((1f / Time.fixedUnscaledDeltaTime) / 60f), float.PositiveInfinity);
 
             OnGrabbed?.Invoke(this, holdingObj);

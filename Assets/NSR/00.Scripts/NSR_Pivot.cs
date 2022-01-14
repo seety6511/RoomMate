@@ -2,20 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// dontuse
 public class NSR_Pivot : MonoBehaviour
 {
-    public GameObject mainPivot;
+    //public GameObject mainPivot;
+    [HideInInspector]
     public bool active;
-    private void OnEnable()
-    {
-        active = true;
-        mainPivot.SetActive(false);
-    }
 
-    private void OnDisable()
-    {
-        active = true;
-        mainPivot.SetActive(true);
-    }
+    public GameObject[] Pivots;
 
+    //public bool isMainPivot;
+    //private void OnEnable()
+    //{
+    //    active = true;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    active = true;
+    //}
 }

@@ -23,13 +23,16 @@ public class KHJ_Pattern : MonoBehaviourPun
     public char[] charArr;
     void Update()
     {
+        if ((PhotonNetwork.IsConnected && NSR_AutoHandManager.instance.handPlayer == false)) return;
+
         if (activeNodes.Count == nodes.Length)
         {
             if (PasswordCheck())
             {
                 drawing = false;
-                photonView.RPC("Clear", RpcTarget.All);
-                //Clear();
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("Clear", RpcTarget.Others);
+                Clear();
             }
             else
             {
@@ -45,17 +48,36 @@ public class KHJ_Pattern : MonoBehaviourPun
             if (activeNodes.Count != 0)
             {
                 charArr = Inputanswer.ToCharArray();
+                Vector3[] p = new Vector3[charArr.Length + 1];
                 for (int i = 0; i < activeNodes.Count; i++)
                 {
-                    //실시간으로 라인 그려주기
+                    p[i] = nodes[int.Parse(charArr[i].ToString()) - 1];
                     drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
+
                 }
+                
                 Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;
                 WorldToLocal.z = -0.0001f;
                 drawer.SetPosition(activeNodes.Count, WorldToLocal);
+                p[activeNodes.Count] = WorldToLocal;
+
+                photonView.RPC("RPC_DrawLine", RpcTarget.Others, p);
             }
         }
     }
+
+    [PunRPC]
+    void RPC_DrawLine(Vector3 [] points)
+    {
+        drawer.positionCount = points.Length;
+        for(int i = 0; i < points.Length; i++)
+        {
+            print(points[i]);
+            drawer.SetPosition(i, points[i]);
+        }
+        
+    }
+
     bool PasswordCheck()
     {
         if (Inputanswer == answer1)
@@ -70,13 +92,17 @@ public class KHJ_Pattern : MonoBehaviourPun
     {
         StartCoroutine(Clear_());
     }
-    public GameObject FootPuzzle__1;
     IEnumerator Clear_()
     {
-        FootPuzzle__1.SetActive(true);
         yield return new WaitForSeconds(0.4f);
         gameObject.SetActive(false);
     }
+    [PunRPC]
+    void RPC_Init(int n)
+    {
+        Init();
+    }
+
     public void NodeActive(int nodeNum)
     {
         Vector3 node = nodes[nodeNum];
@@ -104,13 +130,23 @@ public class KHJ_Pattern : MonoBehaviourPun
     }
     public void Init()
     {
-        foreach(Image image in buttons)
+        if (drawer.positionCount == 0) return;
+
+        foreach (Image image in buttons)
         {
             image.color = new Color32(0, 0, 0, 255);
         }
         drawing = false;
         activeNodes.Clear();
         Inputanswer = "";
+       
         drawer.positionCount = 0;
+
+
+        if (PhotonNetwork.IsConnected && NSR_AutoHandManager.instance.handPlayer)
+        {
+            photonView.RPC("RPC_Init", RpcTarget.Others, 0);
+        }
+
     }
 }
