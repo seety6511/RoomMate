@@ -16,23 +16,27 @@ public class KHJ_ScreenFade : MonoBehaviour
     public Image Down;
 
 
-    private void Start()
+    private void Awake()
     {
         volume.profile.TryGet<DepthOfField>(out depth);
     }
     void OnEnable()
     {
+        EyeOpen_();
+    }
+    public void EyeOpen_()
+    {
+        StartCoroutine(EyeOpen());
+    }
+	IEnumerator EyeOpen()
+	{
         //초기설정
+        depth.active = true;
+        depth.gaussianEnd.value = 0;
+        depth.gaussianStart.value = 0;
         Up.transform.localPosition = new Vector3(0, 5, 0);
         Down.transform.localPosition = new Vector3(0, -5, 0);
-        FadeIn();
-    }
-    public void FadeIn()
-    {
-        StartCoroutine(Fade());
-    }
-	IEnumerator Fade()
-	{
+        //1초 뒤 눈뜨기
         yield return new WaitForSeconds(1f);
         Up.transform.DOLocalMoveY(6f, 1.8f).SetEase(Ease.OutQuart);
         Down.transform.DOLocalMoveY(-6f, 1.8f).SetEase(Ease.OutQuart);
@@ -46,5 +50,17 @@ public class KHJ_ScreenFade : MonoBehaviour
         Down.transform.DOLocalMoveY(-10f, 6f).SetEase(Ease.OutQuart);
         yield return new WaitForSeconds(6f);
         depth.active = false;
+    }
+    public void EyeClose_()
+    {
+        //초기설정
+        depth.active = true;
+        depth.gaussianEnd.value = 0;
+        depth.gaussianStart.value = 0;
+        Up.transform.localPosition = new Vector3(0, 5, 0);
+        Down.transform.localPosition = new Vector3(0, -5, 0);
+
+        Up.transform.DOLocalMoveY(5f, 0.2f).SetEase(Ease.OutQuart);
+        Down.transform.DOLocalMoveY(-5f, 0.2f).SetEase(Ease.OutQuart);
     }
 }

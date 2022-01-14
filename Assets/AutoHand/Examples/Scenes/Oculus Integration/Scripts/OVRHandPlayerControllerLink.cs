@@ -22,6 +22,8 @@ namespace Autohand.Demo{
         public bool test;
         public void Update() 
         {
+            if (NSR_AutoHandManager.instance.isChanging) return;
+
             if (test || (PhotonNetwork.IsConnected && !inGame))
             {
                 moveInput = OVRInput.Get(moveAxis, moveController);

@@ -5,6 +5,7 @@ using Autohand;
 
 public class NSR_Hand : MonoBehaviour
 {
+    public bool left;
     public GameObject mainPivot;
     //public GameObject indexPivot;
 
@@ -65,5 +66,11 @@ public class NSR_Hand : MonoBehaviour
     {
         if (other.gameObject.name == "Smartphone" || other.gameObject.name == "Locker")
             isTarget = false;
+    }
+
+    public void OnGrab()
+    {
+        print("¿‚¿Ω");
+        NSR_AutoHandManager.instance.OnGrab(left);
     }
 }

@@ -17,6 +17,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         Screen.SetResolution(960, 640, false);
     }
 
+    public GameObject ChaneText;
+
     #region 
     float speed = 100;
 
@@ -61,6 +63,9 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public GameObject tv_Canvas;
 
     public bool isChanging;
+    public bool changeEnd;
+
+    public KHJ_ScreenFade fade;
     #endregion
 
     void Start()
@@ -89,20 +94,35 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     }
 
     float currTime;
+    float fadeTime;
+    public bool openEye;
     private void Update()
     {
-        // 역할 바뀌는 동안 작동 막기
+        // 역할 바뀌는 동안 동기화 막기
         if (isChanging)
         {
             currTime += Time.deltaTime;
-            if(currTime > 1f)
+            if (currTime > 10)
             {
                 isChanging = false;
-                //NSR_AutoHandPlayer.instance.canChange = true;
                 currTime = 0;
+                fadeTime = 0;
             }
         }
-        if (PhotonNetwork.IsConnected == false || isChanging) return;
+
+        if (openEye)
+        {
+            fadeTime += Time.deltaTime;
+            if (fadeTime > 0.3f)
+            {
+                fade.EyeOpen_();
+                fadeTime = 0;
+                openEye = false;
+            }
+        }
+
+
+        if (PhotonNetwork.IsConnected == false) return;
 
         // 카메라 보여지는 오브젝트 설정
         for (int i = 0; i < cams.Length; i++)
@@ -169,6 +189,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         body_hand_L.SetActive(true);
         body_hand_R.SetActive(true);
 
+        if (isChanging) return;
+
         // Transform 받기(손, 몸, 오브젝트)
         if (NSR_AutoHandPlayer.instance != null)
         {
@@ -194,8 +216,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 body_rightFingers[i].transform.localRotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
             }
 
-           
-         
+
+
             for (int i = 0; i < hand_zone_objects.Length; i++)
             {
                 if (hand_zone_objects[i] != null)
@@ -216,9 +238,11 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // handZone(화면 카메라, 핸드플레이 공간, 카메라렌더러 등) 켜기
         handZone.gameObject.SetActive(true);
 
+        if (isChanging) return;
+
         if (NSR_AutoBodyPlayer.instance != null)
         {
-          // 화면 카메라 위치 받기
+            // 화면 카메라 위치 받기
             tv_camera.position = Vector3.Lerp(tv_camera.position, NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos, 200 * Time.deltaTime);
             tv_camera.rotation = Quaternion.Lerp(tv_camera.rotation, NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot, 200 * Time.deltaTime);
 
@@ -255,11 +279,11 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             //head_light.gameObject.SetActive(false);
         }
 
-        if(OVRInput.GetDown(OVRInput.Button.Three))
+        if (OVRInput.GetDown(OVRInput.Button.Three))
         {
             photonView.RPC("setHeight", RpcTarget.Others, true);
         }
-        if(OVRInput.GetUp(OVRInput.Button.Three))
+        if (OVRInput.GetUp(OVRInput.Button.Three))
         {
             photonView.RPC("setHeight", RpcTarget.Others, false);
         }
@@ -288,6 +312,29 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     void setHeight(bool down)
     {
         sit = down;
+    }
+
+    public void OnGrab(bool left)
+    {
+        //photonView.RPC("VibrateController", RpcTarget.All, left);
+
+        VibrateController(left);
+    }
+
+    [PunRPC]
+    void VibrateController(bool left)
+    {
+        if (left)
+            StartCoroutine(VibrateController(0.05f, 0.3f, 1, OVRInput.Controller.LTouch));
+        else
+            StartCoroutine(VibrateController(0.05f, 0.3f, 1, OVRInput.Controller.RTouch));
+    }
+
+    protected IEnumerator VibrateController(float waitTime, float frequency, float amplitude, OVRInput.Controller controller)
+    {
+        OVRInput.SetControllerVibration(frequency, amplitude, controller);
+        yield return new WaitForSeconds(waitTime);
+        OVRInput.SetControllerVibration(0, 0, controller);
     }
 }
 
