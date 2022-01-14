@@ -20,13 +20,13 @@ public class NSR_PhotonVoiceView : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            NSR_AutoHandManager.instance.recoderImageInTV.enabled = photonVoice.IsRecording;
-            NSR_AutoHandManager.instance.speakerImageInTV.enabled = photonVoice.IsSpeaking;
+            //NSR_AutoHandManager.instance.recoderImageInTV.enabled = photonVoice.IsRecording;
+            //NSR_AutoHandManager.instance.speakerImageInTV.enabled = photonVoice.IsSpeaking;
         }
         else
         {
             // ¹ÂÆ®
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (Input.GetKeyDown(KeyCode.Alpha2) || OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickLeft))
                 audioSource.enabled = !audioSource.enabled;
         }
     }

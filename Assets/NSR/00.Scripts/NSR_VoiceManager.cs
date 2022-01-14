@@ -15,18 +15,18 @@ public class NSR_VoiceManager : MonoBehaviour
 
     void Update()
     {
-        // 마이크 켜기
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        // 마이크 켜고 끄기
+        if (Input.GetKeyDown(KeyCode.Alpha1) || OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickRight))
         {
             recorder.TransmitEnabled = !recorder.TransmitEnabled;
         }
-        // 전체음향 끄고 켜기
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            if (AudioListener.volume == 0)
-                AudioListener.volume = volume;
-            else
-                AudioListener.volume = 0;
-        }
+        // 전체음향 켜고 끄기
+        //else if (Input.GetKeyDown(KeyCode.Alpha3))
+        //{
+        //    if (AudioListener.volume == 0)
+        //        AudioListener.volume = volume;
+        //    else
+        //        AudioListener.volume = 0;
+        //}
     }
 }

@@ -39,7 +39,6 @@ namespace Autohand.Demo{
                         turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
                     }
                 }
-               
             }
 
             player.Move(moveInput);

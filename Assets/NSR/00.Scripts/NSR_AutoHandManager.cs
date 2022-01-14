@@ -127,8 +127,14 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // 카메라 보여지는 오브젝트 설정
         for (int i = 0; i < cams.Length; i++)
         {
+            // 각 플레이어마다 보여지는 레이어
             cams[i].cullingMask = layer;
             tv_camera.GetComponent<Camera>().cullingMask = ~layer;
+
+            //둘 다 보이는 레이어
+            cams[i].cullingMask += 1 << 10;
+            //Tv에서만 안보이는 레이어
+            tv_camera.GetComponent<Camera>().cullingMask -= 1 << 10;
         }
 
         //  이거 사용하는 데 있으면 지우고 HandPlayer 변수로 사용
@@ -137,6 +143,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         // 핸드인 경우
         if (handPlayer)
         {
+            //실제 손 세팅
             SetRealHand();
 
             if (bodyplayer)
@@ -148,6 +155,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         //핸드가 아닌 경우
         else
         {
+            //가짜 손 세팅
             setFakeHand();
 
             if (bodyplayer)
@@ -233,7 +241,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     void Set_Tv_PlayZone()
     {
         // 카메라에 보여줄 레이어 설정
-        layer = 1 << 9;
+        layer = (1 << 9);
 
         // handZone(화면 카메라, 핸드플레이 공간, 카메라렌더러 등) 켜기
         handZone.gameObject.SetActive(true);

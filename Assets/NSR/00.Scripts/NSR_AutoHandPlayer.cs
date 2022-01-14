@@ -94,6 +94,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         handPlayerCall = true;
         if (bodyPlayerCall == false)
         {
+            if(NSR_AutoHandManager.instance.bodyplayer)
             ChaneText.SetActive(true);
             print("핸드가 교환 요청");
         }
@@ -105,7 +106,8 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         bodyPlayerCall = true;
         if (handPlayerCall == false)
         {
-            ChaneText.SetActive(true);
+            if (NSR_AutoHandManager.instance.handPlayer)
+                ChaneText.SetActive(true);
             print("바디가 교환 요청");
         }
     }
