@@ -102,7 +102,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         if (isChanging)
         {
             currTime += Time.deltaTime;
-            if(currTime > 10)
+            if (currTime > 10)
             {
                 isChanging = false;
                 currTime = 0;
@@ -216,8 +216,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
                 body_rightFingers[i].transform.localRotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
             }
 
-           
-         
+
+
             for (int i = 0; i < hand_zone_objects.Length; i++)
             {
                 if (hand_zone_objects[i] != null)
@@ -242,7 +242,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
         if (NSR_AutoBodyPlayer.instance != null)
         {
-          // 화면 카메라 위치 받기
+            // 화면 카메라 위치 받기
             tv_camera.position = Vector3.Lerp(tv_camera.position, NSR_AutoBodyPlayer.instance.recieve_tv_camera_pos, 200 * Time.deltaTime);
             tv_camera.rotation = Quaternion.Lerp(tv_camera.rotation, NSR_AutoBodyPlayer.instance.recieve_tv_camera_Rot, 200 * Time.deltaTime);
 
@@ -279,11 +279,11 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             //head_light.gameObject.SetActive(false);
         }
 
-        if(OVRInput.GetDown(OVRInput.Button.Three))
+        if (OVRInput.GetDown(OVRInput.Button.Three))
         {
             photonView.RPC("setHeight", RpcTarget.Others, true);
         }
-        if(OVRInput.GetUp(OVRInput.Button.Three))
+        if (OVRInput.GetUp(OVRInput.Button.Three))
         {
             photonView.RPC("setHeight", RpcTarget.Others, false);
         }
@@ -312,6 +312,29 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     void setHeight(bool down)
     {
         sit = down;
+    }
+
+    public void OnGrab(bool left)
+    {
+        //photonView.RPC("VibrateController", RpcTarget.All, left);
+
+        VibrateController(left);
+    }
+
+    [PunRPC]
+    void VibrateController(bool left)
+    {
+        if (left)
+            StartCoroutine(VibrateController(0.05f, 0.3f, 1, OVRInput.Controller.LTouch));
+        else
+            StartCoroutine(VibrateController(0.05f, 0.3f, 1, OVRInput.Controller.RTouch));
+    }
+
+    protected IEnumerator VibrateController(float waitTime, float frequency, float amplitude, OVRInput.Controller controller)
+    {
+        OVRInput.SetControllerVibration(frequency, amplitude, controller);
+        yield return new WaitForSeconds(waitTime);
+        OVRInput.SetControllerVibration(0, 0, controller);
     }
 }
 
