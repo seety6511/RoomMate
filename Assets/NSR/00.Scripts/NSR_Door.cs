@@ -3,36 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using Autohand.Demo;
 
-public class NSR_Door : MonoBehaviour
+namespace MText
 {
-    public NSR_Connect connect;
-    public enum DOOR 
-    { 
-        create,
-        join,
-        exit
-    }
-
-    public DOOR door;
-
-    private void OnCollisionEnter(Collision collision)
+    public class NSR_Door : MonoBehaviour
     {
-        if (collision.gameObject.name != "DoorBackWall") return;
-
-        switch (door)
+        public NSR_Connect connect;
+        public enum DOOR
         {
-            case DOOR.create:
-                connect.openCreateDoor = true;
-                break;
+            create,
+            join,
+            exit
+        }
 
-            case DOOR.join:
-                connect.openJoinDoor = true;
-                break;
+        public DOOR door;
 
-            case DOOR.exit:
-                // 게임종료
-                Application.Quit();
-                break;
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.name != "DoorBackWall") return;
+
+            switch (door)
+            {
+                case DOOR.create:
+                    connect.openCreateDoor = true;
+                    break;
+
+                case DOOR.join:
+                    connect.openJoinDoor = true;
+                    break;
+
+                case DOOR.exit:
+                    // 게임종료
+                    Application.Quit();
+                    break;
+            }
         }
     }
 }

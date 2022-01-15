@@ -15,11 +15,20 @@ namespace Autohand.Demo{
         public OVRInput.Controller turnController;
         public OVRInput.Axis2D turnAxis;
 
-        Vector2 moveInput;
-        float turnInput;
+        [HideInInspector]
+        public Vector2 moveInput;
+        [HideInInspector]
+        public float turnInput;
 
         public bool inGame;
         public bool test;
+
+        public GameObject footSound;
+
+        private void Start()
+        {
+            footSound.SetActive(false);
+        }
         public void Update() 
         {
             if (NSR_AutoHandManager.instance.isChanging) return;
@@ -43,6 +52,15 @@ namespace Autohand.Demo{
 
             player.Move(moveInput);
             player.Turn(turnInput);
+
+            if (Mathf.Pow(moveInput.x, 2) > 0 || Mathf.Pow(moveInput.y, 2) > 0)
+            {
+                footSound.SetActive(true);
+            }
+            else
+            {
+                footSound.SetActive(false);
+            }
         }
     }
 }
