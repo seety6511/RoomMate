@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum PaintColor
 {
+    None,
     Red,
     Green,
     Blue,
