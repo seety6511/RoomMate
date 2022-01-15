@@ -5,6 +5,7 @@ using UnityEngine;
 public class SH_MiniatureBase : MonoBehaviour
 {
     public GameObject miniatureGridTilePrefab;
+    public int SetNum = 0;
 
     public int width;
     public int height;
@@ -19,6 +20,15 @@ public class SH_MiniatureBase : MonoBehaviour
                 var t = Instantiate(miniatureGridTilePrefab,transform);
                 t.transform.localPosition = new Vector3(scaleX*i*4, 0, scaleZ*j*4);
             }
+        }
+    }
+    public GameObject Particle;
+    public void NumPlus()
+    {
+        SetNum++;
+        if(SetNum >= 4)
+        {
+            Particle.GetComponent<ParticleSystem>().Play();
         }
     }
 }
