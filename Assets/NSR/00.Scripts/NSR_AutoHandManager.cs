@@ -17,7 +17,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         Screen.SetResolution(960, 640, false);
     }
 
-    public GameObject ChaneText;
+    public GameObject changeText;
 
     #region 
     float speed = 100;
