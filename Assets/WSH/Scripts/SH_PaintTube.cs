@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum PaintColor
 {
+    None,
     Red,
     Green,
     Blue,
@@ -32,6 +33,5 @@ public class SH_PaintTube : MonoBehaviour
         GetComponent<Rigidbody>().isKinematic = false;
         particle.SetActive(true);
         particle.transform.LookAt(cup);
-        Destroy(gameObject, 1f);
     }
 }

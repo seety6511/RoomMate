@@ -30,16 +30,6 @@ public class SH_HintManager : MonoBehaviour
         hints = FindObjectsOfType<SH_Hint>();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            hints[0].Hint();
-        }
-        if (Input.GetKeyDown(KeyCode.Q))
-            hintPanel.Switch();
-    }
-
     [SerializeField]
     public bool alreadyInfo;
     public void EnableHint(SH_Hint hint)

@@ -9,6 +9,7 @@ public class SH_MiniatureBase : MonoBehaviour
 
     public int width;
     public int height;
+
     private void Awake()
     {
         var scaleX = miniatureGridTilePrefab.transform.localScale.x;
