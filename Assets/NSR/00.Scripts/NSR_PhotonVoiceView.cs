@@ -20,8 +20,8 @@ public class NSR_PhotonVoiceView : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            //NSR_AutoHandManager.instance.recoderImageInTV.enabled = photonVoice.IsRecording;
-            //NSR_AutoHandManager.instance.speakerImageInTV.enabled = photonVoice.IsSpeaking;
+            NSR_AutoHandManager.instance.recoderImageInTV.enabled = photonVoice.IsRecording;
+            NSR_AutoHandManager.instance.speakerImageInTV.enabled = photonVoice.IsSpeaking;
         }
         else
         {

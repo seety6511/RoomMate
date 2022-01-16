@@ -21,6 +21,7 @@ public class KHJ_Menu : MonoBehaviour
     {
         if (name == "Quit")
         {
+            //방나가기
             Application.Quit();
             return;
         }
