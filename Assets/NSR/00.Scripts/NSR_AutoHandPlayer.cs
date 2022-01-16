@@ -23,14 +23,14 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     public Transform[] objTr;
 
     KHJ_ScreenFade fade;
-    GameObject ChaneText;
+    GameObject changeText;
 
     bool bodyPlayerCall;
     bool handPlayerCall;
     void Start()
     {
         fade = NSR_AutoHandManager.instance.fade;
-        ChaneText = NSR_AutoHandManager.instance.ChaneText;
+        changeText = NSR_AutoHandManager.instance.changeText;
     }
     void Update()
     {
@@ -66,7 +66,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         if (handPlayerCall && bodyPlayerCall)
         {
             SetBool();
-            ChaneText.SetActive(false);
+            changeText.SetActive(false);
             //화면 어두워졌다가 밝아지게 하기
             fade.EyeClose_();
 
@@ -95,7 +95,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         if (bodyPlayerCall == false)
         {
             if(NSR_AutoHandManager.instance.bodyplayer)
-            ChaneText.SetActive(true);
+                changeText.SetActive(true);
             print("핸드가 교환 요청");
         }
     }
@@ -107,7 +107,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         if (handPlayerCall == false)
         {
             if (NSR_AutoHandManager.instance.handPlayer)
-                ChaneText.SetActive(true);
+                changeText.SetActive(true);
             print("바디가 교환 요청");
         }
     }
@@ -116,7 +116,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     void CancelHandCall()
     {
         print("교환 취소");
-        ChaneText.SetActive(false);
+        changeText.SetActive(false);
         handPlayerCall = false;
     }
 
@@ -124,7 +124,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     void CancelBodyCall()
     {
         print("교환 취소");
-        ChaneText.SetActive(false);
+        changeText.SetActive(false);
         bodyPlayerCall = false;
     }
     IEnumerator ChangeContrl()
