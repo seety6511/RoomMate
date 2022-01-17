@@ -51,11 +51,11 @@ namespace Autohand.Demo{
 
             if (Mathf.Pow(moveInput.x, 2) > 0 || Mathf.Pow(moveInput.y, 2) > 0)
             {
-                playerManager.FoodSound(true);
+                playerManager.FootSound(true);
             }
             else
             {
-                playerManager.FoodSound(false);
+                playerManager.FootSound(false);
             }
         }
     }

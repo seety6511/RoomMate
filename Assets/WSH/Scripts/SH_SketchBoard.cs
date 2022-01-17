@@ -1,9 +1,13 @@
 using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
+using Photon.Pun;
 
-public class SH_SketchBoard : MonoBehaviour
+// viewId 로 충돌물체 넘겨주기
+
+public class SH_SketchBoard : MonoBehaviourPun
 {
+    public int i;
     [SerializeField]
     Texture paint_Complete;
     [SerializeField]
@@ -82,6 +86,20 @@ public class SH_SketchBoard : MonoBehaviour
         body.transform.SetParent(board.transform.parent);
         body.transform.localPosition = board.gameObject.transform.localPosition;
         body.transform.localRotation = board.gameObject.transform.localRotation;
+
+        photonView.RPC("Rpc_OnBoard", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    void Rpc_OnBoard()
+    {
+        if (!onEasel)
+            return;
+
+        var board = FindObjectOfType<SH_BoardChanger>();
+        body.transform.SetParent(board.transform.parent);
+        body.transform.localPosition = board.gameObject.transform.localPosition;
+        body.transform.localRotation = board.gameObject.transform.localRotation;
     }
 
     //그림 순서
@@ -127,11 +145,12 @@ public class SH_SketchBoard : MonoBehaviour
         }
     }
 
-    void Painting(GameObject obj)
+    [PunRPC]
+    void Painting(int i)
     {
         if(cantWrite)
             return;
-
+        GameObject obj = GetComponentInParent<NSR_PaintPuzzle>().brushHeads[i].gameObject;
         var head = obj.GetComponent<SH_BrushHead>();
         var color = head.GetColor;
 
@@ -212,6 +231,10 @@ public class SH_SketchBoard : MonoBehaviour
             return;
 
         if (other.gameObject.tag == "Brush")
-            Painting(other.gameObject);
+        {
+            int i = other.GetComponent<SH_BrushHead>().i;
+            Painting(i);
+            photonView.RPC("Painting", RpcTarget.Others, i);
+        }
     }
 }

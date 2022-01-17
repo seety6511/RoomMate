@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class SH_BoardRefill : MonoBehaviour
+public class SH_BoardRefill : MonoBehaviourPun
 {
     public Vector3 originPos;
     public Quaternion originRot;
@@ -24,6 +25,12 @@ public class SH_BoardRefill : MonoBehaviour
     }
 
     public void Refill()
+    {
+        StartCoroutine(Count());
+        photonView.RPC("Rpc_Refill", RpcTarget.Others);
+    }
+
+    void Rpc_Refill()
     {
         StartCoroutine(Count());
     }

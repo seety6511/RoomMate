@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 [System.Serializable]
 public struct Line
@@ -9,7 +10,7 @@ public struct Line
     public List<Transform> BoxVectors;
 }
 
-public class Draw : MonoBehaviour
+public class Draw : MonoBehaviourPun
 {
     //프리팹
     public GameObject Pencil_Line;
@@ -35,17 +36,21 @@ public class Draw : MonoBehaviour
     }
     void Update()
     {
+        if (NSR_AutoHandManager.instance.handPlayer == false) return;
+
         Ray ray = new Ray(trRight.position, trRight.forward);
         RaycastHit hitInfo;
         int layer = 1 << LayerMask.NameToLayer("Board");
         if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
         {
+            photonView.RPC("Line_SetPosition", RpcTarget.Others, trRight.position, hitInfo.point);
             line.SetPosition(0, trRight.position);
             line.SetPosition(1, hitInfo.point);
         }
         else
         {
             //그림판 밖으로 나가면
+            photonView.RPC("Line_SetPosition", RpcTarget.Others, Vector3.zero, Vector3.zero);
             line.SetPosition(0, Vector3.zero);
             line.SetPosition(1, Vector3.zero);
         }
@@ -57,28 +62,23 @@ public class Draw : MonoBehaviour
                 //그리는 중
                 if (isDraw)
                 {
-                    GameObject dot = Instantiate(Pencil_Line);
-                    dot.transform.position = hitInfo.point + hitInfo.normal * 0.01f;
-                    dot.transform.forward = -hitInfo.normal;
-                    dot.transform.parent = hitInfo.transform;
-                    dot.GetComponent<LineRenderer>().startColor = PenColor;
-                    dot.GetComponent<LineRenderer>().endColor = PenColor;
-                    dot.GetComponent<LineRenderer>().SetPosition(0, hitInfo.point + hitInfo.normal * 0.01f);
+                    Vector3 position = hitInfo.point + hitInfo.normal * 0.01f;
+                    Vector3 forward = -hitInfo.normal;
+                    Transform parent = hitInfo.transform;
 
-                    Line line = new Line();
-                    line.lineObj = dot;
-                    line.BoxVectors = new List<Transform>();
-                    Lines.Add(line);
-
-                    now = dot;
+                    CreateLine(position, forward, parent);
+                    photonView.RPC("CreateLine", RpcTarget.Others, position, forward, parent);
                 }
                 //지우는 중
                 if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
                 {
                     if (hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Pencil"))
                     {
-                        if(!isDraw)
+                        if (!isDraw)
+                        {
                             Destroy(hitInfo.transform.gameObject);
+                            photonView.RPC("DestroyLine", RpcTarget.Others, hitInfo.transform.gameObject);
+                        }
                     }
                 }
             }
@@ -90,45 +90,33 @@ public class Draw : MonoBehaviour
                 //그리는 중
                 if (isDraw)
                 {
+
                     if (now == null)
                     {
-                        GameObject dot = Instantiate(Pencil_Line);
-                        dot.transform.position = hitInfo.point + hitInfo.normal * 0.01f;
-                        dot.transform.forward = -hitInfo.normal;
-                        dot.transform.parent = hitInfo.transform;
-                        dot.GetComponent<LineRenderer>().startColor = PenColor;
-                        dot.GetComponent<LineRenderer>().endColor = PenColor;
-                        dot.GetComponent<LineRenderer>().SetPosition(0, hitInfo.point + hitInfo.normal * 0.01f);
+                        Vector3 position = hitInfo.point + hitInfo.normal * 0.01f;
+                        Vector3 forward = -hitInfo.normal;
+                        Transform parent = hitInfo.transform;
 
-                        Line line = new Line();
-                        line.lineObj = dot;
-                        line.BoxVectors = new List<Transform>();
-                        Lines.Add(line);
-
-                        now = dot;
+                        CreateLine(position, forward, parent);
+                        photonView.RPC("CreateLine", RpcTarget.Others, position, forward, parent);
                     }
                     if (Vector3.Distance(pos, hitInfo.point) > 0.0001f)
                     {
-                        //라인 그리기
-                        LineRenderer tmp = now.GetComponent<LineRenderer>();
-                        tmp.positionCount++;
-                        tmp.SetPosition(tmp.positionCount-1, hitInfo.point + hitInfo.normal * 0.01f);
+                        Vector3 position = hitInfo.point + hitInfo.normal * 0.01f;
 
-                        //박스 콜라이더 추가하기
-                        GameObject box_collider = Instantiate(Bcollider);
-                        box_collider.transform.position = tmp.GetPosition(tmp.positionCount - 1);
-                        box_collider.transform.forward = gameObject.transform.forward;
-                        box_collider.transform.parent = now.transform;
+                        DrawLine(position);
+                        photonView.RPC("DrawLine", RpcTarget.Others, position);
 
-                        Lines[Lines.Count-1].BoxVectors.Add(box_collider.transform);
-                    }                    
+                    }
                     pos = hitInfo.point;
                 }
+
             }
             else
             {
                 //그림판 밖으로 나가면
-                now = null;
+                LineEnd();
+                photonView.RPC("LineEnd", RpcTarget.Others);
             }
 
             //지우는 중
@@ -137,25 +125,108 @@ public class Draw : MonoBehaviour
                 if (hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Pencil"))
                 {
                     if (!isDraw)
+                    {
                         Destroy(hitInfo.transform.parent.gameObject);
+                        photonView.RPC("DestroyLine", RpcTarget.Others, hitInfo.transform.parent.gameObject);
+                    }
+
                 }
             }
         }
     }
 
+    [PunRPC]
+
+    private void Line_SetPosition(Vector3 pos, Vector3 point)
+    {
+        line.SetPosition(0, pos);
+        line.SetPosition(1, point);
+    }
+
+    [PunRPC]
+    void CreateLine(Vector3 position, Vector3 forward, Transform parent)
+    {
+        GameObject dot = Instantiate(Pencil_Line);
+        dot.transform.position = position;
+        dot.transform.forward = forward;
+        dot.transform.parent = parent;
+        dot.GetComponent<LineRenderer>().startColor = PenColor;
+        dot.GetComponent<LineRenderer>().endColor = PenColor;
+        dot.GetComponent<LineRenderer>().SetPosition(0, position);
+
+        Line line = new Line();
+        line.lineObj = dot;
+        line.BoxVectors = new List<Transform>();
+        Lines.Add(line);
+
+        now = dot;
+    }
+
+    [PunRPC]
+    void DrawLine(Vector3 position)
+    {
+        //라인 그리기
+        LineRenderer tmp = now.GetComponent<LineRenderer>();
+        tmp.positionCount++;
+        tmp.SetPosition(tmp.positionCount - 1, position);
+
+        //박스 콜라이더 추가하기
+        GameObject box_collider = Instantiate(Bcollider);
+        box_collider.transform.position = tmp.GetPosition(tmp.positionCount - 1);
+        box_collider.transform.forward = gameObject.transform.forward;
+        box_collider.transform.parent = now.transform;
+
+        Lines[Lines.Count - 1].BoxVectors.Add(box_collider.transform);
+    }
+
+    [PunRPC]
+    void LineEnd()
+    {
+        now = null;
+    }
+
+    [PunRPC]
+    void DestroyLine(GameObject obj)
+    {
+        Destroy(obj);
+    }
+
+
+
     public void resetPos()
     {
+        Rpc_resetPos();
+        photonView.RPC("Rpc_resetPos", RpcTarget.Others);
+        ////이동하고 나서 다시 그려주는 함수
+        //foreach (Line a in Lines)
+        //{
+        //    if (a.lineObj != null)
+        //    {
+        //        LineRenderer line = a.lineObj.GetComponent<LineRenderer>();
+
+        //        line.SetPosition(0, a.lineObj.transform.position);
+        //        for (int i = 1; i < line.positionCount; i++)
+        //        {
+        //            line.SetPosition(i, a.BoxVectors[i - 1].position);
+        //        }
+        //    }
+        //}
+    }
+
+    [PunRPC]
+    void Rpc_resetPos()
+    {
         //이동하고 나서 다시 그려주는 함수
-        foreach(Line a in Lines)
+        foreach (Line a in Lines)
         {
-            if(a.lineObj != null)
+            if (a.lineObj != null)
             {
                 LineRenderer line = a.lineObj.GetComponent<LineRenderer>();
 
                 line.SetPosition(0, a.lineObj.transform.position);
                 for (int i = 1; i < line.positionCount; i++)
                 {
-                    line.SetPosition(i, a.BoxVectors[i-1].position);
+                    line.SetPosition(i, a.BoxVectors[i - 1].position);
                 }
             }
         }
@@ -163,30 +234,78 @@ public class Draw : MonoBehaviour
 
     public void SetMarkerColour(Color new_color)
     {
+        photonView.RPC("Rpc_SetMarkerColour", RpcTarget.Others, new_color);
         PenColor = new_color;
     }
     public void SetMarkerRed()
     {
+        photonView.RPC("Rpc_SetMarkerRed", RpcTarget.Others);
+
         Color c = Color.red;
         SetMarkerColour(c);
     }
     public void SetMarkerGreen()
     {
+        photonView.RPC("Rpc_SetMarkerGreen", RpcTarget.Others);
         Color c = Color.green;
         SetMarkerColour(c);
     }
     public void SetMarkerBlue()
     {
+        photonView.RPC("Rpc_SetMarkerBlue", RpcTarget.Others);
         Color c = Color.blue;
         SetMarkerColour(c);
     }
     public void SetMarketWhite()
+    {
+        photonView.RPC("Rpc_SetMarketWhite", RpcTarget.Others);
+        Color c = Color.white;
+        SetMarkerColour(c);
+    }
+
+    [PunRPC]
+    void Rpc_SetMarkerColour(Color new_color)
+    {
+        PenColor = new_color;
+    }
+    [PunRPC]
+    void Rpc_SetMarkerRed()
+    {
+        Color c = Color.red;
+        SetMarkerColour(c);
+    }
+    [PunRPC]
+    void Rpc_SetMarkerGreen()
+    {
+        Color c = Color.green;
+        SetMarkerColour(c);
+    }
+    [PunRPC]
+    void Rpc_SetMarkerBlue()
+    {
+        Color c = Color.blue;
+        SetMarkerColour(c);
+    }
+    [PunRPC]
+    void Rpc_SetMarketWhite()
     {
         Color c = Color.white;
         SetMarkerColour(c);
     }
 
     public void EaraseAll()
+    {
+        Rpc_EaraseAll();
+        photonView.RPC("Rpc_EaraseAll", RpcTarget.Others);
+        //foreach (Line lines in Lines)
+        //{
+        //    Destroy(lines.lineObj);
+        //}
+        //Lines.Clear();
+    }
+
+    [PunRPC]
+    void Rpc_EaraseAll()
     {
         foreach (Line lines in Lines)
         {
@@ -197,11 +316,26 @@ public class Draw : MonoBehaviour
 
     public void isDrawing()
     {
+        photonView.RPC("Rpc_isDrawing", RpcTarget.Others);
+        isDraw = true;
+    }
+
+    [PunRPC]
+    void Rpc_isDrawing()
+    {
         isDraw = true;
     }
     public void isErasing()
     {
+        photonView.RPC("Rpc_isErasing", RpcTarget.Others);
         isDraw = false;
     }
 
+    [PunRPC]
+    void Rpc_isErasing()
+    {
+        isDraw = false;
+    }
 }
+
+

@@ -46,7 +46,7 @@ public class NSR_RandomPos : MonoBehaviour
         idx++;
         transform.localPosition = new Vector3(Random.Range(-147, 147), Random.Range(-154, 154), Random.Range(270, 330));
 
-        image.material.color = new Color(Random.Range(0, 1), Random.Range(0, 1), Random.Range(0, 1));
+        image.material.color = new Color(Random.Range(0f,1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
         if (idx >= changeTexts.Count)
             idx = 0;
     }

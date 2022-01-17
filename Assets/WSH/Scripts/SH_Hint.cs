@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 /// <summary>
 /// 원하는 오브젝트에 붙인다.
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 /// 잡을수 있는 오브젝트만 가능하다.
 /// 끝. 
 /// </summary>
-public class SH_Hint : MonoBehaviour
+public class SH_Hint : MonoBehaviourPun
 {
     protected SH_HintManager hintManager;
     public Sprite portrait;
@@ -32,11 +33,25 @@ public class SH_Hint : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        Rpc_OnCollisionEnter(collision);
+        //if (hasOn)
+        //    return;
+        //if ((1 << collision.gameObject.layer) != interactorLayer)
+        //    return;
+        //if(!hintManager.alreadyInfo)
+        //    Hint();
+
+        photonView.RPC("Rpc_OnCollisionEnter", RpcTarget.Others, collision);
+    }
+
+    [PunRPC]
+    void Rpc_OnCollisionEnter(Collision collision)
+    {
         if (hasOn)
             return;
         if ((1 << collision.gameObject.layer) != interactorLayer)
             return;
-        if(!hintManager.alreadyInfo)
+        if (!hintManager.alreadyInfo)
             Hint();
     }
 
