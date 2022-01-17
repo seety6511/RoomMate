@@ -16,7 +16,7 @@ public class SH_BoardChanger : MonoBehaviourPun
             SH_SketchBoard board = other.GetComponent<SH_SketchBoard>();
             int i = board.i;
             board.onEasel = true;
-            photonView.RPC("Rpc_OnEasel", RpcTarget.Others, i, true);
+            //photonView.RPC("Rpc_OnEasel", RpcTarget.Others, i, true);
         }
     }
 
@@ -25,7 +25,7 @@ public class SH_BoardChanger : MonoBehaviourPun
         if(other.tag == "EmptyBoard")
         {
             other.GetComponent<SH_SketchBoard>().onEasel = false;
-            photonView.RPC("Rpc_OnEasel", RpcTarget.Others, other, false);
+            //photonView.RPC("Rpc_OnEasel", RpcTarget.Others, other, false);
         }
     }
 

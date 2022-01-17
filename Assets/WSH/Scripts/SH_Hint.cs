@@ -33,20 +33,6 @@ public class SH_Hint : MonoBehaviourPun
     }
     private void OnCollisionEnter(Collision collision)
     {
-        Rpc_OnCollisionEnter(collision);
-        //if (hasOn)
-        //    return;
-        //if ((1 << collision.gameObject.layer) != interactorLayer)
-        //    return;
-        //if(!hintManager.alreadyInfo)
-        //    Hint();
-
-        photonView.RPC("Rpc_OnCollisionEnter", RpcTarget.Others, collision);
-    }
-
-    [PunRPC]
-    void Rpc_OnCollisionEnter(Collision collision)
-    {
         if (hasOn)
             return;
         if ((1 << collision.gameObject.layer) != interactorLayer)

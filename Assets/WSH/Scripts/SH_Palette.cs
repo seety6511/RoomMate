@@ -25,8 +25,8 @@ public class SH_Palette : MonoBehaviourPun
         if (tube.GetAlreadyOpen())
             return;
 
-        int i = tube.i;
-        photonView.RPC("Rpc_OnTriggerEnter", RpcTarget.Others, i);
+        //int i = tube.i;
+        //photonView.RPC("Rpc_OnTriggerEnter", RpcTarget.Others, i);
         Transform cup = null;
         switch (tube.GetColor())
         {

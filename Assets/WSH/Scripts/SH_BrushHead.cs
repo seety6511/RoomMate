@@ -25,8 +25,8 @@ public class SH_BrushHead : MonoBehaviourPun
         var paint = other.GetComponent<SH_Paint>();
         if (paint == null)
             return;
-        int i = paint.i;
-        photonView.RPC("Rpc_OnTriggerEnter", RpcTarget.Others, i);
+        //int i = paint.i;
+        //photonView.RPC("Rpc_OnTriggerEnter", RpcTarget.Others, i);
 
         switch (paint.GetColor)
         {
