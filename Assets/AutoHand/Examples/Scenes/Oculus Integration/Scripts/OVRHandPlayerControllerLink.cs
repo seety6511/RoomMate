@@ -17,21 +17,17 @@ namespace Autohand.Demo{
 
         [HideInInspector]
         public Vector2 moveInput;
-        [HideInInspector]
-        public float turnInput;
+        float turnInput;
 
         public bool inGame;
         public bool test;
 
-        public GameObject footSound;
 
-        private void Start()
-        {
-            footSound.SetActive(false);
-        }
         public void Update() 
         {
-            if (NSR_AutoHandManager.instance.isChanging) return;
+            NSR_AutoHandManager playerManager = NSR_AutoHandManager.instance;
+
+            if (playerManager.isChanging) return;
 
             if (test || (PhotonNetwork.IsConnected && !inGame))
             {
@@ -40,7 +36,7 @@ namespace Autohand.Demo{
             }
 
 
-            if (NSR_AutoHandManager.instance.bodyplayer == false)
+            if (playerManager.bodyplayer == false)
             {
                 if (NSR_AutoBodyPlayer.instance != null)
                 {
@@ -55,11 +51,11 @@ namespace Autohand.Demo{
 
             if (Mathf.Pow(moveInput.x, 2) > 0 || Mathf.Pow(moveInput.y, 2) > 0)
             {
-                footSound.SetActive(true);
+                playerManager.FoodSound(true);
             }
             else
             {
-                footSound.SetActive(false);
+                playerManager.FoodSound(false);
             }
         }
     }

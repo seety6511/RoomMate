@@ -19,6 +19,10 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     public GameObject changeText;
 
+    public GameObject footSound;
+    public AudioSource audioSource;
+    public List<AudioClip> clips;
+    public float interval = 0.3f;
     #region 
     float speed = 100;
 
@@ -91,6 +95,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
         }
+
+        footSound.SetActive(false);
     }
 
     float currTime;
@@ -322,8 +328,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     public void OnGrab(bool left)
     {
-        //photonView.RPC("VibrateController", RpcTarget.All, left);
-
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("VibrateController", RpcTarget.Others, left);
         VibrateController(left);
     }
 
@@ -341,6 +347,38 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         OVRInput.SetControllerVibration(frequency, amplitude, controller);
         yield return new WaitForSeconds(waitTime);
         OVRInput.SetControllerVibration(0, 0, controller);
+    }
+
+    public void FoodSound(bool on)
+    {
+        footSound.SetActive(on);
+        photonView.RPC("Rpc_FoodSound", RpcTarget.Others, on);
+    }
+
+    [PunRPC]
+    void Rpc_FoodSound(bool on)
+    {
+        footSound.SetActive(on);
+    }
+
+    public void TurnFoodSound()
+    {
+        StartCoroutine(TurnFootSound());
+        if (PhotonNetwork.IsConnected)
+            photonView.RPC("RPC_TurnFootSound", RpcTarget.Others);
+    }
+    IEnumerator TurnFootSound()
+    {
+        audioSource.PlayOneShot(clips[(int)Random.Range(0, clips.Count)]);
+
+        yield return new WaitForSeconds(interval);
+        audioSource.PlayOneShot(clips[(int)Random.Range(0, clips.Count)]);
+
+    }
+    [PunRPC]
+    void RPC_TurnFootSound()
+    {
+        StartCoroutine(TurnFootSound());
     }
 }
 
