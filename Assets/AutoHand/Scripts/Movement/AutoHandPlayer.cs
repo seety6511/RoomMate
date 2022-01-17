@@ -10,9 +10,6 @@ namespace Autohand {
     [RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(CapsuleCollider)), DefaultExecutionOrder(-1)]
     [HelpURL("https://earnestrobot.notion.site/Auto-Move-Player-02d91305a4294e039049bd45cacc5b90")]
     public class AutoHandPlayer : MonoBehaviourPun {
-        AudioSource audioSource;
-        public List<AudioClip> clips;
-        public float interval = 0.3f;
 
         [AutoHeader("Auto Hand Player")]
         public bool ignoreMe;
@@ -184,11 +181,6 @@ namespace Autohand {
             deltaY = transform.position.y;
 
             CreateHeadFollower();
-
-            //handLeft = NSR_AutoHandManager.instance.hand_L.GetComponent<Hand>();
-            //handRight = NSR_AutoHandManager.instance.hand_R.GetComponent<Hand>();
-
-            audioSource = GetComponent<AudioSource>();
         }
 
         protected virtual void OnEnable() {
@@ -537,19 +529,7 @@ namespace Autohand {
             return holder;
         }
 
-        IEnumerator TurnFootSound()
-        {
-            audioSource.PlayOneShot(clips[(int)UnityEngine.Random.Range(0, clips.Count)]);
-
-            yield return new WaitForSeconds(interval);
-            audioSource.PlayOneShot(clips[(int)UnityEngine.Random.Range(0, clips.Count)]);
-
-        }
-        [PunRPC]
-        void RPC_TurnFootSound()
-        {
-            StartCoroutine(TurnFootSound());
-        }
+      
 
 
         protected virtual void UpdateTurn() {
@@ -561,8 +541,8 @@ namespace Autohand {
                     float y = GetComponent<OVRHandPlayerControllerLink>().moveInput.y;
                     if (Mathf.Abs(x) < movementDeadzone && Mathf.Abs(y) < movementDeadzone)
                     {
-                        photonView.RPC("RPC_TurnFootSound", RpcTarget.Others);
-                        StartCoroutine(TurnFootSound());
+                        //발소리 두번
+                        NSR_AutoHandManager.instance.TurnFoodSound();
                     }
                     axisReset = false;
                     handRight?.SetHandLocation(handRight.moveTo.position);
@@ -577,8 +557,8 @@ namespace Autohand {
                     if (Mathf.Abs(x) < movementDeadzone && Mathf.Abs(y) < movementDeadzone)
                     {
                         //발소리 두번
-                        photonView.RPC("RPC_TurnFootSound", RpcTarget.Others);
-                        StartCoroutine(TurnFootSound());
+                        NSR_AutoHandManager.instance.TurnFoodSound();
+
                     }
                     axisReset = false;
                     handRight?.SetHandLocation(handRight.moveTo.position);

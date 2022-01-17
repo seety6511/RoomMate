@@ -296,11 +296,8 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     [HideInInspector]
     public Quaternion[] recieve_right_finger_Rot;
 
-    [HideInInspector]
     public Vector3[] recieve_objects_Pos;
-    [HideInInspector]
     public Quaternion[] recieve_objects_Rot;
-    [HideInInspector]
     public Vector3[] recieve_objects_Scale;
 
     [HideInInspector]
