@@ -38,17 +38,17 @@ namespace Autohand.Demo{
                 moveInput = OVRInput.Get(moveAxis, moveController);
                 turnInput = OVRInput.Get(turnAxis, turnController).x;
             }
-            else
+
+
+            if (NSR_AutoHandManager.instance.bodyplayer == false)
             {
-                if (NSR_AutoHandManager.instance.bodyplayer == false)
+                if (NSR_AutoBodyPlayer.instance != null)
                 {
-                    if (NSR_AutoBodyPlayer.instance != null)
-                    {
-                        moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
-                        turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
-                    }
+                    moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
+                    turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
                 }
             }
+            
 
             player.Move(moveInput);
             player.Turn(turnInput);

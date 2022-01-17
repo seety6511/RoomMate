@@ -561,7 +561,7 @@ namespace Autohand {
                     float y = GetComponent<OVRHandPlayerControllerLink>().moveInput.y;
                     if (Mathf.Abs(x) < movementDeadzone && Mathf.Abs(y) < movementDeadzone)
                     {
-                        photonView.RPC("RPC_TurnFootSound", RpcTarget.Others);
+                        //photonView.RPC("RPC_TurnFootSound", RpcTarget.Others);
                         StartCoroutine(TurnFootSound());
                     }
                     axisReset = false;
@@ -577,7 +577,7 @@ namespace Autohand {
                     if (Mathf.Abs(x) < movementDeadzone && Mathf.Abs(y) < movementDeadzone)
                     {
                         //발소리 두번
-                        photonView.RPC("RPC_TurnFootSound", RpcTarget.Others);
+                        //photonView.RPC("RPC_TurnFootSound", RpcTarget.Others);
                         StartCoroutine(TurnFootSound());
                     }
                     axisReset = false;
