@@ -176,10 +176,10 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         body_hand_R.SetActive(false);
 
         h = trackingContainer.position;
-        if (sit)
-            h.y = -0.5f;
-        else
-            h.y = 0;
+        //if (sit)
+        //    h.y = -0.5f;
+        //else
+        //    h.y = 0;
         trackingContainer.position = Vector3.Lerp(trackingContainer.position, h, 50 * Time.deltaTime);
     }
 
