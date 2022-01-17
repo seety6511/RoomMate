@@ -128,13 +128,11 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         for (int i = 0; i < cams.Length; i++)
         {
             // 각 플레이어마다 보여지는 레이어
-            cams[i].cullingMask = layer;
+            cams[i].cullingMask = (1 << 9);
             tv_camera.GetComponent<Camera>().cullingMask = ~layer;
 
             //둘 다 보이는 레이어
-            cams[i].cullingMask += 1 << 10;
-            //Tv에서만 안보이는 레이어
-            tv_camera.GetComponent<Camera>().cullingMask -= 1 << 10;
+            cams[i].cullingMask = (1 << 10) | layer;
         }
 
         //  이거 사용하는 데 있으면 지우고 HandPlayer 변수로 사용
