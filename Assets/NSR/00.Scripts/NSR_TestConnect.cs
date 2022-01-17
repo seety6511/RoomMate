@@ -46,6 +46,6 @@ public class NSR_TestConnect : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         print("방입장 완료");
 
-        PhotonNetwork.LoadLevel("KHJ_Test");
+        PhotonNetwork.LoadLevel("KHJ_Chapter2 1");
     }
 }
