@@ -17,7 +17,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         //해상도 조정
         Screen.SetResolution(960, 640, false);
 
-        hand_zone_objects = FindObjectsOfType<SH_SyncObj>().Select(o => o.transform).ToArray();
+        //hand_zone_objects = FindObjectsOfType<SH_SyncObj>().Select(o => o.transform).ToArray();
     }
 
     public Transform[] hand_zone_objects;
