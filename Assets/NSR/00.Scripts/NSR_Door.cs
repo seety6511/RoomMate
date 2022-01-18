@@ -40,7 +40,9 @@ namespace MText
 
         public void SetChapterNum(int chNum)
         {
+
             connect.chNum = chNum;
+
         }
     }
 }

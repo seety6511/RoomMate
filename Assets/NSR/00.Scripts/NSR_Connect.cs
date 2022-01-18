@@ -37,6 +37,9 @@ namespace MText
         public string[] sceneName;
         [HideInInspector]
         public int chNum;
+
+        public NSR_DoorLock door;
+
         private void Start()
         {
             joinFailText.SetActive(false);
@@ -55,6 +58,9 @@ namespace MText
                 Text.Text += ((int)Random.Range(0, 9)).ToString();
             }
             Text2.Text = Text.Text;
+
+            Text.Text += 0.ToString();
+            Text2.Text += 1.ToString();
         }
         void Connect()
         {
@@ -92,7 +98,7 @@ namespace MText
                 //roomOptions.PublishUserId = true;
                 //인원수 제한
                 roomOptions.MaxPlayers = 2;
-                PhotonNetwork.CreateRoom(Text.Text, roomOptions, TypedLobby.Default);
+                PhotonNetwork.CreateRoom(Text.Text.Substring(5), roomOptions, TypedLobby.Default);
                 openCreateDoor = false;
             }
             else if (enterBtn)
@@ -131,7 +137,11 @@ namespace MText
         {
             base.OnJoinedRoom();
             print("방입장 완료");
-            PhotonNetwork.LoadLevel(sceneName[chNum]);
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.LoadLevel(sceneName[chNum]);
+            else
+                PhotonNetwork.LoadLevel(sceneName[int.Parse(door.inputNums[5].text)]);
+
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
