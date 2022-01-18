@@ -53,7 +53,6 @@ public class KHJ_Pattern : MonoBehaviourPun
                 {
                     p[i] = nodes[int.Parse(charArr[i].ToString()) - 1];
                     drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
-
                 }
                 
                 Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;

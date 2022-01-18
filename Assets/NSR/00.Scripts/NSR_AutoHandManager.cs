@@ -225,9 +225,9 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
             // 손 위치 받기
             body_hand_R.transform.position = Vector3.Lerp(body_hand_R.transform.position, handPlayer.recieve_hand_R_Pos, speed * Time.deltaTime);
-            body_hand_R.transform.rotation = Quaternion.Lerp(body_hand_R.transform.rotation, handPlayer.recieve_hand_R_Rot, speed * Time.deltaTime);
+            body_hand_R.transform.rotation = handPlayer.recieve_hand_R_Rot;
             body_hand_L.transform.position = Vector3.Lerp(body_hand_L.transform.position, handPlayer.recieve_hand_L_Pos, speed * Time.deltaTime);
-            body_hand_L.transform.rotation = Quaternion.Lerp(body_hand_L.transform.rotation, handPlayer.recieve_hand_L_Rot, speed * Time.deltaTime);
+            body_hand_L.transform.rotation = handPlayer.recieve_hand_L_Rot;
 
             //왼손 손가락 위치 받기
             for (int i = 0; i < 15; i++)

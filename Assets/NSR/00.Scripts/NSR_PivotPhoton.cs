@@ -16,7 +16,7 @@ public class NSR_PivotPhoton : MonoBehaviourPun
         {
             if (handPivot[i].GetComponent<NSR_Pivot>().active)
             {
-                photonView.RPC("SetActivePivot", RpcTarget.All, i, handPivot[i].activeSelf);
+                photonView.RPC("SetActivePivot", RpcTarget.Others, i, handPivot[i].activeSelf);
                 handPivot[i].GetComponent<NSR_Pivot>().active = false;
             }
         }
