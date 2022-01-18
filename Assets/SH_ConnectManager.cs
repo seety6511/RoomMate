@@ -78,10 +78,12 @@ public class SH_ConnectManager : MonoBehaviourPunCallbacks
         print("로비 진입 성공");
     }
 
+    Scene scene;
     //방 입장 성공시
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
+        PhotonNetwork.LoadLevel(scene.ToString());
         print("방입장 완료");
     }
 
@@ -127,10 +129,12 @@ public class SH_ConnectManager : MonoBehaviourPunCallbacks
         //인원수 제한
         roomOptions.MaxPlayers = 2;
         PhotonNetwork.CreateRoom(text, roomOptions, TypedLobby.Default);
+        print("CreateRoom");
     }
 
-    void JoinRoom(Scene scene)
+    public void JoinRoom(Scene scene)
     {
+        this.scene = scene;
         PhotonNetwork.JoinRoom(scene.ToString());
     }
 }
