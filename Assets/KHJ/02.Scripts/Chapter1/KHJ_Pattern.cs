@@ -60,7 +60,7 @@ public class KHJ_Pattern : MonoBehaviourPun
                 drawer.SetPosition(activeNodes.Count, WorldToLocal);
                 p[activeNodes.Count] = WorldToLocal;
 
-                //photonView.RPC("RPC_DrawLine", RpcTarget.Others, p);
+                photonView.RPC("RPC_DrawLine", RpcTarget.Others, p);
             }
         }
     }
@@ -148,7 +148,6 @@ public class KHJ_Pattern : MonoBehaviourPun
        
         drawer.positionCount = 0;
 
-        if (drawer.positionCount == 0) return;
         if (PhotonNetwork.IsConnected && NSR_AutoHandManager.instance.handPlayer)
         {
             photonView.RPC("RPC_Init", RpcTarget.Others, 0);

@@ -75,11 +75,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public KHJ_ScreenFade fade;
     public Draw draw;
 
-    bool gameStart = true;
-
     void Start()
     {
-        gameStart = true;
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.SendRate = 200;
@@ -105,22 +102,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         tv_camera.gameObject.SetActive(true);
     }
 
-    float startTime;
     float currTime;
     float fadeTime;
     [HideInInspector]
     public bool openEye;
     private void Update()
     {
-        if(startTime < 1)
-        {
-            startTime += Time.deltaTime;
-        }
-        else
-        {
-            gameStart = false;
-        }
-
         // 역할 바뀌는 동안 동기화 막기
         if (isChanging)
         {
@@ -226,8 +213,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         if (isChanging) return;
 
         NSR_AutoHandPlayer handPlayer = NSR_AutoHandPlayer.instance;
-
-        if (gameStart) return;
 
         // Transform 받기(손, 몸, 오브젝트)
         if (handPlayer != null)
