@@ -74,6 +74,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public bool changeEnd;
 
     public KHJ_ScreenFade fade;
+    public Draw draw;
 
     void Start()
     {
@@ -129,6 +130,14 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             }
         }
 
+        if (NSR_AutoHandPlayer.instance)
+        {
+            if (NSR_AutoHandPlayer.instance.endChange)
+            {
+                draw.LineSet();
+                NSR_AutoHandPlayer.instance.endChange = false;
+            }
+        }
 
         if (PhotonNetwork.IsConnected == false) return;
 

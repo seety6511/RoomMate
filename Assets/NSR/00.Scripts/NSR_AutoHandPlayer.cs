@@ -185,10 +185,12 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             }
         }
     }
+    public bool endChange;
 
     [PunRPC]
     void Set_handzone_obj_Trs()
     {
+        endChange = true;
         for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
         {
             if (NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
@@ -302,6 +304,8 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
     [HideInInspector]
     public bool[] receive_input_R;
+    [HideInInspector]
+    public bool receive_ButtonInput;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 

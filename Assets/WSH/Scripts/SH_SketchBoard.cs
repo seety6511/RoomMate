@@ -232,9 +232,74 @@ public class SH_SketchBoard : MonoBehaviourPun
 
         if (other.gameObject.tag == "Brush")
         {
-            int i = other.GetComponent<SH_BrushHead>().i;
-            Painting(i);
-            photonView.RPC("Painting", RpcTarget.Others, i);
+            if (cantWrite)
+                return;
+            var head = other.GetComponent<SH_BrushHead>();
+            var color = head.GetColor;
+
+            if (color == PaintColor.None)
+                return;
+
+            switch (current)
+            {
+                case PaintStatus.Empty:
+                    if (color != PaintColor.White)
+                    {
+                        WrongPaint(color);
+                        return;
+                    }
+                    paper.SetTexture("_Texture", paint_Complete_NS);
+                    ColorMask(PaintColor.Red, true);
+                    ColorMask(PaintColor.Green, true);
+                    ColorMask(PaintColor.Blue, true);
+                    current = PaintStatus.Sketch;
+                    break;
+
+                case PaintStatus.Sketch:
+                    if (color != PaintColor.Red)
+                    {
+                        if (color != PaintColor.White)
+                            WrongPaint(color);
+                        return;
+                    }
+                    current = PaintStatus.Red;
+                    ColorMask(PaintColor.Red, false);
+                    break;
+
+                case PaintStatus.Red:
+                    if (color != PaintColor.Green)
+                    {
+                        if (color != PaintColor.Red)
+                            WrongPaint(color);
+                        return;
+                    }
+                    current = PaintStatus.Green;
+                    ColorMask(PaintColor.Green, false);
+                    break;
+
+                case PaintStatus.Green:
+                    if (color != PaintColor.Blue)
+                    {
+                        if (color != PaintColor.Green)
+                            WrongPaint(color);
+                        return;
+                    }
+                    current = PaintStatus.Complete;
+                    ColorMask(PaintColor.Blue, false);
+                    break;
+
+                case PaintStatus.Complete:
+                    if (color != PaintColor.Black)
+                    {
+                        if (color != PaintColor.Blue)
+                            WrongPaint(color);
+                        return;
+                    }
+                    current = PaintStatus.Complete_S;
+                    paper.SetTexture("_Texture", paint_Complete);
+                    PuzzleComplete();
+                    break;
+            }
         }
     }
 }

@@ -23,12 +23,16 @@ public class Draw : MonoBehaviourPun
     GameObject now;
     Vector3 pos;
 
+    [HideInInspector]
     public Transform trRight;
+    public Transform trRight_hand;
+    public Transform trRight_body;
     public LineRenderer line;
 
     private void Start()
     {
         SetMarketWhite();
+        LineSet();
     }
     private void OnEnable()
     {
@@ -36,38 +40,43 @@ public class Draw : MonoBehaviourPun
     }
     void Update()
     {
-        if (NSR_AutoHandManager.instance.handPlayer == false) return;
-
         Ray ray = new Ray(trRight.position, trRight.forward);
         RaycastHit hitInfo;
         int layer = 1 << LayerMask.NameToLayer("Board");
         if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
         {
-            photonView.RPC("Line_SetPosition", RpcTarget.Others, trRight.position, hitInfo.point);
             line.SetPosition(0, trRight.position);
             line.SetPosition(1, hitInfo.point);
         }
         else
         {
             //그림판 밖으로 나가면
-            photonView.RPC("Line_SetPosition", RpcTarget.Others, Vector3.zero, Vector3.zero);
             line.SetPosition(0, Vector3.zero);
             line.SetPosition(1, Vector3.zero);
         }
 
         if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         {
+            photonView.RPC("CreateLine", RpcTarget.Others);
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
             {
                 //그리는 중
                 if (isDraw)
                 {
-                    Vector3 position = hitInfo.point + hitInfo.normal * 0.01f;
-                    Vector3 forward = -hitInfo.normal;
-                    Transform parent = hitInfo.transform;
+                    GameObject dot = Instantiate(Pencil_Line);
+                    dot.transform.position = hitInfo.point + hitInfo.normal * 0.01f;
+                    dot.transform.forward = -hitInfo.normal;
+                    dot.transform.parent = hitInfo.transform;
+                    dot.GetComponent<LineRenderer>().startColor = PenColor;
+                    dot.GetComponent<LineRenderer>().endColor = PenColor;
+                    dot.GetComponent<LineRenderer>().SetPosition(0, hitInfo.point + hitInfo.normal * 0.01f);
 
-                    CreateLine(position, forward, parent);
-                    photonView.RPC("CreateLine", RpcTarget.Others, position, forward, parent);
+                    Line line = new Line();
+                    line.lineObj = dot;
+                    line.BoxVectors = new List<Transform>();
+                    Lines.Add(line);
+
+                    now = dot;
                 }
                 //지우는 중
                 if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
@@ -77,35 +86,40 @@ public class Draw : MonoBehaviourPun
                         if (!isDraw)
                         {
                             Destroy(hitInfo.transform.gameObject);
-                            photonView.RPC("DestroyLine", RpcTarget.Others, hitInfo.transform.gameObject);
                         }
                     }
                 }
             }
         }
-        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        if ((OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) && NSR_AutoHandManager.instance.handPlayer)|| (NSR_AutoHandPlayer.instance != null && NSR_AutoHandPlayer.instance.receive_input_R[0] && NSR_AutoHandManager.instance.handPlayer == false))
         {
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
             {
                 //그리는 중
                 if (isDraw)
                 {
-
                     if (now == null)
                     {
-                        Vector3 position = hitInfo.point + hitInfo.normal * 0.01f;
-                        Vector3 forward = -hitInfo.normal;
-                        Transform parent = hitInfo.transform;
+                        GameObject dot = Instantiate(Pencil_Line);
+                        dot.transform.position = hitInfo.point + hitInfo.normal * 0.01f;
+                        dot.transform.forward = -hitInfo.normal;
+                        dot.transform.parent = hitInfo.transform;
+                        dot.GetComponent<LineRenderer>().startColor = PenColor;
+                        dot.GetComponent<LineRenderer>().endColor = PenColor;
+                        dot.GetComponent<LineRenderer>().SetPosition(0, hitInfo.point + hitInfo.normal * 0.01f);
 
-                        CreateLine(position, forward, parent);
-                        photonView.RPC("CreateLine", RpcTarget.Others, position, forward, parent);
+                        Line line = new Line();
+                        line.lineObj = dot;
+                        line.BoxVectors = new List<Transform>();
+                        Lines.Add(line);
+
+                        now = dot;
                     }
                     if (Vector3.Distance(pos, hitInfo.point) > 0.0001f)
                     {
                         Vector3 position = hitInfo.point + hitInfo.normal * 0.01f;
 
                         DrawLine(position);
-                        photonView.RPC("DrawLine", RpcTarget.Others, position);
 
                     }
                     pos = hitInfo.point;
@@ -116,7 +130,6 @@ public class Draw : MonoBehaviourPun
             {
                 //그림판 밖으로 나가면
                 LineEnd();
-                photonView.RPC("LineEnd", RpcTarget.Others);
             }
 
             //지우는 중
@@ -127,11 +140,21 @@ public class Draw : MonoBehaviourPun
                     if (!isDraw)
                     {
                         Destroy(hitInfo.transform.parent.gameObject);
-                        photonView.RPC("DestroyLine", RpcTarget.Others, hitInfo.transform.parent.gameObject);
                     }
 
                 }
             }
+        }
+    }
+    public void LineSet()
+    {
+        if (NSR_AutoHandManager.instance.handPlayer)
+        {
+            trRight = trRight_hand;
+        }
+        else
+        {
+            trRight = trRight_body;
         }
     }
 
@@ -144,22 +167,44 @@ public class Draw : MonoBehaviourPun
     }
 
     [PunRPC]
-    void CreateLine(Vector3 position, Vector3 forward, Transform parent)
+    void CreateLine()
     {
-        GameObject dot = Instantiate(Pencil_Line);
-        dot.transform.position = position;
-        dot.transform.forward = forward;
-        dot.transform.parent = parent;
-        dot.GetComponent<LineRenderer>().startColor = PenColor;
-        dot.GetComponent<LineRenderer>().endColor = PenColor;
-        dot.GetComponent<LineRenderer>().SetPosition(0, position);
+        Ray ray = new Ray(trRight.position, trRight.forward);
+        RaycastHit hitInfo;
+        int layer = 1 << LayerMask.NameToLayer("Board");
 
-        Line line = new Line();
-        line.lineObj = dot;
-        line.BoxVectors = new List<Transform>();
-        Lines.Add(line);
+        if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layer))
+        {
+            //그리는 중
+            if (isDraw)
+            {
+                GameObject dot = Instantiate(Pencil_Line);
+                dot.transform.position = hitInfo.point + hitInfo.normal * 0.01f;
+                dot.transform.forward = -hitInfo.normal;
+                dot.transform.parent = hitInfo.transform;
+                dot.GetComponent<LineRenderer>().startColor = PenColor;
+                dot.GetComponent<LineRenderer>().endColor = PenColor;
+                dot.GetComponent<LineRenderer>().SetPosition(0, hitInfo.point + hitInfo.normal * 0.01f);
 
-        now = dot;
+                Line line = new Line();
+                line.lineObj = dot;
+                line.BoxVectors = new List<Transform>();
+                Lines.Add(line);
+
+                now = dot;
+            }
+            //지우는 중
+            if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
+            {
+                if (hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Pencil"))
+                {
+                    if (!isDraw)
+                    {
+                        Destroy(hitInfo.transform.gameObject);
+                    }
+                }
+            }
+        }
     }
 
     [PunRPC]
@@ -195,8 +240,8 @@ public class Draw : MonoBehaviourPun
 
     public void resetPos()
     {
-        Rpc_resetPos();
         photonView.RPC("Rpc_resetPos", RpcTarget.Others);
+        Rpc_resetPos();
         ////이동하고 나서 다시 그려주는 함수
         //foreach (Line a in Lines)
         //{
@@ -232,9 +277,8 @@ public class Draw : MonoBehaviourPun
         }
     }
 
-    public void SetMarkerColour(Color new_color)
+    void SetMarkerColour(Color new_color)
     {
-        photonView.RPC("Rpc_SetMarkerColour", RpcTarget.Others, new_color);
         PenColor = new_color;
     }
     public void SetMarkerRed()
@@ -297,11 +341,7 @@ public class Draw : MonoBehaviourPun
     {
         Rpc_EaraseAll();
         photonView.RPC("Rpc_EaraseAll", RpcTarget.Others);
-        //foreach (Line lines in Lines)
-        //{
-        //    Destroy(lines.lineObj);
-        //}
-        //Lines.Clear();
+
     }
 
     [PunRPC]
@@ -316,8 +356,8 @@ public class Draw : MonoBehaviourPun
 
     public void isDrawing()
     {
-        photonView.RPC("Rpc_isDrawing", RpcTarget.Others);
         isDraw = true;
+        photonView.RPC("Rpc_isDrawing", RpcTarget.Others);
     }
 
     [PunRPC]
