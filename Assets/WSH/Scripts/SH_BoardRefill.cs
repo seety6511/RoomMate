@@ -37,9 +37,10 @@ public class SH_BoardRefill : MonoBehaviourPun
 
     IEnumerator Count()
     {
-        var copy = Instantiate(gameObject);
-        copy.transform.position = originPos;
-        copy.transform.rotation = originRot;
+        
+        var copy = PhotonNetwork.Instantiate("Board", originPos, originRot);
+        //copy.transform.position = originPos;
+        //copy.transform.rotation = originRot;
         copy.SetActive(false);
         yield return new WaitForSeconds(refillTimer);
         copy.SetActive(true);
