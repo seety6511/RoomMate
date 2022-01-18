@@ -35,6 +35,7 @@ namespace Autohand.Demo{
             {
                 NSR_AutoHandManager playerManager = NSR_AutoHandManager.instance;
                 if (playerManager.isChanging == false) return;
+
                 if (playerManager.bodyplayer == false)
                 {
                     if (NSR_AutoBodyPlayer.instance != null)
