@@ -106,6 +106,7 @@ namespace MText
                 print(answer);
                 enterBtn = false;
 
+                answer = answer.Substring(0, 4);
                 for (int i = 0; i < rooms.Count; i++)
                 {
                     if (rooms[i].Name == answer)
