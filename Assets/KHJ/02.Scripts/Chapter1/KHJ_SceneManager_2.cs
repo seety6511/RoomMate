@@ -46,7 +46,7 @@ public class KHJ_SceneManager_2 : MonoBehaviour
         yield return new WaitForSeconds(2f);
         EndingCredit.SetActive(true);
         yield return new WaitForSeconds(0.2f);
-        EndingCredit.transform.DOLocalMoveY(7f, 7f).SetEase(Ease.OutQuart);
+        EndingCredit.transform.DOLocalMoveY(7f, 15f).SetEase(Ease.OutQuart);
         yield return new WaitForSeconds(10);
         Application.Quit();
     }
