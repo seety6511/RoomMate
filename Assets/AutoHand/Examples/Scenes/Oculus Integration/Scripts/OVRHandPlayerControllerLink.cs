@@ -25,16 +25,16 @@ namespace Autohand.Demo{
 
         public void Update() 
         {
-            NSR_AutoHandManager playerManager = NSR_AutoHandManager.instance;
-
-            if (playerManager.isChanging) return;
-
             if (test || (PhotonNetwork.IsConnected && !inGame))
             {
                 moveInput = OVRInput.Get(moveAxis, moveController);
                 turnInput = OVRInput.Get(turnAxis, turnController).x;
             }
 
+
+            NSR_AutoHandManager playerManager = NSR_AutoHandManager.instance;
+            if (playerManager == null) return;
+            if (playerManager.isChanging) return;
 
             if (playerManager.bodyplayer == false)
             {
