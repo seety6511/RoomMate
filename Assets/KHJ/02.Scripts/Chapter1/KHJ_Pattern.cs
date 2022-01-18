@@ -86,12 +86,18 @@ public class KHJ_Pattern : MonoBehaviourPun
         return false;
     }
 
+    public GameObject gesture_1;
+
     [PunRPC]
     void Clear()
     {
+        gesture_1.SetActive(true);
         GetComponentInParent<SH_Hint>().hasOn = false;
         StartCoroutine(Clear_());
     }
+
+
+
     IEnumerator Clear_()
     {
         yield return new WaitForSeconds(0.4f);

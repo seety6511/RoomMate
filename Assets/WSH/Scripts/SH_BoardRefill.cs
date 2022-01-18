@@ -26,8 +26,8 @@ public class SH_BoardRefill : MonoBehaviourPun
 
     public void Refill()
     {
-        StartCoroutine(Count());
-        photonView.RPC("Rpc_Refill", RpcTarget.Others);
+        //StartCoroutine(Count());
+        //photonView.RPC("Rpc_Refill", RpcTarget.Others);
     }
 
     [PunRPC]
