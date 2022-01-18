@@ -91,7 +91,9 @@ public class KHJ_Diary : MonoBehaviour
 		locker.gameObject.transform.parent = null;
 		locker.gameObject.GetComponent<Rigidbody>().useGravity = true;
 		locker.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-		Destroy(locker.gameObject, 5f);
+		//Destroy(locker.gameObject, 5f);
+		yield return new WaitForSeconds(5);
+		locker.SetActive(false);
 		bookController.TurnToPreviousPage();
 		BookControlBox.SetActive(true);
 	}
