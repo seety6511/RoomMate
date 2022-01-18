@@ -40,6 +40,18 @@ public class Draw : MonoBehaviourPun
     }
     void Update()
     {
+        if (NSR_AutoHandManager.instance.handPlayer)
+        {
+            trRight_body.gameObject.SetActive(false);
+            trRight_hand.gameObject.SetActive(true);
+        }
+        else
+        {
+            trRight_body.gameObject.SetActive(true);
+            trRight_hand.gameObject.SetActive(false);
+        }
+
+
         Ray ray = new Ray(trRight.position, trRight.forward);
         RaycastHit hitInfo;
         int layer = 1 << LayerMask.NameToLayer("Board");
