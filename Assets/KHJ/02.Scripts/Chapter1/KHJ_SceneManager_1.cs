@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
+using Photon.Pun;
 
-public class KHJ_SceneManager_1 : MonoBehaviour
+public class KHJ_SceneManager_1 : MonoBehaviourPun
 {
     public static KHJ_SceneManager_1 instance;
     public Volume volume;
@@ -62,11 +63,17 @@ public class KHJ_SceneManager_1 : MonoBehaviour
 
         GoToScene("Chapter2");
     }
+    
     public void GoToScene(string name)
     {
         if (name == "Quit")
         {
             Application.Quit();
+            return;
+        }
+        if(name == "Chapter2")
+        {
+            PhotonNetwork.LoadLevel("Chapter2");
             return;
         }
         StartCoroutine(LoadScene(name));
