@@ -5,8 +5,8 @@ using Photon.Pun;
 
 public class SH_BoardRefill : MonoBehaviourPun
 {
-    public Vector3 originPos;
-    public Quaternion originRot;
+    Vector3 originPos;
+    Quaternion originRot;
 
     [SerializeField]
     float refillTimer = 1f;
@@ -38,10 +38,11 @@ public class SH_BoardRefill : MonoBehaviourPun
 
     IEnumerator Count()
     {
-        
-        var copy = PhotonNetwork.Instantiate("Board", originPos, originRot);
+        var copy = PhotonNetwork.Instantiate("SketchBoard", originPos, originRot);
         //copy.transform.position = originPos;
         //copy.transform.rotation = originRot;
+
+        NSR_AutoHandManager.instance.hand_zone_objects.Add(copy.transform);
         copy.SetActive(false);
         yield return new WaitForSeconds(refillTimer);
         copy.SetActive(true);

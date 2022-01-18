@@ -49,18 +49,6 @@ public class NSR_Hand : MonoBehaviour
         if(other.gameObject.name == "Smartphone" || other.gameObject.name == "Locker")
             isTarget = true;
     }
-    
-    //private void OnCollisiontay(Collision collision)
-    //{
-    //    if (collision.gameObject.name == "Smartphone" || collision.gameObject.name == "Locker")
-    //        isTarget = true;
-    //}
-
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    if (collision.gameObject.name == "Smartphone" || collision.gameObject.name == "Locker")
-    //        isTarget = false;
-    //}
 
     private void OnTriggerExit(Collider other)
     {

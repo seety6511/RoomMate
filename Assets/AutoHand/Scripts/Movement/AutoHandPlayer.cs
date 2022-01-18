@@ -4,12 +4,11 @@ using UnityEngine;
 using Autohand.Demo;
 using System;
 using NaughtyAttributes;
-using Photon.Pun;
 
 namespace Autohand {
     [RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(CapsuleCollider)), DefaultExecutionOrder(-1)]
     [HelpURL("https://earnestrobot.notion.site/Auto-Move-Player-02d91305a4294e039049bd45cacc5b90")]
-    public class AutoHandPlayer : MonoBehaviourPun {
+    public class AutoHandPlayer : MonoBehaviour {
 
         [AutoHeader("Auto Hand Player")]
         public bool ignoreMe;

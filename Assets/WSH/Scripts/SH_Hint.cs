@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
 
 /// <summary>
 /// 원하는 오브젝트에 붙인다.
@@ -11,7 +10,7 @@ using Photon.Pun;
 /// 잡을수 있는 오브젝트만 가능하다.
 /// 끝. 
 /// </summary>
-public class SH_Hint : MonoBehaviourPun
+public class SH_Hint : MonoBehaviour
 {
     protected SH_HintManager hintManager;
     public Sprite portrait;

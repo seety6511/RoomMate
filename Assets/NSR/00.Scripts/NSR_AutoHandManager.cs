@@ -20,7 +20,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         //hand_zone_objects = FindObjectsOfType<SH_SyncObj>().Select(o => o.transform).ToArray();
     }
 
-    public Transform[] hand_zone_objects;
+    public List<Transform> hand_zone_objects;
 
     public GameObject foodSound;
     public AudioSource audioSource;
@@ -240,7 +240,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
 
 
-            for (int i = 0; i < hand_zone_objects.Length; i++)
+            for (int i = 0; i < hand_zone_objects.Count; i++)
             {
                 if (hand_zone_objects[i] != null)
                 {
@@ -301,23 +301,23 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             //head_light.gameObject.SetActive(false);
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.Three))
-        {
-            photonView.RPC("setHeight", RpcTarget.Others, true);
-        }
-        if (OVRInput.GetUp(OVRInput.Button.Three))
-        {
-            photonView.RPC("setHeight", RpcTarget.Others, false);
-        }
+        //if (OVRInput.GetDown(OVRInput.Button.Three))
+        //{
+        //    photonView.RPC("setHeight", RpcTarget.Others, true);
+        //}
+        //if (OVRInput.GetUp(OVRInput.Button.Three))
+        //{
+        //    photonView.RPC("setHeight", RpcTarget.Others, false);
+        //}
     }
 
     private void OnDisable()
     {
-        if (OVRInput.GetDown(OVRInput.Button.Three))
-            photonView.RPC("setHeight", RpcTarget.Others, false);
+        //if (OVRInput.GetDown(OVRInput.Button.Three))
+        //    photonView.RPC("setHeight", RpcTarget.Others, false);
 
-        if (OVRInput.GetDown(OVRInput.Button.Four))
-            photonView.RPC("HeadLight", RpcTarget.All, false);
+        //if (OVRInput.GetDown(OVRInput.Button.Four))
+        //    photonView.RPC("HeadLight", RpcTarget.All, false);
     }
 
     [PunRPC]
