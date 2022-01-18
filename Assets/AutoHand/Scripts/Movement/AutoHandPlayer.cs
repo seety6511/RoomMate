@@ -4,12 +4,11 @@ using UnityEngine;
 using Autohand.Demo;
 using System;
 using NaughtyAttributes;
-using Photon.Pun;
 
 namespace Autohand {
     [RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(CapsuleCollider)), DefaultExecutionOrder(-1)]
     [HelpURL("https://earnestrobot.notion.site/Auto-Move-Player-02d91305a4294e039049bd45cacc5b90")]
-    public class AutoHandPlayer : MonoBehaviourPun {
+    public class AutoHandPlayer : MonoBehaviour {
 
         [AutoHeader("Auto Hand Player")]
         public bool ignoreMe;
@@ -542,7 +541,8 @@ namespace Autohand {
                     if (Mathf.Abs(x) < movementDeadzone && Mathf.Abs(y) < movementDeadzone)
                     {
                         //발소리 두번
-                        NSR_AutoHandManager.instance.TurnFoodSound();
+                        if(NSR_AutoHandManager.instance != null)
+                        NSR_AutoHandManager.instance.TurnSound();
                     }
                     axisReset = false;
                     handRight?.SetHandLocation(handRight.moveTo.position);
@@ -557,7 +557,8 @@ namespace Autohand {
                     if (Mathf.Abs(x) < movementDeadzone && Mathf.Abs(y) < movementDeadzone)
                     {
                         //발소리 두번
-                        NSR_AutoHandManager.instance.TurnFoodSound();
+                        if(NSR_AutoHandManager.instance != null)
+                        NSR_AutoHandManager.instance.TurnSound();
 
                     }
                     axisReset = false;

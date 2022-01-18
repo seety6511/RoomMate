@@ -7,6 +7,6 @@ public class SH_Paint : MonoBehaviour
 {
     [SerializeField]
     PaintColor color;
-
+    public int i;
     public PaintColor GetColor => color;
 }

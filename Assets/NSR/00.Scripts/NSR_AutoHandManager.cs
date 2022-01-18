@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using Autohand;
+using System.Linq;
 
 // 게임오브젝트 찾아서 넣기
 public class NSR_AutoHandManager : MonoBehaviourPun
@@ -15,28 +16,30 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
         //해상도 조정
         Screen.SetResolution(960, 640, false);
+
+        //hand_zone_objects = FindObjectsOfType<SH_SyncObj>().Select(o => o.transform).ToArray();
     }
 
-    public GameObject changeText;
+    public List<Transform> hand_zone_objects;
 
-    public GameObject footSound;
+    public GameObject foodSound;
     public AudioSource audioSource;
-    public List<AudioClip> clips;
-    public float interval = 0.3f;
-    #region 
-    float speed = 100;
+    public AudioClip[] turnSounds;
+
+    public GameObject changeText;
 
     public Camera headCamera;
     public Transform forwardFollow;
     public Transform trackingContainer;
-    public Transform trackingSpace;
     public Transform autoHandPlayer;
+
     public Image recoderImageInTV;
     public Image speakerImageInTV;
+
+    float speed = 100;
     public GameObject hand_L;
     public GameObject hand_R;
     public GameObject auto_hand_player;
-
     public Transform[] leftFingers;
     public Transform[] rightFingers;
 
@@ -46,34 +49,37 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     public GameObject body_hand_R;
     public GameObject body_hand_L;
-
     public Transform[] body_leftFingers;
     public Transform[] body_rightFingers;
 
-    public Transform[] hand_zone_objects;
     public Transform tv_camera_pos;
 
+    [HideInInspector]
     public bool isMaster;
+    [HideInInspector]
     public bool handPlayer;
+    [HideInInspector]
     public bool bodyplayer;
 
     public Camera[] cams;
     public GameObject loadingText;
     int layer;
 
-    public bool leftCatched;
-    public bool rightCatched;
-
     public GameObject tv_Canvas;
 
+    [HideInInspector]
     public bool isChanging;
+    [HideInInspector]
     public bool changeEnd;
 
     public KHJ_ScreenFade fade;
-    #endregion
+    public Draw draw;
+
+    bool gameStart = true;
 
     void Start()
     {
+        gameStart = true;
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.SendRate = 200;
@@ -96,14 +102,25 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
         }
 
-        footSound.SetActive(false);
+        tv_camera.gameObject.SetActive(true);
     }
 
+    float startTime;
     float currTime;
     float fadeTime;
+    [HideInInspector]
     public bool openEye;
     private void Update()
     {
+        if(startTime < 1)
+        {
+            startTime += Time.deltaTime;
+        }
+        else
+        {
+            gameStart = false;
+        }
+
         // 역할 바뀌는 동안 동기화 막기
         if (isChanging)
         {
@@ -127,6 +144,14 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             }
         }
 
+        if (NSR_AutoHandPlayer.instance)
+        {
+            if (NSR_AutoHandPlayer.instance.endChange)
+            {
+                draw.LineSet();
+                NSR_AutoHandPlayer.instance.endChange = false;
+            }
+        }
 
         if (PhotonNetwork.IsConnected == false) return;
 
@@ -134,11 +159,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         for (int i = 0; i < cams.Length; i++)
         {
             // 각 플레이어마다 보여지는 레이어
-            cams[i].cullingMask = (1 << 9);
-            tv_camera.GetComponent<Camera>().cullingMask = ~layer;
-
-            //둘 다 보이는 레이어
-            cams[i].cullingMask = (1 << 10) | layer;
+            cams[i].cullingMask = layer | (1 << 10) | (1 << 16);
+            tv_camera.GetComponent<Camera>().cullingMask = ~(layer | (1 << 10) | (1 << 16));
         }
 
         //  이거 사용하는 데 있으면 지우고 HandPlayer 변수로 사용
@@ -181,12 +203,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         body_hand_L.SetActive(false);
         body_hand_R.SetActive(false);
 
-        h = trackingContainer.position;
+        //h = trackingContainer.position;
         //if (sit)
         //    h.y = -0.5f;
         //else
         //    h.y = 0;
-        trackingContainer.position = Vector3.Lerp(trackingContainer.position, h, 50 * Time.deltaTime);
+        //trackingContainer.position = Vector3.Lerp(trackingContainer.position, h, 50 * Time.deltaTime);
     }
 
     void setFakeHand()
@@ -203,40 +225,44 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
         if (isChanging) return;
 
+        NSR_AutoHandPlayer handPlayer = NSR_AutoHandPlayer.instance;
+
+        if (gameStart) return;
+
         // Transform 받기(손, 몸, 오브젝트)
-        if (NSR_AutoHandPlayer.instance != null)
+        if (handPlayer != null)
         {
             // 꺼져있는 오토핸드 위치 받기
-            autoHandPlayer.transform.position = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Pos;
-            autoHandPlayer.transform.rotation = NSR_AutoHandPlayer.instance.recieve_autoHandPlayer_Rot;
+            autoHandPlayer.transform.position = handPlayer.recieve_autoHandPlayer_Pos;
+            autoHandPlayer.transform.rotation = handPlayer.recieve_autoHandPlayer_Rot;
             // Tracking 위치 받기
-            trackingContainer.position = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Pos;
-            trackingContainer.rotation = NSR_AutoHandPlayer.instance.recieve_trackingContainer_Rot;
+            trackingContainer.position = handPlayer.recieve_trackingContainer_Pos;
+            trackingContainer.rotation = handPlayer.recieve_trackingContainer_Rot;
 
             // 손 위치 받기
-            body_hand_R.transform.position = Vector3.Lerp(body_hand_R.transform.position, NSR_AutoHandPlayer.instance.recieve_hand_R_Pos, speed * Time.deltaTime);
-            body_hand_R.transform.rotation = Quaternion.Lerp(body_hand_R.transform.rotation, NSR_AutoHandPlayer.instance.recieve_hand_R_Rot, speed * Time.deltaTime);
-            body_hand_L.transform.position = Vector3.Lerp(body_hand_L.transform.position, NSR_AutoHandPlayer.instance.recieve_hand_L_Pos, speed * Time.deltaTime);
-            body_hand_L.transform.rotation = Quaternion.Lerp(body_hand_L.transform.rotation, NSR_AutoHandPlayer.instance.recieve_hand_L_Rot, speed * Time.deltaTime);
+            body_hand_R.transform.position = Vector3.Lerp(body_hand_R.transform.position, handPlayer.recieve_hand_R_Pos, speed * Time.deltaTime);
+            body_hand_R.transform.rotation = handPlayer.recieve_hand_R_Rot;
+            body_hand_L.transform.position = Vector3.Lerp(body_hand_L.transform.position, handPlayer.recieve_hand_L_Pos, speed * Time.deltaTime);
+            body_hand_L.transform.rotation = handPlayer.recieve_hand_L_Rot;
 
             //왼손 손가락 위치 받기
             for (int i = 0; i < 15; i++)
             {
-                body_leftFingers[i].transform.localPosition = NSR_AutoHandPlayer.instance.recieve_left_finger_Pos[i];
-                body_leftFingers[i].transform.localRotation = NSR_AutoHandPlayer.instance.recieve_left_finger_Rot[i];
-                body_rightFingers[i].transform.localPosition = NSR_AutoHandPlayer.instance.recieve_right_finger_Pos[i];
-                body_rightFingers[i].transform.localRotation = NSR_AutoHandPlayer.instance.recieve_right_finger_Rot[i];
+                body_leftFingers[i].transform.localPosition = handPlayer.recieve_left_finger_Pos[i];
+                body_leftFingers[i].transform.localRotation = handPlayer.recieve_left_finger_Rot[i];
+                body_rightFingers[i].transform.localPosition = handPlayer.recieve_right_finger_Pos[i];
+                body_rightFingers[i].transform.localRotation = handPlayer.recieve_right_finger_Rot[i];
             }
 
 
 
-            for (int i = 0; i < hand_zone_objects.Length; i++)
+            for (int i = 0; i < hand_zone_objects.Count; i++)
             {
                 if (hand_zone_objects[i] != null)
                 {
-                    hand_zone_objects[i].transform.position = NSR_AutoHandPlayer.instance.recieve_objects_Pos[i];
-                    hand_zone_objects[i].transform.rotation = NSR_AutoHandPlayer.instance.recieve_objects_Rot[i];
-                    //hand_zone_objects[i].transform.localScale = NSR_AutoHandPlayer.instance.recieve_objects_Scale[i];
+                    hand_zone_objects[i].transform.position = handPlayer.recieve_objects_Pos[i];
+                    hand_zone_objects[i].transform.rotation = handPlayer.recieve_objects_Rot[i];
+                    //hand_zone_objects[i].transform.localScale = handPlayer.recieve_objects_Scale[i];
                 }
             }
         }
@@ -291,23 +317,23 @@ public class NSR_AutoHandManager : MonoBehaviourPun
             //head_light.gameObject.SetActive(false);
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.Three))
-        {
-            photonView.RPC("setHeight", RpcTarget.Others, true);
-        }
-        if (OVRInput.GetUp(OVRInput.Button.Three))
-        {
-            photonView.RPC("setHeight", RpcTarget.Others, false);
-        }
+        //if (OVRInput.GetDown(OVRInput.Button.Three))
+        //{
+        //    photonView.RPC("setHeight", RpcTarget.Others, true);
+        //}
+        //if (OVRInput.GetUp(OVRInput.Button.Three))
+        //{
+        //    photonView.RPC("setHeight", RpcTarget.Others, false);
+        //}
     }
 
     private void OnDisable()
     {
-        if (OVRInput.GetDown(OVRInput.Button.Three))
-            photonView.RPC("setHeight", RpcTarget.Others, false);
+        //if (OVRInput.GetDown(OVRInput.Button.Three))
+        //    photonView.RPC("setHeight", RpcTarget.Others, false);
 
-        if (OVRInput.GetDown(OVRInput.Button.Four))
-            photonView.RPC("HeadLight", RpcTarget.All, false);
+        //if (OVRInput.GetDown(OVRInput.Button.Four))
+        //    photonView.RPC("HeadLight", RpcTarget.All, false);
     }
 
     [PunRPC]
@@ -330,6 +356,7 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     {
         if (PhotonNetwork.IsConnected)
             photonView.RPC("VibrateController", RpcTarget.Others, left);
+
         VibrateController(left);
     }
 
@@ -349,36 +376,41 @@ public class NSR_AutoHandManager : MonoBehaviourPun
         OVRInput.SetControllerVibration(0, 0, controller);
     }
 
-    public void FoodSound(bool on)
+    public void FootSound(bool on)
     {
-        footSound.SetActive(on);
-        photonView.RPC("Rpc_FoodSound", RpcTarget.Others, on);
+        if(foodSound.activeSelf != on)
+        {
+            foodSound.SetActive(on);
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("Rpc_FootSound", RpcTarget.Others, on);
+        }
     }
 
     [PunRPC]
-    void Rpc_FoodSound(bool on)
+    void Rpc_FootSound(bool on)
     {
-        footSound.SetActive(on);
+        foodSound.SetActive(on);
     }
 
-    public void TurnFoodSound()
+    public void TurnSound()
     {
         StartCoroutine(TurnFootSound());
         if (PhotonNetwork.IsConnected)
-            photonView.RPC("RPC_TurnFootSound", RpcTarget.Others);
+            photonView.RPC("Rpc_TurnSound", RpcTarget.Others);
     }
-    IEnumerator TurnFootSound()
-    {
-        audioSource.PlayOneShot(clips[(int)Random.Range(0, clips.Count)]);
 
-        yield return new WaitForSeconds(interval);
-        audioSource.PlayOneShot(clips[(int)Random.Range(0, clips.Count)]);
-
-    }
     [PunRPC]
-    void RPC_TurnFootSound()
+    void Rpc_TurnSound()
     {
         StartCoroutine(TurnFootSound());
     }
+
+    IEnumerator TurnFootSound()
+    {
+        audioSource.PlayOneShot(turnSounds[(int)Random.Range(0, turnSounds.Length)]);
+        yield return new WaitForSeconds(0.3f);
+        audioSource.PlayOneShot(turnSounds[(int)Random.Range(0, turnSounds.Length)]);
+    }
+
 }
 

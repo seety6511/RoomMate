@@ -12,6 +12,7 @@ public enum PaintColor
 }
 public class SH_PaintTube : MonoBehaviour
 {
+    public int i;
     [SerializeField]
     PaintColor color;
     [SerializeField]

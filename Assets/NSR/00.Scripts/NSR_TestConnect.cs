@@ -6,6 +6,7 @@ using Photon.Realtime;
 
 public class NSR_TestConnect : MonoBehaviourPunCallbacks
 {
+    public string sceneName;
     private void Start()
     {
         Connect();
@@ -46,6 +47,6 @@ public class NSR_TestConnect : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         print("방입장 완료");
 
-        PhotonNetwork.LoadLevel("KHJ_Chapter2 1");
+        PhotonNetwork.LoadLevel(sceneName);
     }
 }

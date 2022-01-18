@@ -25,38 +25,37 @@ namespace Autohand.Demo{
 
         public void Update() 
         {
-            NSR_AutoHandManager playerManager = NSR_AutoHandManager.instance;
-
-            if (playerManager.isChanging) return;
-
             if (test || (PhotonNetwork.IsConnected && !inGame))
             {
                 moveInput = OVRInput.Get(moveAxis, moveController);
                 turnInput = OVRInput.Get(turnAxis, turnController).x;
             }
 
-
-            if (playerManager.bodyplayer == false)
+            if (NSR_AutoHandManager.instance != null)
             {
-                if (NSR_AutoBodyPlayer.instance != null)
+                NSR_AutoHandManager playerManager = NSR_AutoHandManager.instance;
+                if (playerManager.isChanging) return;
+
+                if (playerManager.bodyplayer == false)
                 {
-                    moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
-                    turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
+                    if (NSR_AutoBodyPlayer.instance != null)
+                    {
+                        moveInput = NSR_AutoBodyPlayer.instance.recieve_moveInput;
+                        turnInput = NSR_AutoBodyPlayer.instance.recieve_turnInput;
+                    }
+                }
+
+                if (Mathf.Pow(moveInput.x, 2) > 0 || Mathf.Pow(moveInput.y, 2) > 0)
+                {
+                    playerManager.FootSound(true);
+                }
+                else
+                {
+                    playerManager.FootSound(false);
                 }
             }
-            
-
             player.Move(moveInput);
             player.Turn(turnInput);
-
-            if (Mathf.Pow(moveInput.x, 2) > 0 || Mathf.Pow(moveInput.y, 2) > 0)
-            {
-                playerManager.FoodSound(true);
-            }
-            else
-            {
-                playerManager.FoodSound(false);
-            }
         }
     }
 }

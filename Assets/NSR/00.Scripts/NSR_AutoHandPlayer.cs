@@ -27,6 +27,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
     bool bodyPlayerCall;
     bool handPlayerCall;
+    bool startCoroutine = true;
     void Start()
     {
         fade = NSR_AutoHandManager.instance.fade;
@@ -70,7 +71,8 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             //화면 어두워졌다가 밝아지게 하기
             fade.EyeClose_();
 
-            if (NSR_AutoHandManager.instance.handPlayer) return;
+            if (NSR_AutoHandManager.instance.handPlayer || !startCoroutine) return;
+            startCoroutine = false;
             StartCoroutine(ChangeContrl());
         }
 
@@ -94,7 +96,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         handPlayerCall = true;
         if (bodyPlayerCall == false)
         {
-            if(NSR_AutoHandManager.instance.bodyplayer)
+            //if(NSR_AutoHandManager.instance.bodyplayer)
                 changeText.SetActive(true);
             print("핸드가 교환 요청");
         }
@@ -106,7 +108,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
         bodyPlayerCall = true;
         if (handPlayerCall == false)
         {
-            if (NSR_AutoHandManager.instance.handPlayer)
+            //if (NSR_AutoHandManager.instance.handPlayer)
                 changeText.SetActive(true);
             print("바디가 교환 요청");
         }
@@ -166,6 +168,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     {
         handPlayerCall = false;
         bodyPlayerCall = false;
+        startCoroutine = true;
         NSR_AutoHandManager.instance.isChanging = true;
         NSR_AutoHandManager.instance.openEye = true;
     }
@@ -175,7 +178,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
     {
         //canChange = false;
 
-        for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
+        for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Count; i++)
         {
             if (NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
             {
@@ -185,11 +188,13 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             }
         }
     }
+    public bool endChange;
 
     [PunRPC]
     void Set_handzone_obj_Trs()
     {
-        for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
+        endChange = true;
+        for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Count; i++)
         {
             if (NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
             {
@@ -302,6 +307,8 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
 
     [HideInInspector]
     public bool[] receive_input_R;
+    [HideInInspector]
+    public bool receive_ButtonInput;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 
@@ -330,7 +337,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             }
 
             // 오브젝트 위치 보내기
-            for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
+            for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Count; i++)
             {
                 if (NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
                 {
@@ -368,7 +375,7 @@ public class NSR_AutoHandPlayer : MonoBehaviourPun, IPunObservable
             }
 
             //받은 오브젝트 위치
-            for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Length; i++)
+            for (int i = 0; i < NSR_AutoHandManager.instance.hand_zone_objects.Count; i++)
             {
                 if (NSR_AutoHandManager.instance.hand_zone_objects[i] != null)
                 {

@@ -53,7 +53,6 @@ public class KHJ_Pattern : MonoBehaviourPun
                 {
                     p[i] = nodes[int.Parse(charArr[i].ToString()) - 1];
                     drawer.SetPosition(i, nodes[int.Parse(charArr[i].ToString()) - 1]);
-
                 }
                 
                 Vector3 WorldToLocal = KHJ_SmartPhone.instance.tmp.transform.localPosition;
@@ -87,11 +86,18 @@ public class KHJ_Pattern : MonoBehaviourPun
         return false;
     }
 
+    public GameObject gesture_1;
+
     [PunRPC]
     void Clear()
     {
+        gesture_1.SetActive(true);
+        GetComponentInParent<SH_Hint>().hasOn = false;
         StartCoroutine(Clear_());
     }
+
+
+
     IEnumerator Clear_()
     {
         yield return new WaitForSeconds(0.4f);

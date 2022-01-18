@@ -48,17 +48,9 @@ public class NSR_GrabTest : MonoBehaviour
     {
         objL = handL.holdingObj;
         objR = handR.holdingObj;
-        if (objL != null)
-        {
-            if (objL.gameObject == gameObject)
-                setGrab(Pivot_L, false, true);
-        }
 
-        if (objR != null)
-        {
-            if (objR.gameObject == gameObject)
-                setGrab(Pivot_R, false, false);
-        }
+        setGrab(Pivot_L, false, true);
+        setGrab(Pivot_R, false, false);
 
         isGrab = false;
     }

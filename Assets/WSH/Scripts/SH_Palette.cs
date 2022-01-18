@@ -23,6 +23,7 @@ public class SH_Palette : MonoBehaviour
 
         if (tube.GetAlreadyOpen())
             return;
+
         Transform cup = null;
         switch (tube.GetColor())
         {
@@ -45,4 +46,5 @@ public class SH_Palette : MonoBehaviour
         cup.gameObject.SetActive(true);
         tube.Open(cup);
     }
+
 }

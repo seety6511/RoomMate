@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class SH_BoardRefill : MonoBehaviour
+public class SH_BoardRefill : MonoBehaviourPun
 {
-    public Vector3 originPos;
-    public Quaternion originRot;
+    Vector3 originPos;
+    Quaternion originRot;
 
     [SerializeField]
     float refillTimer = 1f;
@@ -25,14 +26,23 @@ public class SH_BoardRefill : MonoBehaviour
 
     public void Refill()
     {
+        //StartCoroutine(Count());
+        //photonView.RPC("Rpc_Refill", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    void Rpc_Refill()
+    {
         StartCoroutine(Count());
     }
 
     IEnumerator Count()
     {
-        var copy = Instantiate(gameObject);
-        copy.transform.position = originPos;
-        copy.transform.rotation = originRot;
+        var copy = PhotonNetwork.Instantiate("SketchBoard", originPos, originRot);
+        //copy.transform.position = originPos;
+        //copy.transform.rotation = originRot;
+
+        NSR_AutoHandManager.instance.hand_zone_objects.Add(copy.transform);
         copy.SetActive(false);
         yield return new WaitForSeconds(refillTimer);
         copy.SetActive(true);

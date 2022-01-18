@@ -15,6 +15,8 @@ namespace MText
     public class NSR_Connect : MonoBehaviourPunCallbacks
     {
         public Modular3DText Text;
+        public Modular3DText Text2;
+        
         [HideInInspector]
         public string answer;
 
@@ -27,24 +29,31 @@ namespace MText
         public bool createBtn;
 
         public GameObject joinFailText;
-        public GameObject createFailText;
+        public GameObject[] createFailText;
         public GameObject joinSuccessText;
 
         public GameObject threshold;
+
+        public string[] sceneName;
+        [HideInInspector]
+        public int chNum;
         private void Start()
         {
             joinFailText.SetActive(false);
-            createFailText.SetActive(false);
+            for (int i = 0; i < createFailText.Length; i++)
+            {
+                createFailText[i].SetActive(false);
+            }
             joinSuccessText.SetActive(false);
-
-            if (PhotonNetwork.IsConnected) return;
-            Connect();
 
             //랜덤 숫자 4자리
             for(int i = 0; i < 4; i++)
             {
                 Text.Text += ((int)Random.Range(0, 9)).ToString();
             }
+
+            if (PhotonNetwork.IsConnected) return;
+            Connect();
         }
         void Connect()
         {
@@ -106,23 +115,13 @@ namespace MText
                 PhotonNetwork.JoinRoom(answer);
                 openJoinDoor = false;
             }
-
-            //if (PhotonNetwork.InRoom)
-            //{
-            //    if (openJoinDoor)
-            //    {
-            //        PhotonNetwork.LoadLevel("KHJ_Test");
-            //        openJoinDoor = false;
-            //    }
-            //}
         }
         //방 입장 성공시
         public override void OnJoinedRoom()
         {
             base.OnJoinedRoom();
             print("방입장 완료");
-            PhotonNetwork.LoadLevel("KHJ_Test");
-
+            PhotonNetwork.LoadLevel("Chapter1");
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
@@ -137,7 +136,10 @@ namespace MText
         {
             base.OnCreateRoomFailed(returnCode, message);
 
-            createFailText.SetActive(true);
+            for (int i = 0; i < createFailText.Length; i++)
+            {
+                createFailText[i].SetActive(true);
+            }
             // 문 위치 원래대로
         }
 

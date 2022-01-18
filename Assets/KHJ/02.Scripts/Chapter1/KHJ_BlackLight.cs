@@ -22,6 +22,7 @@ public class KHJ_BlackLight : MonoBehaviourPun
             return;
 
         isBattery = true;
+        GetComponent<SH_Hint>().hasOn = false;
         obj.GetComponent<Grabbable>().HandsRelease();
         obj.gameObject.SetActive(false);
         if (GetComponent<Grabbable>().IsHeld())

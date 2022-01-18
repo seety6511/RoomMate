@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SH_BrushHead : MonoBehaviour
 {
+    public int i;
+
     [SerializeField]
     PaintColor buriedColor;
 
@@ -47,4 +49,5 @@ public class SH_BrushHead : MonoBehaviour
                 break;
         }
     }
+
 }
