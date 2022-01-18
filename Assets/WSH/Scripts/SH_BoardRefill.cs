@@ -30,6 +30,7 @@ public class SH_BoardRefill : MonoBehaviourPun
         photonView.RPC("Rpc_Refill", RpcTarget.Others);
     }
 
+    [PunRPC]
     void Rpc_Refill()
     {
         StartCoroutine(Count());
