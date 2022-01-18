@@ -5,9 +5,10 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 public enum SH_SceneName
 {
-    SH_Start,
-    SH_Main,
-    NSR_ConnetScene,
+    Start,
+    Connect,
+    Chapter1,
+    Chapter2,
 }
 public class SH_StartSceneManager : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class SH_StartSceneManager : MonoBehaviour
     public void GameStart()
     {
         Debug.Log("GameStart");
-        StartCoroutine(Load(SH_SceneName.NSR_ConnetScene.ToString()));
+        StartCoroutine(Load(SH_SceneName.Connect.ToString()));
     }
 
     IEnumerator Load(string name)
