@@ -15,6 +15,8 @@ namespace MText
     public class NSR_Connect : MonoBehaviourPunCallbacks
     {
         public Modular3DText Text;
+        public Modular3DText Text2;
+        
         [HideInInspector]
         public string answer;
 
@@ -27,14 +29,21 @@ namespace MText
         public bool createBtn;
 
         public GameObject joinFailText;
-        public GameObject createFailText;
+        public GameObject[] createFailText;
         public GameObject joinSuccessText;
 
         public GameObject threshold;
+
+        public string[] sceneName;
+        [HideInInspector]
+        public int chNum;
         private void Start()
         {
             joinFailText.SetActive(false);
-            createFailText.SetActive(false);
+            for (int i = 0; i < createFailText.Length; i++)
+            {
+                createFailText[i].SetActive(false);
+            }
             joinSuccessText.SetActive(false);
 
             if (PhotonNetwork.IsConnected) return;
@@ -45,6 +54,7 @@ namespace MText
             {
                 Text.Text += ((int)Random.Range(0, 9)).ToString();
             }
+            Text2.Text = Text.Text;
         }
         void Connect()
         {
@@ -121,8 +131,7 @@ namespace MText
         {
             base.OnJoinedRoom();
             print("방입장 완료");
-            PhotonNetwork.LoadLevel("KHJ_Test");
-
+            PhotonNetwork.LoadLevel(sceneName[chNum]);
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
@@ -137,7 +146,10 @@ namespace MText
         {
             base.OnCreateRoomFailed(returnCode, message);
 
-            createFailText.SetActive(true);
+            for (int i = 0; i < createFailText.Length; i++)
+            {
+                createFailText[i].SetActive(true);
+            }
             // 문 위치 원래대로
         }
 

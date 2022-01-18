@@ -37,5 +37,10 @@ namespace MText
                     break;
             }
         }
+
+        public void SetChapterNum(int chNum)
+        {
+            connect.chNum = chNum;
+        }
     }
 }

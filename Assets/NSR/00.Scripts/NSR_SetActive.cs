@@ -11,7 +11,7 @@ public class NSR_SetActive : MonoBehaviourPun
     public void SetActiveTrue()
     {
         Rpc_SetActiveTrue();
-        photonView.RPC("Rpc_SetActive()", RpcTarget.Others);
+        photonView.RPC("Rpc_SetActive", RpcTarget.Others);
     }
 
     public void SetActiveFalse()

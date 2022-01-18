@@ -31,17 +31,6 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         volume.profile.TryGet<ChromaticAberration>(out chromatic);
         volume.profile.TryGet<ColorAdjustments>(out color);
     }
-    public GameObject MenuUI;
-    private void Update()
-    {
-        if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Four, OVRInput.Controller.LTouch))
-        {
-            print("Menu");
-            MenuUI.SetActive(!MenuUI.activeSelf);
-            MenuUI.transform.position = Player.transform.position;
-            MenuUI.transform.rotation = PlayerCam.rotation;
-        }
-    }
     public GameObject IllusionWall;
     public void disappearWall()
     {
@@ -71,18 +60,10 @@ public class KHJ_SceneManager_1 : MonoBehaviour
         DOTween.To(() => color.colorFilter.value, x => color.colorFilter.value = x, new Color32(0,0,0,0), 3).SetEase(Ease.InOutQuad);
         yield return new WaitForSeconds(5f);
 
-        GoToScene("NSR_Start");
-        //var ao = SceneManager.LoadSceneAsync(0);
-        //while (!ao.isDone)
-        //{
-        //    yield return null;
-        //}
+        GoToScene("Chapter2");
     }
     public void GoToScene(string name)
     {
-        //40324B
-        //SH_Test 1
-        //KHJ_Test
         if (name == "Quit")
         {
             Application.Quit();

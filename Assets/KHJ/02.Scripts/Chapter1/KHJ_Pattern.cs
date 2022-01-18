@@ -90,6 +90,7 @@ public class KHJ_Pattern : MonoBehaviourPun
     [PunRPC]
     void Clear()
     {
+        GetComponentInParent<SH_Hint>().hasOn = false;
         StartCoroutine(Clear_());
     }
     IEnumerator Clear_()

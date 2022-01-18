@@ -542,6 +542,7 @@ namespace Autohand {
                     if (Mathf.Abs(x) < movementDeadzone && Mathf.Abs(y) < movementDeadzone)
                     {
                         //발소리 두번
+                        if(NSR_AutoHandManager.instance != null)
                         NSR_AutoHandManager.instance.TurnSound();
                     }
                     axisReset = false;
@@ -557,6 +558,7 @@ namespace Autohand {
                     if (Mathf.Abs(x) < movementDeadzone && Mathf.Abs(y) < movementDeadzone)
                     {
                         //발소리 두번
+                        if(NSR_AutoHandManager.instance != null)
                         NSR_AutoHandManager.instance.TurnSound();
 
                     }

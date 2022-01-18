@@ -16,6 +16,7 @@ public class KHJ_Footprint : MonoBehaviourPun
     public bool isSolved = false;
     AudioSource source;
     public AudioClip clearSound;
+    public SH_Hint HandPhone;
     void Start()
     {
         names = GetComponentsInChildren<KHJ_TriggerNameCheck>();
@@ -64,6 +65,7 @@ public class KHJ_Footprint : MonoBehaviourPun
         }
         else
         {
+            HandPhone.hasOn = false;
             KHJ_SceneManager_1.instance.disappearWall();
         }
         //콜라이더 없애기
