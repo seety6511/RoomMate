@@ -8,15 +8,18 @@ public class NSR_Palette : MonoBehaviour
     void Start()
     {
         coll = GetComponent<BoxCollider>();
-        coll.enabled = false;
     }
 
     float currTime;
     void Update()
     {
+
+        if (NSR_AutoHandManager.instance.handPlayer) return;
+
         if(currTime < 2)
         {
             currTime += Time.deltaTime;
+            coll.enabled = false;
         }
         else
         {
