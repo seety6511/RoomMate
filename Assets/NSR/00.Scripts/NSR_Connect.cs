@@ -115,22 +115,13 @@ namespace MText
                 PhotonNetwork.JoinRoom(answer);
                 openJoinDoor = false;
             }
-
-            //if (PhotonNetwork.InRoom)
-            //{
-            //    if (openJoinDoor)
-            //    {
-            //        PhotonNetwork.LoadLevel("KHJ_Test");
-            //        openJoinDoor = false;
-            //    }
-            //}
         }
         //방 입장 성공시
         public override void OnJoinedRoom()
         {
             base.OnJoinedRoom();
             print("방입장 완료");
-            PhotonNetwork.LoadLevel("Chapter2");
+            PhotonNetwork.LoadLevel("Chapter1");
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)

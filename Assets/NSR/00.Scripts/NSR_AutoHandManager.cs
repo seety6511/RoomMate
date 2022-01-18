@@ -31,7 +31,6 @@ public class NSR_AutoHandManager : MonoBehaviourPun
     public Camera headCamera;
     public Transform forwardFollow;
     public Transform trackingContainer;
-    public Transform trackingSpace;
     public Transform autoHandPlayer;
 
     public Image recoderImageInTV;
@@ -99,6 +98,8 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
             PhotonNetwork.Instantiate("NSR_VoiceView", Vector3.zero, Quaternion.identity);
         }
+
+        tv_camera.gameObject.SetActive(true);
     }
 
     float currTime;
