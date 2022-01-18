@@ -362,10 +362,12 @@ public class NSR_AutoHandManager : MonoBehaviourPun
 
     public void FootSound(bool on)
     {
-        foodSound.SetActive(on);
-
-        if (PhotonNetwork.IsConnected)
-            photonView.RPC("Rpc_FootSound", RpcTarget.Others, on);
+        if(foodSound.activeSelf != on)
+        {
+            foodSound.SetActive(on);
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("Rpc_FootSound", RpcTarget.Others, on);
+        }
     }
 
     [PunRPC]
