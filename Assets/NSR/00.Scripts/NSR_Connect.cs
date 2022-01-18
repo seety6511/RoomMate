@@ -130,7 +130,7 @@ namespace MText
         {
             base.OnJoinedRoom();
             print("방입장 완료");
-            PhotonNetwork.LoadLevel(sceneName[chNum]);
+            PhotonNetwork.LoadLevel("Chapter2");
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
