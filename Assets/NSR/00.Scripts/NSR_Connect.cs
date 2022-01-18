@@ -46,15 +46,14 @@ namespace MText
             }
             joinSuccessText.SetActive(false);
 
-            if (PhotonNetwork.IsConnected) return;
-            Connect();
-
             //랜덤 숫자 4자리
             for(int i = 0; i < 4; i++)
             {
                 Text.Text += ((int)Random.Range(0, 9)).ToString();
             }
-            Text2.Text = Text.Text;
+
+            if (PhotonNetwork.IsConnected) return;
+            Connect();
         }
         void Connect()
         {
