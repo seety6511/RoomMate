@@ -45,14 +45,14 @@ namespace Autohand.Demo{
                     }
                 }
 
-                if (Mathf.Pow(moveInput.x, 2) > 0 || Mathf.Pow(moveInput.y, 2) > 0)
-                {
-                    playerManager.FootSound(true);
-                }
-                else
-                {
-                    playerManager.FootSound(false);
-                }
+                //if (Mathf.Pow(moveInput.x, 2) > 0 || Mathf.Pow(moveInput.y, 2) > 0)
+                //{
+                //    playerManager.FootSound(true);
+                //}
+                //else
+                //{
+                //    playerManager.FootSound(false);
+                //}
             }
             player.Move(moveInput);
             player.Turn(turnInput);
