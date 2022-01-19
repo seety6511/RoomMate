@@ -45,8 +45,8 @@ public class KHJ_SceneManager_2 : MonoBehaviour
         EyeCanvas.EyeClose_();
         yield return new WaitForSeconds(2f);
         EndingCredit.SetActive(true);
-        yield return new WaitForSeconds(0.2f);
-        EndingCredit.transform.DOLocalMoveY(7f, 15f).SetEase(Ease.OutQuart);
+        yield return new WaitForSeconds(2f);
+        EndingCredit.transform.DOLocalMoveY(9f, 20f).SetEase(Ease.Linear);
         yield return new WaitForSeconds(10);
         Application.Quit();
     }
