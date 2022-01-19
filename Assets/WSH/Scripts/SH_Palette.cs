@@ -15,8 +15,22 @@ public class SH_Palette : MonoBehaviour
     [SerializeField]
     GameObject blackPaint;
 
+    bool active;
+    private void Start()
+    {
+        active = false;
+        StartCoroutine(Timer());   
+    }
+
+    IEnumerator Timer()
+    {
+        yield return new WaitForSeconds(5f);
+        active = true;
+    }
     private void OnTriggerEnter(Collider other)
     {
+        if (!active)
+            return;
         var tube = other.gameObject.GetComponent<SH_PaintTube>();
         if (tube == null)
             return;

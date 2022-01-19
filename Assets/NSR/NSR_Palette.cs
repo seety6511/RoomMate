@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NSR_Palette : MonoBehaviour
 {
+    public GameObject[] inks;
     BoxCollider coll;
     Rigidbody body;
     void Start()
