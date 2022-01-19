@@ -31,7 +31,7 @@ public class NSR_Hand : MonoBehaviour
         bool off = false;
         for (int i = 0; i < pivots.Length; i++)
         {
-            if (pivots[i].activeSelf)
+            if (pivots[i]!=null && pivots[i].activeSelf)
             {
                 mainPivot.SetActive(false);
                 off = true;

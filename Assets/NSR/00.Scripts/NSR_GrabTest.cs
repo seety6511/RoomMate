@@ -79,7 +79,7 @@ public class NSR_GrabTest : MonoBehaviour
 
     void setGrab(GameObject pivot, bool grab, bool left)
     {
-        if (pivot.activeSelf == !grab)
+        if (pivot !=null && pivot.activeSelf == !grab)
             pivot.SetActive(grab);
 
         if (left)
